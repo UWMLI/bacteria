@@ -64,6 +64,7 @@ var GamePlayScene = function(game, stage)
       self.hp = 100;
       self.resist = Math.random();
       self.bred = false;
+      self.mutate_ticks = 0;
     }
 
     self.tick = function()
@@ -73,6 +74,7 @@ var GamePlayScene = function(game, stage)
       {
         case NODE_TYPE_BACTERIA:
           self.hp++; if(self.hp > 100) self.hp = 100;
+          if(self.mutate_ticks > 0) self.mutate_ticks--;
           break;
         case NODE_TYPE_ANTIBIO:
         case NODE_TYPE_FOOD:
@@ -217,6 +219,11 @@ var GamePlayScene = function(game, stage)
               {
                 nearest_spawnable_node.type = NODE_TYPE_BACTERIA;
                 nearest_spawnable_node.resist = (self.nodes[i].resist+nearest_bacteria.resist)/2;
+                if(Math.random() < 0.01)
+                {
+                  nearest_spawnable_node.resist = Math.random();
+                  nearest_spawnable_node.mutate_ticks = 100;
+                }
                 nearest_spawnable_node.hp = Math.round((self.nodes[i].hp+nearest_bacteria.hp)/2);
                 nearest_spawnable_node.bred = true; //disallow breeding on first cycle
                 self.nodes[i].bred = true;
