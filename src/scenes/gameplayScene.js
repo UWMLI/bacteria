@@ -18,9 +18,13 @@ var GamePlayScene = function(game, stage)
   var NODE_TYPE_ANTIBIO  = NODE_TYPE_COUNT; NODE_TYPE_COUNT++;
   var NODE_TYPE_INVALID  = NODE_TYPE_COUNT; NODE_TYPE_COUNT++;
 
-  var antibio_resist = 4.0;
+  var SWAB_MODE_COUNT = 0;
+  var SWAB_MODE_ANTIBIO_PLACE  = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
+  var SWAB_MODE_ANTIBIO_SUCK   = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
+  var SWAB_MODE_BACTERIA_SPAWN = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
+
   var grid;
-  var node_selector;
+  var swab;
 
   var Node = function(grid)
   {
@@ -219,12 +223,12 @@ var GamePlayScene = function(game, stage)
             {
               if(nearest_bacteria.hp - Math.round(self.nodes[i].hp*self.nodes[i].resist*(1-nearest_bacteria.resist)) > 0)
               {
-                nearest_bacteria.hp -= Math.round(self.nodes[i].hp*antibio_resist*(1-nearest_bacteria.resist));
+                nearest_bacteria.hp -= Math.round(self.nodes[i].hp*self.nodes[i].resist*(1-nearest_bacteria.resist));
                 self.nodes[i].hp = 0;
               }
               else
               {
-                self.nodes[i].hp = Math.round(nearest_bacteria.hp/(antibio_resist*(1-nearest_bacteria.resist)));
+                self.nodes[i].hp = Math.round(nearest_bacteria.hp/(self.nodes[i].resist*(1-nearest_bacteria.resist)));
                 nearest_bacteria.hp = 0;
               }
             }
@@ -246,23 +250,60 @@ var GamePlayScene = function(game, stage)
 
   }
 
-  var NodeSelector = function(grid)
+  var Swab = function(grid)
   {
     var self = this;
 
-    self.x = grid.x;
-    self.y = grid.y;
-    self.w = grid.w;
-    self.h = grid.h;
+    self.x = 0;
+    self.y = 0;
+    self.w = stage.dispCanv.canvas.width;
+    self.h = stage.dispCanv.canvas.height;
 
     self.hovering_c = -1;
     self.hovering_r = -1;
-    self.hovering_radius = 2;
+
+    self.mode = SWAB_MODE_ANTIBIO_PLACE;
+    self.select_radius = 2;
+    self.antibio_resist = 4.0;
+
+    self.mode_switch_button = new (function(swab)
+    {
+      var self = this;
+
+      self.x = swab.w-50;
+      self.y = 20;
+      self.w = 40;
+      self.h = 40;
+
+      self.click = function(evt)
+      {
+        swab.mode = (swab.mode+1)%SWAB_MODE_COUNT;
+      }
+
+      self.draw = function(canv)
+      {
+        switch(swab.mode)
+        {
+          case SWAB_MODE_ANTIBIO_PLACE:
+            canv.context.fillStyle = "#222222";
+            canv.context.fillRect(self.x,self.y,self.w,self.h);
+            break;
+          case SWAB_MODE_ANTIBIO_SUCK:
+            canv.context.fillStyle = "#AAAAAA";
+            canv.context.fillRect(self.x,self.y,self.w,self.h);
+            break;
+          case SWAB_MODE_BACTERIA_SPAWN:
+            canv.context.fillStyle = "#AA33AA";
+            canv.context.fillRect(self.x,self.y,self.w,self.h);
+            break;
+        }
+      }
+    })(self);
 
     self.hover = function(evt)
     {
-      self.hovering_c = Math.floor(grid.n_cols*((evt.doX-self.x)/self.w));
-      self.hovering_r = Math.floor(grid.n_rows*((evt.doY-self.y)/self.h));
+      self.hovering_c = Math.floor(grid.n_cols*((evt.doX-grid.x)/grid.w));
+      self.hovering_r = Math.floor(grid.n_rows*((evt.doY-grid.y)/grid.h));
     }
     self.unhover = function(evt)
     {
@@ -275,40 +316,73 @@ var GamePlayScene = function(game, stage)
     }
     self.drag = function(evt)
     {
-      var min_c = Math.max(0,self.hovering_c-self.hovering_radius);
-      var max_c = Math.min(grid.n_cols-1,self.hovering_c+self.hovering_radius);
-      var min_r = Math.max(0,self.hovering_r-self.hovering_radius);
-      var max_r = Math.min(grid.n_rows-1,self.hovering_r+self.hovering_radius);
+      var min_c = Math.max(0,self.hovering_c-self.select_radius);
+      var max_c = Math.min(grid.n_cols-1,self.hovering_c+self.select_radius);
+      var min_r = Math.max(0,self.hovering_r-self.select_radius);
+      var max_r = Math.min(grid.n_rows-1,self.hovering_r+self.select_radius);
 
-      for(var r = min_r; r <= max_r; r++) for(var c = min_c; c <= max_c; c++){
-        if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.hovering_radius)
-        {
-          var n = grid.nodeAt(c,r);
-          switch(n.type)
+      switch(self.mode)
+      {
+        case SWAB_MODE_ANTIBIO_PLACE:
+          for(var r = min_r; r <= max_r; r++)for(var c = min_c; c <= max_c; c++)
           {
-            case NODE_TYPE_BACTERIA:
-              if(n.hp - Math.round(100*antibio_resist*(1-n.resist)) > 0)
-                n.hp -= Math.round(100*antibio_resist*(1-n.resist));
-              else
+            if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.select_radius)
+            {
+              var n = grid.nodeAt(c,r);
+              switch(n.type)
               {
-                n.type = NODE_TYPE_ANTIBIO;
-                n.hp = Math.round(n.hp/(antibio_resist*(1-n.resist)));
-                n.resist = antibio_resist;
+                case NODE_TYPE_BACTERIA:
+                  if(n.hp - Math.round(100*self.antibio_resist*(1-n.resist)) > 0)
+                    n.hp -= Math.round(100*self.antibio_resist*(1-n.resist));
+                  else
+                  {
+                    n.type = NODE_TYPE_ANTIBIO;
+                    n.hp = Math.round(n.hp/(self.antibio_resist*(1-n.resist)));
+                    n.resist = self.antibio_resist;
+                  }
+                  break;
+                case NODE_TYPE_ANTIBIO:
+                  n.hp = 100;
+                  break;
+                case NODE_TYPE_INVALID:
+                  break;
+                case NODE_TYPE_EMPTY:
+                  n.type = NODE_TYPE_ANTIBIO;
+                  n.hp = 100;
+                  n.resist = self.antibio_resist;
+                default:
+                  break;
               }
-              break;
-            case NODE_TYPE_ANTIBIO:
-              n.hp = 100;
-              break;
-            case NODE_TYPE_INVALID:
-              break;
-            case NODE_TYPE_EMPTY:
-              n.type = NODE_TYPE_ANTIBIO;
-              n.hp = 100;
-              n.resist = antibio_resist;
-            default:
-              break;
+            }
           }
-        }
+          break;
+        case SWAB_MODE_ANTIBIO_SUCK:
+          for(var r = min_r; r <= max_r; r++)for(var c = min_c; c <= max_c; c++)
+          {
+            if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.select_radius)
+            {
+              var n = grid.nodeAt(c,r);
+              if(n.type == NODE_TYPE_ANTIBIO) n.hp = 0;
+            }
+          }
+          break;
+        case SWAB_MODE_BACTERIA_SPAWN:
+          for(var r = min_r; r <= max_r; r++)for(var c = min_c; c <= max_c; c++)
+          {
+            if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.select_radius)
+            {
+              var n = grid.nodeAt(c,r);
+              if(n.type == NODE_TYPE_EMPTY)
+              {
+                n.type = NODE_TYPE_BACTERIA;
+                n.hp = 100;
+                n.resist = Math.random();
+              }
+            }
+          }
+          break;
+        default:
+          break;
       }
     }
     self.dragFinish = function(evt)
@@ -318,13 +392,13 @@ var GamePlayScene = function(game, stage)
     self.draw = function(canv)
     {
       canv.context.strokeStyle = "#FF0000";
-      var min_c = Math.max(0,self.hovering_c-self.hovering_radius);
-      var max_c = Math.min(grid.n_cols-1,self.hovering_c+self.hovering_radius);
-      var min_r = Math.max(0,self.hovering_r-self.hovering_radius);
-      var max_r = Math.min(grid.n_rows-1,self.hovering_r+self.hovering_radius);
+      var min_c = Math.max(0,self.hovering_c-self.select_radius);
+      var max_c = Math.min(grid.n_cols-1,self.hovering_c+self.select_radius);
+      var min_r = Math.max(0,self.hovering_r-self.select_radius);
+      var max_r = Math.min(grid.n_rows-1,self.hovering_r+self.select_radius);
 
       for(var r = min_r; r <= max_r; r++) for(var c = min_c; c <= max_c; c++){
-        if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.hovering_radius)
+        if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.select_radius)
           canv.context.strokeRect(grid.x+c*grid.node_w,grid.y+r*grid.node_h,grid.node_w,grid.node_h);
       }
     }
@@ -336,9 +410,9 @@ var GamePlayScene = function(game, stage)
     dragger = new Dragger({source:stage.dispCanv.canvas});
 
     grid = new Grid(20,20,stage.drawCanv.canvas.width-40-100,stage.drawCanv.canvas.height-40, 25, 50);
-    node_selector = new NodeSelector(grid);
-    hoverer.register(node_selector);
-    dragger.register(node_selector);
+    swab = new Swab(grid);
+    hoverer.register(swab);
+    dragger.register(swab);
 
   };
 
@@ -353,7 +427,7 @@ var GamePlayScene = function(game, stage)
   self.draw = function()
   {
     grid.draw(stage.drawCanv);
-    node_selector.draw(stage.drawCanv);
+    swab.draw(stage.drawCanv);
   };
 
   self.cleanup = function()
