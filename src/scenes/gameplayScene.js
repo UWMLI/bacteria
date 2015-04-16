@@ -65,11 +65,19 @@ var GamePlayScene = function(game, stage)
       self.resist = Math.random();
       self.bred = false;
       self.mutate_ticks = 0;
+      self.bounce = 0;
+      self.bounce_vel = 0;
     }
+
+    self.setBounce = function() { self.bounce = -self.w; self.bounce_vel = 0; }
+    self.unsetBounce = function() { self.bounce = 0; self.bounce_vel = 0; }
 
     self.tick = function()
     {
       if(self.hp == 0) self.type = NODE_TYPE_EMPTY;
+      self.bounce += self.bounce_vel;
+      self.bounce_vel -= self.bounce/9;
+      self.bounce_vel *= 0.9;
       switch(self.type)
       {
         case NODE_TYPE_BACTERIA:
@@ -91,28 +99,25 @@ var GamePlayScene = function(game, stage)
       {
         case NODE_TYPE_BACTERIA:
           canv.context.fillStyle = "rgba("+(Math.round(1.16*self.hp))+","+(Math.round(0.55*self.hp))+","+(Math.round(1.04*self.hp))+",1)";
-          canv.context.fillRect(self.x,self.y,self.w,self.h);
-          canv.context.lineWidth = 1;
           canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
-          canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
           break;
         case NODE_TYPE_ANTIBIO:
           canv.context.fillStyle = "rgba("+(Math.round(1.36*(100-self.hp)))+","+(Math.round(1.36*(100-self.hp)))+","+(Math.round(1.36*(100-self.hp)))+",1)";
-          canv.context.fillRect(self.x,self.y,self.w,self.h);
           canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
-          canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
           break;
         case NODE_TYPE_FOOD:
           canv.context.fillStyle = "#669911";
-          canv.context.fillRect(self.x,self.y,self.w,self.h);
+          canv.context.strokeStyle = "#669911";
           break;
         case NODE_TYPE_EMPTY:
         case NODE_TYPE_INVALID:
         default:
-          //canv.context.fillStyle = "#FFFFAF"
-          //canv.context.fillRect(self.x,self.y,self.w,self.h);
+          return;
           break;
       }
+      canv.context.lineWidth = 1;
+      canv.context.fillRect(self.x-self.bounce/2,self.y-self.bounce/2,self.w+self.bounce,self.h+self.bounce);
+      canv.context.strokeRect(self.x-self.bounce/2+0.5,self.y-self.bounce/2+0.5,self.w+self.bounce-1,self.h+self.bounce-1);
     }
   }
 
@@ -226,6 +231,7 @@ var GamePlayScene = function(game, stage)
                 }
                 nearest_spawnable_node.hp = Math.round((self.nodes[i].hp+nearest_bacteria.hp)/2);
                 nearest_spawnable_node.bred = true; //disallow breeding on first cycle
+                nearest_spawnable_node.setBounce();
                 self.nodes[i].bred = true;
                 nearest_bacteria.bred = true;
               }
@@ -401,6 +407,7 @@ var GamePlayScene = function(game, stage)
                   n.type = NODE_TYPE_ANTIBIO;
                   n.hp = 100;
                   n.resist = self.antibio_resist;
+                  n.unsetBounce();
                 case NODE_TYPE_INVALID:
                 case NODE_TYPE_FOOD:
                 default:
@@ -430,6 +437,7 @@ var GamePlayScene = function(game, stage)
                 n.type = NODE_TYPE_BACTERIA;
                 n.hp = 100;
                 n.resist = Math.random();
+                n.setBounce();
               }
             }
           }
@@ -444,6 +452,7 @@ var GamePlayScene = function(game, stage)
               {
                 n.type = NODE_TYPE_FOOD;
                 n.hp = 100;
+                n.unsetBounce();
               }
             }
           }
