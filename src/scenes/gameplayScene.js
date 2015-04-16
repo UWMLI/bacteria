@@ -397,10 +397,13 @@ var GamePlayScene = function(game, stage)
       var min_r = Math.max(0,self.hovering_r-self.select_radius);
       var max_r = Math.min(grid.n_rows-1,self.hovering_r+self.select_radius);
 
-      for(var r = min_r; r <= max_r; r++) for(var c = min_c; c <= max_c; c++){
+      for(var r=min_r;r<=max_r;r++)for(var c=min_c;c<=max_c;c++)
+      {
         if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.select_radius)
-          canv.context.strokeRect(grid.x+c*grid.node_w,grid.y+r*grid.node_h,grid.node_w,grid.node_h);
+          canv.context.strokeRect(grid.x+c*grid.node_w+0.5,grid.y+r*grid.node_h+0.5,grid.node_w-1,grid.node_h-1);
       }
+
+      self.mode_switch_button.draw(canv);
     }
   }
 
@@ -408,12 +411,13 @@ var GamePlayScene = function(game, stage)
   {
     hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     dragger = new Dragger({source:stage.dispCanv.canvas});
+    clicker = new Clicker({source:stage.dispCanv.canvas});
 
     grid = new Grid(20,20,stage.drawCanv.canvas.width-40-100,stage.drawCanv.canvas.height-40, 25, 50);
     swab = new Swab(grid);
     hoverer.register(swab);
     dragger.register(swab);
-
+    clicker.register(swab.mode_switch_button);
   };
 
   var t = 0;
@@ -422,6 +426,7 @@ var GamePlayScene = function(game, stage)
     grid.tick();
     hoverer.flush();
     dragger.flush();
+    clicker.flush();
   };
 
   self.draw = function()
