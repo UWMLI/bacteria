@@ -67,17 +67,19 @@ var GamePlayScene = function(game, stage)
       self.mutate_ticks = 0;
       self.bounce = 0;
       self.bounce_vel = 0;
+      self.bounce_damp_a = 0.7+Math.random()*0.2;
+      self.bounce_damp_b = 0.8+Math.random()*0.15;
     }
 
-    self.setBounce = function() { self.bounce = -self.w; self.bounce_vel = 0; }
+    self.setBounce = function() { self.bounce = -self.w+(Math.random()*self.w/2); self.bounce_vel = 0; }
     self.unsetBounce = function() { self.bounce = 0; self.bounce_vel = 0; }
 
     self.tick = function()
     {
       if(self.hp == 0) self.type = NODE_TYPE_EMPTY;
       self.bounce += self.bounce_vel;
-      self.bounce_vel -= self.bounce/9;
-      self.bounce_vel *= 0.9;
+      self.bounce_vel -= self.bounce*(1-self.bounce_damp_b);
+      self.bounce_vel *= self.bounce_damp_a;//0.9;
       switch(self.type)
       {
         case NODE_TYPE_BACTERIA:
@@ -188,6 +190,27 @@ var GamePlayScene = function(game, stage)
       }
       return nearest_node;
     };
+    self.bacteriaNotes = function()
+    {
+      var notes = {};
+      notes.strongest = 0;
+      notes.weakest = 1;
+      notes.average = 0;
+      notes.count = 0;
+      for(var i = 0; i < self.nodes.length; i++)
+      {
+        if(self.nodes[i].type == NODE_TYPE_BACTERIA)
+        {
+          if(self.nodes[i].resist > notes.strongest) notes.strongest = self.nodes[i].resist;
+          if(self.nodes[i].resist < notes.weakest) notes.weakest = self.nodes[i].resist;
+          notes.average += self.nodes[i].resist;
+          notes.count++;
+        }
+      }
+      if(notes.count == 0) notes.weakest = 0;
+      else notes.average /= notes.count;
+      return notes;
+    }
 
     self.tick = function()
     {
@@ -359,7 +382,28 @@ var GamePlayScene = function(game, stage)
     var n = 5;
     var w = self.mode_switch_button.w/n;
     for(var i = 0; i < n; i++)
-      self.resist_buttons[i] = new resistButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+10,w,w,i/(n-1),self);
+      self.resist_buttons[i] = new resistButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+10,w,w,(i+1)/n,self);
+    var radiusButton = function(x,y,w,h,d,swab)
+    {
+      var self = this;
+      self.x = x;
+      self.y = y;
+      self.w = w;
+      self.h = h;
+      self.click = function(evt)
+      {
+        swab.select_radius += d;
+      }
+      self.draw = function(canv)
+      {
+        canv.context.strokeStyle = "#FF0000";
+        canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
+      }
+    }
+    self.radius_buttons = [];
+    var w = self.mode_switch_button.w/n;
+    for(var i = 0; i < 2; i++)
+      self.radius_buttons[i] = new radiusButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+self.resist_buttons[i].h+10,w,w,i-1+i,self);
 
     self.hover = function(evt)
     {
@@ -368,8 +412,8 @@ var GamePlayScene = function(game, stage)
     }
     self.unhover = function(evt)
     {
-      self.hovering_c = -1;
-      self.hovering_r = -1;
+      self.hovering_c = -self.select_radius;
+      self.hovering_r = -self.select_radius;
     }
     self.dragStart = function(evt)
     {
@@ -377,6 +421,10 @@ var GamePlayScene = function(game, stage)
     }
     self.drag = function(evt)
     {
+      if(self.hovering_c < 0 || self.hovering_c >= grid.n_cols ||
+         self.hovering_r < 0 || self.hovering_r >= grid.n_rows)
+        return;
+
       var min_c = Math.max(0,self.hovering_c-self.select_radius);
       var max_c = Math.min(grid.n_cols-1,self.hovering_c+self.select_radius);
       var min_r = Math.max(0,self.hovering_r-self.select_radius);
@@ -482,6 +530,8 @@ var GamePlayScene = function(game, stage)
       self.mode_switch_button.draw(canv);
       for(var i = 0; i < self.resist_buttons.length; i++)
         self.resist_buttons[i].draw(canv);
+      for(var i = 0; i < self.radius_buttons.length; i++)
+        self.radius_buttons[i].draw(canv);
     }
   }
 
@@ -498,6 +548,8 @@ var GamePlayScene = function(game, stage)
     clicker.register(swab.mode_switch_button);
     for(var i = 0; i < swab.resist_buttons.length; i++)
       clicker.register(swab.resist_buttons[i]);
+    for(var i = 0; i < swab.radius_buttons.length; i++)
+      clicker.register(swab.radius_buttons[i]);
   };
 
   var t = 0;
@@ -513,6 +565,12 @@ var GamePlayScene = function(game, stage)
   {
     grid.draw(stage.drawCanv);
     swab.draw(stage.drawCanv);
+    var notes = grid.bacteriaNotes();
+    stage.drawCanv.context.fillStyle = "#000000";
+    stage.drawCanv.context.fillText("Strongest: "+notes.strongest,stage.drawCanv.canvas.width-100,200);
+    stage.drawCanv.context.fillText("Weakest: "+notes.weakest,stage.drawCanv.canvas.width-100,220);
+    stage.drawCanv.context.fillText("Average: "+notes.average,stage.drawCanv.canvas.width-100,240);
+    stage.drawCanv.context.fillText("Count: "+notes.count,stage.drawCanv.canvas.width-100,260);
   };
 
   self.cleanup = function()
