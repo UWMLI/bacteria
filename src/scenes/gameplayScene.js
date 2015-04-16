@@ -186,7 +186,7 @@ var GamePlayScene = function(game, stage)
             if(nearest_empty.type != NODE_TYPE_INVALID && Math.random() < 0.01)
             {
               nearest_empty.reform(NODE_TYPE_BACTERIA);
-              nearest_empty.res
+              nearest_empty.resist = (grid[i].resist+nearest_bacteria.resist)/2;
               grid[i].bred = true;
               nearest_bacteria.bred = true;
               nearest_empty.bred = true; //disallow breeding on first cycle
