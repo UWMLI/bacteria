@@ -83,9 +83,9 @@ var GamePlayScene = function(game, stage)
         case NODE_TYPE_BACTERIA:
           canv.context.fillStyle = "rgba("+(Math.round(1.36*self.hp))+","+(Math.round(2.55*self.hp))+","+(Math.round(0.34*self.hp))+",1)";
           canv.context.fillRect(self.x,self.y,self.w,self.h);
-          canv.context.lineWidth = 2;
+          canv.context.lineWidth = 1;
           canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
-          canv.context.strokeRect(self.x,self.y,self.w,self.h);
+          canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
           break;
         case NODE_TYPE_ANTIBIO:
           canv.context.fillStyle = "rgba("+(Math.round(1.36*(100-self.hp)))+","+(Math.round(1.36*(100-self.hp)))+","+(Math.round(1.36*(100-self.hp)))+",1)";
@@ -172,11 +172,6 @@ var GamePlayScene = function(game, stage)
       return nearest_node;
     };
 
-    self.draw = function(canv)
-    {
-      for(var i = 0; i < self.n_rows*self.n_cols; i++)
-        self.nodes[i].draw(canv);
-    }
     self.tick = function()
     {
       var r; var c; var i;
@@ -239,6 +234,15 @@ var GamePlayScene = function(game, stage)
       for(var i = 0; i < self.n_rows*self.n_cols; i++)
         self.nodes[i].tick();
     }
+
+    self.draw = function(canv)
+    {
+      for(var i = 0; i < self.n_rows*self.n_cols; i++)
+        self.nodes[i].draw(canv);
+      canv.context.strokeStyle = "#000000";
+      canv.context.strokeRect(self.x-0.5,self.y-0.5,self.w+1,self.h+1);
+    }
+
   }
 
   var NodeSelector = function(grid)
@@ -330,7 +334,7 @@ var GamePlayScene = function(game, stage)
     hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     dragger = new Dragger({source:stage.dispCanv.canvas});
 
-    grid = new Grid(20,20,stage.drawCanv.canvas.width-40-100,stage.drawCanv.canvas.height-40, 25, 25);
+    grid = new Grid(20,20,stage.drawCanv.canvas.width-40-100,stage.drawCanv.canvas.height-40, 50, 100);
     node_selector = new NodeSelector(grid);
     hoverer.register(node_selector);
     dragger.register(node_selector);
