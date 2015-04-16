@@ -21,7 +21,7 @@ var GamePlayScene = function(game, stage)
 
   var SWAB_MODE_COUNT = 0;
   var SWAB_MODE_ANTIBIO_PLACE  = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
-  var SWAB_MODE_ANTIBIO_SUCK   = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
+  var SWAB_MODE_SUCK           = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
   var SWAB_MODE_BACTERIA_SPAWN = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
   var SWAB_MODE_FOOD_PLACE     = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
 
@@ -304,7 +304,7 @@ var GamePlayScene = function(game, stage)
             canv.context.fillStyle = "#222222";
             canv.context.fillRect(self.x,self.y,self.w,self.h);
             break;
-          case SWAB_MODE_ANTIBIO_SUCK:
+          case SWAB_MODE_SUCK:
             canv.context.fillStyle = "#AAAAAA";
             canv.context.fillRect(self.x,self.y,self.w,self.h);
             break;
@@ -402,13 +402,13 @@ var GamePlayScene = function(game, stage)
             }
           }
           break;
-        case SWAB_MODE_ANTIBIO_SUCK:
+        case SWAB_MODE_SUCK:
           for(var r = min_r; r <= max_r; r++)for(var c = min_c; c <= max_c; c++)
           {
             if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.select_radius)
             {
               var n = grid.nodeAt(c,r);
-              if(n.type == NODE_TYPE_ANTIBIO) n.hp = 0;
+              if(n.type == NODE_TYPE_ANTIBIO || n.type == NODE_TYPE_FOOD) n.hp = 0;
             }
           }
           break;
