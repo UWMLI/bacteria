@@ -81,7 +81,7 @@ var GamePlayScene = function(game, stage)
       switch(self.type)
       {
         case NODE_TYPE_BACTERIA:
-          canv.context.fillStyle = "rgba("+(Math.round(1.36*self.hp))+","+(Math.round(2.55*self.hp))+","+(Math.round(0.34*self.hp))+",1)";
+          canv.context.fillStyle = "rgba("+(Math.round(1.16*self.hp))+","+(Math.round(0.55*self.hp))+","+(Math.round(1.04*self.hp))+",1)";
           canv.context.fillRect(self.x,self.y,self.w,self.h);
           canv.context.lineWidth = 1;
           canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
@@ -185,6 +185,7 @@ var GamePlayScene = function(game, stage)
         var nearest_empty;
         for(r=0;r<self.n_rows;r++)for(c=0;c<self.n_cols;c++)
         {
+          if(Math.random() >= 0.01) continue;//breed chance
           i = (r*self.n_cols)+c;
           if(self.nodes[i].type == NODE_TYPE_BACTERIA)
           {
@@ -192,7 +193,7 @@ var GamePlayScene = function(game, stage)
             if(nearest_bacteria.type != NODE_TYPE_INVALID)
             {
               nearest_empty = self.nearestType(c,r,NODE_TYPE_EMPTY,3,false);
-              if(nearest_empty.type != NODE_TYPE_INVALID && Math.random() < 0.01)
+              if(nearest_empty.type != NODE_TYPE_INVALID)
               {
                 nearest_empty.type = NODE_TYPE_BACTERIA;
                 nearest_empty.resist = (self.nodes[i].resist+nearest_bacteria.resist)/2;
@@ -334,7 +335,7 @@ var GamePlayScene = function(game, stage)
     hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     dragger = new Dragger({source:stage.dispCanv.canvas});
 
-    grid = new Grid(20,20,stage.drawCanv.canvas.width-40-100,stage.drawCanv.canvas.height-40, 50, 100);
+    grid = new Grid(20,20,stage.drawCanv.canvas.width-40-100,stage.drawCanv.canvas.height-40, 25, 50);
     node_selector = new NodeSelector(grid);
     hoverer.register(node_selector);
     dragger.register(node_selector);
