@@ -94,11 +94,10 @@ var GamePlayScene = function(game, stage)
         case NODE_TYPE_ANTIBIO:
           canv.context.fillStyle = "rgba("+(Math.round(1.36*(100-self.hp)))+","+(Math.round(1.36*(100-self.hp)))+","+(Math.round(1.36*(100-self.hp)))+",1)";
           canv.context.fillRect(self.x,self.y,self.w,self.h);
+          canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
+          canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
           break;
         case NODE_TYPE_INVALID:
-          canv.context.fillStyle = "#FF0000"
-          canv.context.fillRect(self.x,self.y,self.w,self.h);
-          break;
         case NODE_TYPE_EMPTY:
         default:
           //canv.context.fillStyle = "#FFFFAF"
@@ -131,7 +130,7 @@ var GamePlayScene = function(game, stage)
     {
         i = (r*self.n_cols)+c;
         self.nodes[i] = new Node(self);
-        self.nodes[i].init(c,r,Math.floor(Math.random()*Math.random()*Math.random()*Math.random()*(NODE_TYPE_COUNT-1)));
+        self.nodes[i].init(c,r,NODE_TYPE_EMPTY);
     }
 
     self.nodeAt = function(c,r) { return self.nodes[(r*self.n_cols)+c]; };
@@ -270,10 +269,10 @@ var GamePlayScene = function(game, stage)
     {
       var self = this;
 
-      self.x = swab.w-50;
+      self.w = 80;
+      self.h = 80;
+      self.x = swab.w-(self.w+20);
       self.y = 20;
-      self.w = 40;
-      self.h = 40;
 
       self.click = function(evt)
       {
@@ -299,6 +298,34 @@ var GamePlayScene = function(game, stage)
         }
       }
     })(self);
+    var resistButton = function(x,y,w,h,r,swab)
+    {
+      var self = this;
+      self.x = x;
+      self.y = y;
+      self.w = w;
+      self.h = h;
+      self.click = function(evt)
+      {
+        if(swab.mode == SWAB_MODE_ANTIBIO_PLACE)
+          swab.antibio_resist = r;
+      }
+      self.draw = function(canv)
+      {
+        if(swab.mode == SWAB_MODE_ANTIBIO_PLACE)
+        {
+          canv.context.fillStyle = "rgba(0,0,0,1)";
+          canv.context.fillRect(self.x,self.y,self.w,self.h);
+          canv.context.strokeStyle = "rgba("+Math.round((1-r)*255)+","+Math.round((1-r)*255)+","+Math.round((1-r)*255)+",1)";
+          canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
+        }
+      }
+    }
+    self.resist_buttons = [];
+    var n = 5;
+    var w = self.mode_switch_button.w/n;
+    for(var i = 0; i < n; i++)
+      self.resist_buttons[i] = new resistButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+10,w,w,i/(n-1),self);
 
     self.hover = function(evt)
     {
@@ -404,6 +431,8 @@ var GamePlayScene = function(game, stage)
       }
 
       self.mode_switch_button.draw(canv);
+      for(var i = 0; i < self.resist_buttons.length; i++)
+        self.resist_buttons[i].draw(canv);
     }
   }
 
@@ -418,6 +447,8 @@ var GamePlayScene = function(game, stage)
     hoverer.register(swab);
     dragger.register(swab);
     clicker.register(swab.mode_switch_button);
+    for(var i = 0; i < swab.resist_buttons.length; i++)
+      clicker.register(swab.resist_buttons[i]);
   };
 
   var t = 0;
