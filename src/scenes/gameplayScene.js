@@ -16,12 +16,14 @@ var GamePlayScene = function(game, stage)
   var NODE_TYPE_EMPTY    = NODE_TYPE_COUNT; NODE_TYPE_COUNT++;
   var NODE_TYPE_BACTERIA = NODE_TYPE_COUNT; NODE_TYPE_COUNT++;
   var NODE_TYPE_ANTIBIO  = NODE_TYPE_COUNT; NODE_TYPE_COUNT++;
+  var NODE_TYPE_FOOD     = NODE_TYPE_COUNT; NODE_TYPE_COUNT++;
   var NODE_TYPE_INVALID  = NODE_TYPE_COUNT; NODE_TYPE_COUNT++;
 
   var SWAB_MODE_COUNT = 0;
   var SWAB_MODE_ANTIBIO_PLACE  = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
   var SWAB_MODE_ANTIBIO_SUCK   = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
   var SWAB_MODE_BACTERIA_SPAWN = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
+  var SWAB_MODE_FOOD_PLACE     = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
 
   var grid;
   var swab;
@@ -73,8 +75,9 @@ var GamePlayScene = function(game, stage)
           self.hp++; if(self.hp > 100) self.hp = 100;
           break;
         case NODE_TYPE_ANTIBIO:
-          break;
+        case NODE_TYPE_FOOD:
         case NODE_TYPE_EMPTY:
+        case NODE_TYPE_INVALID:
         default:
           break;
       }
@@ -97,8 +100,12 @@ var GamePlayScene = function(game, stage)
           canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
           canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
           break;
-        case NODE_TYPE_INVALID:
+        case NODE_TYPE_FOOD:
+          canv.context.fillStyle = "#669911";
+          canv.context.fillRect(self.x,self.y,self.w,self.h);
+          break;
         case NODE_TYPE_EMPTY:
+        case NODE_TYPE_INVALID:
         default:
           //canv.context.fillStyle = "#FFFFAF"
           //canv.context.fillRect(self.x,self.y,self.w,self.h);
@@ -185,23 +192,33 @@ var GamePlayScene = function(game, stage)
           grid.nodes[i].bred = false;
 
         var nearest_bacteria;
+        var nearest_food;
         var nearest_empty;
+        var nearest_spawnable_node;
         for(r=0;r<self.n_rows;r++)for(c=0;c<self.n_cols;c++)
         {
           if(Math.random() >= 0.01) continue;//breed chance
+          nearest_spawnable_node = grid.invalidNode;
           i = (r*self.n_cols)+c;
           if(self.nodes[i].type == NODE_TYPE_BACTERIA)
           {
             nearest_bacteria = self.nearestType(c,r,NODE_TYPE_BACTERIA,3,true);
             if(nearest_bacteria.type != NODE_TYPE_INVALID)
             {
-              nearest_empty = self.nearestType(c,r,NODE_TYPE_EMPTY,3,false);
-              if(nearest_empty.type != NODE_TYPE_INVALID)
+              nearest_food = self.nearestType(c,r,NODE_TYPE_FOOD,3,false);
+              if(nearest_food.type != NODE_TYPE_INVALID) nearest_spawnable_node = nearest_food;
+              else if(Math.random() <= 0.1) //very small chance to spawn on empty if no food nearby
               {
-                nearest_empty.type = NODE_TYPE_BACTERIA;
-                nearest_empty.resist = (self.nodes[i].resist+nearest_bacteria.resist)/2;
-                nearest_empty.hp = Math.round((self.nodes[i].hp+nearest_bacteria.hp)/2);
-                nearest_empty.bred = true; //disallow breeding on first cycle
+                nearest_empty = self.nearestType(c,r,NODE_TYPE_EMPTY,3,false);
+                if(nearest_empty.type != NODE_TYPE_INVALID)
+                  nearest_spawnable_node = nearest_empty;
+              }
+              if(nearest_spawnable_node.type != NODE_TYPE_INVALID)
+              {
+                nearest_spawnable_node.type = NODE_TYPE_BACTERIA;
+                nearest_spawnable_node.resist = (self.nodes[i].resist+nearest_bacteria.resist)/2;
+                nearest_spawnable_node.hp = Math.round((self.nodes[i].hp+nearest_bacteria.hp)/2);
+                nearest_spawnable_node.bred = true; //disallow breeding on first cycle
                 self.nodes[i].bred = true;
                 nearest_bacteria.bred = true;
               }
@@ -295,6 +312,10 @@ var GamePlayScene = function(game, stage)
             canv.context.fillStyle = "#AA33AA";
             canv.context.fillRect(self.x,self.y,self.w,self.h);
             break;
+          case SWAB_MODE_FOOD_PLACE:
+            canv.context.fillStyle = "#AAAA33";
+            canv.context.fillRect(self.x,self.y,self.w,self.h);
+            break;
         }
       }
     })(self);
@@ -369,14 +390,12 @@ var GamePlayScene = function(game, stage)
                   }
                   break;
                 case NODE_TYPE_ANTIBIO:
-                  n.hp = 100;
-                  break;
-                case NODE_TYPE_INVALID:
-                  break;
                 case NODE_TYPE_EMPTY:
                   n.type = NODE_TYPE_ANTIBIO;
                   n.hp = 100;
                   n.resist = self.antibio_resist;
+                case NODE_TYPE_INVALID:
+                case NODE_TYPE_FOOD:
                 default:
                   break;
               }
@@ -404,6 +423,20 @@ var GamePlayScene = function(game, stage)
                 n.type = NODE_TYPE_BACTERIA;
                 n.hp = 100;
                 n.resist = Math.random();
+              }
+            }
+          }
+          break;
+        case SWAB_MODE_FOOD_PLACE:
+          for(var r = min_r; r <= max_r; r++)for(var c = min_c; c <= max_c; c++)
+          {
+            if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.select_radius)
+            {
+              var n = grid.nodeAt(c,r);
+              if(n.type == NODE_TYPE_EMPTY)
+              {
+                n.type = NODE_TYPE_FOOD;
+                n.hp = 100;
               }
             }
           }
