@@ -12,8 +12,8 @@ var GamePlayScene = function(game, stage)
   var presser;
   var particler;
 
-  var NUM_ROWS = 50;
-  var NUM_COLS = 100;
+  var NUM_ROWS = 25;
+  var NUM_COLS = 50;
 
   var NODE_TYPE_COUNT = 0;
   var NODE_TYPE_EMPTY    = NODE_TYPE_COUNT; NODE_TYPE_COUNT++;
@@ -40,7 +40,7 @@ var GamePlayScene = function(game, stage)
 
     self.type;
     self.hp;
-    self.res;
+    self.resist;
     self.bred;
 
     self.init = function(col, row, type)
@@ -59,7 +59,7 @@ var GamePlayScene = function(game, stage)
     {
       self.type = type;
       self.hp = 100;
-      self.res = Math.random();
+      self.resist = Math.random();
       self.bred = false;
     }
 
@@ -68,7 +68,7 @@ var GamePlayScene = function(game, stage)
       switch(self.type)
       {
         case NODE_TYPE_BACTERIA:
-          if(self.hp <= 0) self.type = NODE_TYPE_EMPTY;
+          self.hp++; if(self.hp > 100) self.hp == 100;
           break;
         case NODE_TYPE_ANTIBIO:
           break;
@@ -83,8 +83,11 @@ var GamePlayScene = function(game, stage)
       switch(self.type)
       {
         case NODE_TYPE_BACTERIA:
-          canv.context.fillStyle = "#8822FF";
+          canv.context.fillStyle = "rgba("+(Math.round(1.36*self.hp))+","+(Math.round(2.55*self.hp))+","+(Math.round(0.34*self.hp))+",1)";
           canv.context.fillRect(self.x,self.y,self.w,self.h);
+          canv.context.lineWidth = 2;
+          canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
+          canv.context.strokeRect(self.x,self.y,self.w,self.h);
           break;
         case NODE_TYPE_ANTIBIO:
           canv.context.fillStyle = "#AAAAAA";
@@ -96,8 +99,8 @@ var GamePlayScene = function(game, stage)
           break;
         case NODE_TYPE_EMPTY:
         default:
-          canv.context.fillStyle = "#FFFFAF"
-          canv.context.fillRect(self.x,self.y,self.w,self.h);
+          //canv.context.fillStyle = "#FFFFAF"
+          //canv.context.fillRect(self.x,self.y,self.w,self.h);
           break;
       }
     }
@@ -164,7 +167,7 @@ var GamePlayScene = function(game, stage)
     var r; var c; var i;
     t++;
 
-    if(t%10 == 0)
+    if(t%1 == 0)
     {
       //multiply
       for(r=0;r<NUM_ROWS;r++){for(c=0;c<NUM_COLS;c++){ i = (r*NUM_COLS)+c;
@@ -180,9 +183,10 @@ var GamePlayScene = function(game, stage)
           if(nearest_bacteria.type != NODE_TYPE_INVALID)
           {
             nearest_empty = nearestType(c,r,NODE_TYPE_EMPTY,3,false);
-            if(nearest_empty.type != NODE_TYPE_INVALID)
+            if(nearest_empty.type != NODE_TYPE_INVALID && Math.random() < 0.01)
             {
               nearest_empty.reform(NODE_TYPE_BACTERIA);
+              nearest_empty.res
               grid[i].bred = true;
               nearest_bacteria.bred = true;
               nearest_empty.bred = true; //disallow breeding on first cycle
