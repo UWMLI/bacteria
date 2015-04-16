@@ -53,10 +53,6 @@ var GamePlayScene = function(game, stage)
       self.s_x = self.x = self.c*self.w;
       self.s_y = self.y = self.r*self.h;
 
-      self.reform(type);
-    }
-    self.reform = function(type)
-    {
       self.type = type;
       self.hp = 100;
       self.resist = Math.random();
@@ -68,7 +64,7 @@ var GamePlayScene = function(game, stage)
       switch(self.type)
       {
         case NODE_TYPE_BACTERIA:
-          self.hp++; if(self.hp > 100) self.hp == 100;
+          self.hp++; if(self.hp > 100) self.hp = 100;
           break;
         case NODE_TYPE_ANTIBIO:
           break;
@@ -106,7 +102,78 @@ var GamePlayScene = function(game, stage)
     }
   }
 
-  var grid = [];
+  var NodeSelector = function()
+  {
+    var self = this;
+
+    self.x = 0;
+    self.y = 0;
+    self.w = stage.dispCanv.canvas.width;
+    self.h = stage.dispCanv.canvas.height;
+
+    self.hovering_c = -1;
+    self.hovering_r = -1;
+
+    var node_w = self.w/NUM_COLS;
+    var node_h = self.h/NUM_ROWS;
+
+    self.hover = function(evt)
+    {
+      self.hovering_c = Math.floor(NUM_COLS*(evt.doX/self.w));
+      self.hovering_r = Math.floor(NUM_ROWS*(evt.doY/self.h));
+    }
+    self.unhover = function(evt)
+    {
+      self.hovering_c = -1;
+      self.hovering_r = -1;
+    }
+    self.dragStart = function(evt)
+    {
+      self.drag(evt);
+    }
+    self.drag = function(evt)
+    {
+      var n = validNodeAt(self.hovering_c,self.hovering_r);
+      console.log(n);
+      switch(n.type)
+      {
+        case NODE_TYPE_BACTERIA:
+          if(n.hp - 100*antibio_resist*(1-n.resist) > 0)
+            n.hp -= 100*antibio_resist*(1-n.resist);
+          else
+          {
+            n.type = NODE_TYPE_ANTIBIO;
+            n.hp = Math.round(n.hp/(antibio_resist*(1-n.resist)));
+            n.resist = antibio_resist;
+          }
+          break;
+        case NODE_TYPE_ANTIBIO:
+          n.hp = 100;
+          break;
+        case NODE_TYPE_INVALID:
+          break;
+        case NODE_TYPE_EMPTY:
+          n.type = NODE_TYPE_ANTIBIO;
+          n.hp = 100;
+          n.resist = antibio_resist;
+        default:
+          break;
+      }
+    }
+    self.dragFinish = function(evt)
+    {
+
+    }
+    self.draw = function(canv)
+    {
+      canv.context.strokeStyle = "#FF0000";
+      canv.context.strokeRect(self.hovering_c*node_w,self.hovering_r*node_h,node_w,node_h);
+    }
+  }
+
+  var antibio_resist = 0.5;
+  var grid;
+  var node_selector;
   var invalidNode = new Node(); invalidNode.init(-1,-1,NODE_TYPE_INVALID);
   var nodeAt = function(c,r) { return grid[(r*NUM_COLS)+c]; };
   var validNodeAt = function(c,r)
@@ -154,7 +221,14 @@ var GamePlayScene = function(game, stage)
 
   self.ready = function()
   {
+    hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
+    dragger = new Dragger({source:stage.dispCanv.canvas});
+    node_selector = new NodeSelector();
+    hoverer.register(node_selector);
+    dragger.register(node_selector);
+
     var r; var c; var i;
+    grid = [];
     for(r=0;r<NUM_ROWS;r++){for(c=0;c<NUM_COLS;c++){ i = (r*NUM_COLS)+c;
         grid[i] = new Node();
         grid[i].init(c,r,Math.floor(Math.random()*Math.random()*Math.random()*Math.random()*(NODE_TYPE_COUNT-1)));
@@ -185,27 +259,31 @@ var GamePlayScene = function(game, stage)
             nearest_empty = nearestType(c,r,NODE_TYPE_EMPTY,3,false);
             if(nearest_empty.type != NODE_TYPE_INVALID && Math.random() < 0.01)
             {
-              nearest_empty.reform(NODE_TYPE_BACTERIA);
+              nearest_empty.type = NODE_TYPE_BACTERIA;
               nearest_empty.resist = (grid[i].resist+nearest_bacteria.resist)/2;
+              nearest_empty.hp = Math.round((grid[i].hp+nearest_bacteria.hp)/2);
+              nearest_empty.bred = true; //disallow breeding on first cycle
               grid[i].bred = true;
               nearest_bacteria.bred = true;
-              nearest_empty.bred = true; //disallow breeding on first cycle
             }
           }
         }
       }}
     }
 
-    //for(var i = 0; i < NUM_ROWS*NUM_COLS; i++)
-      //grid[i].tick();
+    for(var i = 0; i < NUM_ROWS*NUM_COLS; i++)
+      grid[i].tick();
+
+    hoverer.flush();
+    dragger.flush();
   };
 
   self.draw = function()
   {
     for(var i = 0; i < NUM_ROWS*NUM_COLS; i++)
-    {
       grid[i].draw(stage.drawCanv);
-    }
+
+    node_selector.draw(stage.drawCanv);
   };
 
   self.cleanup = function()
