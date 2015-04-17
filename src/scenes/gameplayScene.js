@@ -66,7 +66,6 @@ var GamePlayScene = function(game, stage)
       self.hp = 100;
       self.resist = Math.random();
       self.bred = false;
-      self.mutate_ticks = 0;
       self.bounce = 0;
       self.bounce_vel = 0;
       self.bounce_damp_a = 0.7+Math.random()*0.2;
@@ -87,7 +86,6 @@ var GamePlayScene = function(game, stage)
           self.bounce_vel -= self.bounce*(1-self.bounce_damp_b);
           self.bounce_vel *= self.bounce_damp_a;//0.9;
           self.hp++; if(self.hp > 100) self.hp = 100;
-          if(self.mutate_ticks > 0) self.mutate_ticks--;
           break;
         case NODE_TYPE_FOOD:
           self.bounce = self.bounce*0.9;
@@ -125,6 +123,29 @@ var GamePlayScene = function(game, stage)
       canv.context.lineWidth = 1;
       canv.context.fillRect(self.x-self.bounce/2,self.y-self.bounce/2,self.w+self.bounce,self.h+self.bounce);
       canv.context.strokeRect(self.x-self.bounce/2+0.5,self.y-self.bounce/2+0.5,self.w+self.bounce-1,self.h+self.bounce-1);
+    }
+  }
+
+  var MutantParticle = function(x,y,w,h)
+  {
+    var self = this;
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+
+    self.life = 100;
+    self.tick = function()
+    {
+      self.life--;
+      return self.life > 0;
+    }
+    self.draw = function(canv)
+    {
+      canv.context.strokeStyle = "#00FF00";
+      var l = self.life - 50;
+      var off = (l/100)*(l/100)*(l/100)*self.life/2;
+      canv.context.strokeRect(self.x-off,self.y-off,self.w+(2*off),self.h+(2*off));
     }
   }
 
@@ -264,7 +285,7 @@ var GamePlayScene = function(game, stage)
                   nearest_spawnable_node.resist = nearest_spawnable_node.resist+((Math.random()*0.25)-0.12);
                   if(nearest_spawnable_node.resist > 1) nearest_spawnable_node.resist = 0.999;
                   if(nearest_spawnable_node.resist < 0) nearest_spawnable_node.resist = 0.001;
-                  nearest_spawnable_node.mutate_ticks = 100;
+                  particler.register(new MutantParticle(nearest_spawnable_node.x,nearest_spawnable_node.y,nearest_spawnable_node.w,nearest_spawnable_node.h));
                 }
               }
               else if(Math.random() < 0.1) //small chance to spawn asexually
@@ -281,7 +302,7 @@ var GamePlayScene = function(game, stage)
                   nearest_spawnable_node.resist = nearest_spawnable_node.resist+((Math.random()*0.25)-0.12);
                   if(nearest_spawnable_node.resist > 1) nearest_spawnable_node.resist = 0.999;
                   if(nearest_spawnable_node.resist < 0) nearest_spawnable_node.resist = 0.001;
-                  nearest_spawnable_node.mutate_ticks = 100;
+                  particler.register(new MutantParticle(nearest_spawnable_node.x,nearest_spawnable_node.y,nearest_spawnable_node.w,nearest_spawnable_node.h));
                 }
               }
             }
@@ -601,6 +622,7 @@ var GamePlayScene = function(game, stage)
     hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     dragger = new Dragger({source:stage.dispCanv.canvas});
     clicker = new Clicker({source:stage.dispCanv.canvas});
+    particler = new Particler({});
 
     grid = new Grid(20,20,stage.drawCanv.canvas.width-40-100,stage.drawCanv.canvas.height-40, 25, 50);
     swab = new Swab(grid);
@@ -620,11 +642,13 @@ var GamePlayScene = function(game, stage)
     hoverer.flush();
     dragger.flush();
     clicker.flush();
+    particler.tick();
   };
 
   self.draw = function()
   {
     grid.draw(stage.drawCanv);
+    particler.draw(stage.drawCanv);
     swab.draw(stage.drawCanv);
     var notes = grid.bacteriaNotes();
     stage.drawCanv.context.fillStyle = "#000000";
@@ -637,6 +661,5 @@ var GamePlayScene = function(game, stage)
   self.cleanup = function()
   {
   };
-
 };
 
