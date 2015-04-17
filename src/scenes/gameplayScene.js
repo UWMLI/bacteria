@@ -69,6 +69,7 @@ var GamePlayScene = function(game, stage)
       self.bounce_vel = 0;
       self.bounce_damp_a = 0.7+Math.random()*0.2;
       self.bounce_damp_b = 0.8+Math.random()*0.15;
+      self.food_col = "rgba("+(Math.round(Math.random()*20-10)+102)+","+(Math.round(Math.random()*20-10)+153)+","+(Math.round(Math.random()*20-10)+17)+",1)";
     }
 
     self.setBounce = function() { self.bounce = -self.w+(Math.random()*self.w/2); self.bounce_vel = 0; }
@@ -77,17 +78,19 @@ var GamePlayScene = function(game, stage)
     self.tick = function()
     {
       if(self.hp == 0) self.type = NODE_TYPE_EMPTY;
-      self.bounce += self.bounce_vel;
-      self.bounce_vel -= self.bounce*(1-self.bounce_damp_b);
-      self.bounce_vel *= self.bounce_damp_a;//0.9;
       switch(self.type)
       {
         case NODE_TYPE_BACTERIA:
+          self.bounce += self.bounce_vel;
+          self.bounce_vel -= self.bounce*(1-self.bounce_damp_b);
+          self.bounce_vel *= self.bounce_damp_a;//0.9;
           self.hp++; if(self.hp > 100) self.hp = 100;
           if(self.mutate_ticks > 0) self.mutate_ticks--;
           break;
-        case NODE_TYPE_ANTIBIO:
         case NODE_TYPE_FOOD:
+          self.bounce = self.bounce*0.9;
+          break;
+        case NODE_TYPE_ANTIBIO:
         case NODE_TYPE_EMPTY:
         case NODE_TYPE_INVALID:
         default:
@@ -108,8 +111,8 @@ var GamePlayScene = function(game, stage)
           canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
           break;
         case NODE_TYPE_FOOD:
-          canv.context.fillStyle = "#669911";
-          canv.context.strokeStyle = "#669911";
+          canv.context.fillStyle = self.food_col;
+          canv.context.strokeStyle = self.food_col;
           break;
         case NODE_TYPE_EMPTY:
         case NODE_TYPE_INVALID:
@@ -377,10 +380,11 @@ var GamePlayScene = function(game, stage)
       self.y = y;
       self.w = w;
       self.h = h;
+      self.r = r;
       self.click = function(evt)
       {
         if(swab.mode == SWAB_MODE_ANTIBIO_PLACE)
-          swab.antibio_resist = r;
+          swab.antibio_resist = self.r;
       }
       self.draw = function(canv)
       {
@@ -394,7 +398,8 @@ var GamePlayScene = function(game, stage)
     var n = 5;
     var w = self.mode_switch_button.w/n;
     for(var i = 0; i < n; i++)
-      self.resist_buttons[i] = new resistButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+15+10,w,w,(i+1)/n,self);
+      self.resist_buttons[i] = new resistButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+15+10,w,w,4*((i+1)/n)*((i+1)/n)*((i+1)/n),self);
+    self.resist_buttons[n-1].r = 10; //ultra killer
     var radiusButton = function(x,y,w,h,d,swab)
     {
       var self = this;
@@ -492,7 +497,7 @@ var GamePlayScene = function(game, stage)
             if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.select_radius)
             {
               var n = grid.nodeAt(c,r);
-              if(n.type == NODE_TYPE_EMPTY)
+              if(n.type == NODE_TYPE_EMPTY || n.type == NODE_TYPE_FOOD)
               {
                 n.type = NODE_TYPE_BACTERIA;
                 n.hp = 100;
@@ -512,7 +517,7 @@ var GamePlayScene = function(game, stage)
               {
                 n.type = NODE_TYPE_FOOD;
                 n.hp = 100;
-                n.unsetBounce();
+                n.setBounce();
               }
             }
           }
@@ -604,9 +609,9 @@ var GamePlayScene = function(game, stage)
     swab.draw(stage.drawCanv);
     var notes = grid.bacteriaNotes();
     stage.drawCanv.context.fillStyle = "#000000";
-    stage.drawCanv.context.fillText("Strongest: "+notes.strongest,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-80);
-    stage.drawCanv.context.fillText("Weakest: "+notes.weakest,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-60);
-    stage.drawCanv.context.fillText("Average: "+notes.average,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-40);
+    stage.drawCanv.context.fillText("Strongest: "+Math.round(notes.strongest*1000)/1000,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-80);
+    stage.drawCanv.context.fillText("Weakest: "+Math.round(notes.weakest*1000)/1000,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-60);
+    stage.drawCanv.context.fillText("Average: "+Math.round(notes.average*1000)/1000,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-40);
     stage.drawCanv.context.fillText("Count: "+notes.count,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-20);
   };
 
