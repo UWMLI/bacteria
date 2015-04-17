@@ -57,6 +57,31 @@ window.addEventListener("load",begin,false);
   <div id="shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
     <img id="shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
   </div>
+
+  <div style="position:absolute; top:350px;">
+  <b>Goal:</b><br />
+  Create the strongest bacteria possible.<br />
+  <br />
+  <b>Bacteria:</b><br />
+  Resistance designated by darkness of border. (black = very reistant, white = weakly resistant)<br />
+  Health designated by darkness of center (black = very weak, purple = full health)<br />
+  Bacteria placed with swab will be of random antibiotic resistance.<br />
+  <b>Spawning:</b><br />
+  If nearby other bacteria, will likely spawn.<br />
+  If no bacteria is nearby, very small chance to asexually spawn.<br />
+  If food nearby, will very likely spawn another bacteria onto the food.<br />
+  Spawned bacteria will have a resistance that is the average of its parents (in the case of asexual reproduction, will produce a clone)<br />
+  Exception- any spawn has a small chance of having a random, unpredictable mutation with respect to its antibiotic resistance.<br />
+  <br />
+  <b>Antibiotics:</b><br />
+  Strength designated by darkness of border. (black = very strong, white = very weak)<br />
+  Qty left designated by darkness of center. (black = full qty, white = almost gone)<br />
+  <br />
+  <b>Food:</b><br />
+  Encourages bacteria spawning.<br />
+  All food is identical.<br />
+  <br />
+  </div>
 </div>
 
 </body>
