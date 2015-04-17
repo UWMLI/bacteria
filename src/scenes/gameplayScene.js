@@ -35,7 +35,7 @@ var GamePlayScene = function(game, stage)
   var n_blubs = 20;
   for(var i = 0; i < n_blubs; i++)
   {
-    blubs[i] = new Audio("assets/blub.ogg");
+    blubs[i] = new Audio("assets/blub_"+(i%3)+".ogg");
     blubs[i].controls = false;
     blubs[i].loop = false;
     blubs[i].load();
