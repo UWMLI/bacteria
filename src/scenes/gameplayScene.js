@@ -342,7 +342,8 @@ var GamePlayScene = function(game, stage)
 
     self.mode = SWAB_MODE_ANTIBIO_PLACE;
     self.select_radius = 2;
-    self.antibio_resist = 4.0;
+    var resistances = [0.03, 0.07, 0.3, 0.9, 4];
+    self.antibio_resist = resistances[0];
 
     self.mode_switch_button = new (function(swab)
     {
@@ -400,12 +401,16 @@ var GamePlayScene = function(game, stage)
         canv.context.fillRect(self.x,self.y,self.w,self.h);
         canv.context.strokeStyle = "rgba("+Math.round((1-r)*255)+","+Math.round((1-r)*255)+","+Math.round((1-r)*255)+",1)";
         canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
+        if(swab.antibio_resist == self.r)
+        {
+          canv.context.strokeStyle = "#FF0000";
+          canv.context.strokeRect(self.x+1.5,self.y+1.5,self.w-3,self.h-3);
+        }
       }
     }
     self.resist_buttons = [];
     var n = 5;
     var w = self.mode_switch_button.w/n;
-    var resistances = [0.03, 0.07, 0.3, 0.9, 4];//4*((i+1)/n)*((i+1)/n)*((i+1)/n)*((i+1)/n)
     for(var i = 0; i < n; i++)
       self.resist_buttons[i] = new resistButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+15+10,w,w,resistances[i],self);
     self.resist_buttons[n-1].r = 10; //ultra killer
@@ -422,8 +427,13 @@ var GamePlayScene = function(game, stage)
       }
       self.draw = function(canv)
       {
-        canv.context.strokeStyle = "#FF0000";
+        canv.context.strokeStyle = "#000000";
         canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
+        if(swab.select_radius == d)
+        {
+          canv.context.strokeStyle = "#FF0000";
+          canv.context.strokeRect(self.x+1.5,self.y+1.5,self.w-3,self.h-3);
+        }
       }
     }
     self.radius_buttons = [];
