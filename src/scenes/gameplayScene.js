@@ -249,32 +249,38 @@ var GamePlayScene = function(game, stage)
               nearest_bacteria = self.nearestType(c,r,NODE_TYPE_BACTERIA,3,true);
               if(nearest_bacteria.type != NODE_TYPE_INVALID)
               {
-                nearest_spawnable_node.type = NODE_TYPE_BACTERIA;
                 nearest_spawnable_node.resist = (self.nodes[i].resist+nearest_bacteria.resist)/2;
-                if(Math.random() < 0.01)
-                {
-                  nearest_spawnable_node.resist = Math.random();
-                  nearest_spawnable_node.mutate_ticks = 100;
-                }
                 nearest_spawnable_node.hp = Math.round((self.nodes[i].hp+nearest_bacteria.hp)/2);
+                nearest_bacteria.bred = true;
+
+                nearest_spawnable_node.type = NODE_TYPE_BACTERIA;
                 nearest_spawnable_node.bred = true; //disallow breeding on first cycle
                 nearest_spawnable_node.setBounce();
                 self.nodes[i].bred = true;
-                nearest_bacteria.bred = true;
+                if(Math.random() < 0.01)
+                {
+                  nearest_spawnable_node.resist = nearest_spawnable_node.resist+((Math.random()*0.25)-0.12);
+                  if(nearest_spawnable_node.resist > 1) nearest_spawnable_node_resist = 0.999;
+                  if(nearest_spawnable_node.resist < 0) nearest_spawnable_node_resist = 0.001;
+                  nearest_spawnable_node.mutate_ticks = 100;
+                }
               }
               else if(Math.random() < 0.1) //small chance to spawn asexually
               {
-                nearest_spawnable_node.type = NODE_TYPE_BACTERIA;
                 nearest_spawnable_node.resist = self.nodes[i].resist;
-                if(Math.random() < 0.01)
-                {
-                  nearest_spawnable_node.resist = Math.random();
-                  nearest_spawnable_node.mutate_ticks = 100;
-                }
                 nearest_spawnable_node.hp = self.nodes[i].hp;
+
+                nearest_spawnable_node.type = NODE_TYPE_BACTERIA;
                 nearest_spawnable_node.bred = true; //disallow breeding on first cycle
                 nearest_spawnable_node.setBounce();
                 self.nodes[i].bred = true;
+                if(Math.random() < 0.01)
+                {
+                  nearest_spawnable_node.resist = nearest_spawnable_node.resist+((Math.random()*0.25)-0.12);
+                  if(nearest_spawnable_node.resist > 1) nearest_spawnable_node_resist = 0.999;
+                  if(nearest_spawnable_node.resist < 0) nearest_spawnable_node_resist = 0.001;
+                  nearest_spawnable_node.mutate_ticks = 100;
+                }
               }
             }
           }
@@ -501,7 +507,7 @@ var GamePlayScene = function(game, stage)
               {
                 n.type = NODE_TYPE_BACTERIA;
                 n.hp = 100;
-                n.resist = Math.random();
+                n.resist = Math.random()*0.75;
                 n.setBounce();
               }
             }
