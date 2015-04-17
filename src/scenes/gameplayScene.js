@@ -25,6 +25,8 @@ var GamePlayScene = function(game, stage)
   var SWAB_MODE_BACTERIA_SPAWN = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
   var SWAB_MODE_FOOD_PLACE     = SWAB_MODE_COUNT; SWAB_MODE_COUNT++;
 
+  var MUTATE_RATE = 0.1;
+
   var grid;
   var swab;
 
@@ -257,11 +259,11 @@ var GamePlayScene = function(game, stage)
                 nearest_spawnable_node.bred = true; //disallow breeding on first cycle
                 nearest_spawnable_node.setBounce();
                 self.nodes[i].bred = true;
-                if(Math.random() < 0.01)
+                if(Math.random() < MUTATE_RATE)
                 {
                   nearest_spawnable_node.resist = nearest_spawnable_node.resist+((Math.random()*0.25)-0.12);
-                  if(nearest_spawnable_node.resist > 1) nearest_spawnable_node_resist = 0.999;
-                  if(nearest_spawnable_node.resist < 0) nearest_spawnable_node_resist = 0.001;
+                  if(nearest_spawnable_node.resist > 1) nearest_spawnable_node.resist = 0.999;
+                  if(nearest_spawnable_node.resist < 0) nearest_spawnable_node.resist = 0.001;
                   nearest_spawnable_node.mutate_ticks = 100;
                 }
               }
@@ -274,11 +276,11 @@ var GamePlayScene = function(game, stage)
                 nearest_spawnable_node.bred = true; //disallow breeding on first cycle
                 nearest_spawnable_node.setBounce();
                 self.nodes[i].bred = true;
-                if(Math.random() < 0.01)
+                if(Math.random() < MUTATE_RATE)
                 {
                   nearest_spawnable_node.resist = nearest_spawnable_node.resist+((Math.random()*0.25)-0.12);
-                  if(nearest_spawnable_node.resist > 1) nearest_spawnable_node_resist = 0.999;
-                  if(nearest_spawnable_node.resist < 0) nearest_spawnable_node_resist = 0.001;
+                  if(nearest_spawnable_node.resist > 1) nearest_spawnable_node.resist = 0.999;
+                  if(nearest_spawnable_node.resist < 0) nearest_spawnable_node.resist = 0.001;
                   nearest_spawnable_node.mutate_ticks = 100;
                 }
               }
@@ -403,8 +405,9 @@ var GamePlayScene = function(game, stage)
     self.resist_buttons = [];
     var n = 5;
     var w = self.mode_switch_button.w/n;
+    var resistances = [0.03, 0.07, 0.3, 0.9, 4];//4*((i+1)/n)*((i+1)/n)*((i+1)/n)*((i+1)/n)
     for(var i = 0; i < n; i++)
-      self.resist_buttons[i] = new resistButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+15+10,w,w,4*((i+1)/n)*((i+1)/n)*((i+1)/n),self);
+      self.resist_buttons[i] = new resistButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+15+10,w,w,resistances[i],self);
     self.resist_buttons[n-1].r = 10; //ultra killer
     var radiusButton = function(x,y,w,h,d,swab)
     {
