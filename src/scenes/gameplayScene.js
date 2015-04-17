@@ -30,6 +30,22 @@ var GamePlayScene = function(game, stage)
   var grid;
   var swab;
 
+  var blubs = [];
+  var playing_blub = 0;
+  var n_blubs = 20;
+  for(var i = 0; i < n_blubs; i++)
+  {
+    blubs[i] = new Audio("assets/blub.ogg");
+    blubs[i].controls = false;
+    blubs[i].loop = false;
+    blubs[i].load();
+  }
+  var play_blub = function()
+  {
+    blubs[playing_blub].play();
+    playing_blub = (playing_blub+1)%n_blubs;
+  }
+
   var Node = function(grid)
   {
     var self = this;
@@ -277,6 +293,7 @@ var GamePlayScene = function(game, stage)
                 nearest_bacteria.bred = true;
 
                 nearest_spawnable_node.type = NODE_TYPE_BACTERIA;
+                play_blub();
                 nearest_spawnable_node.bred = true; //disallow breeding on first cycle
                 nearest_spawnable_node.setBounce();
                 self.nodes[i].bred = true;
@@ -294,6 +311,7 @@ var GamePlayScene = function(game, stage)
                 nearest_spawnable_node.hp = self.nodes[i].hp;
 
                 nearest_spawnable_node.type = NODE_TYPE_BACTERIA;
+                play_blub();
                 nearest_spawnable_node.bred = true; //disallow breeding on first cycle
                 nearest_spawnable_node.setBounce();
                 self.nodes[i].bred = true;
