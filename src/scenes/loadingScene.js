@@ -24,9 +24,18 @@ var LoadingScene = function(game, stage)
     canv.context.fillText(".",0,0);// funky way to encourage any custom font to load
 
     //put strings in 'img_srcs' as separate array to get "static" count
-    /*
-    img_srcs.push("assets/man.png");
-    */
+    img_srcs.push("assets/new/SB Anit Weakest.png");
+    img_srcs.push("assets/new/SB Anit Weak.png");
+    img_srcs.push("assets/new/SB Anit Medium.png");
+    img_srcs.push("assets/new/SB Anit Strong.png");
+    img_srcs.push("assets/new/SB Anit Strongest.png");
+    img_srcs.push("assets/new/SB Weakest Bug 30x30.png");
+    img_srcs.push("assets/new/SB Food 30x30.png");
+    img_srcs.push("assets/new/SB Swab 1.png");
+    img_srcs.push("assets/new/SB Swab 2.png");
+    img_srcs.push("assets/new/SB Swab 3.png");
+    img_srcs.push("assets/new/SB Swab 4.png");
+    img_srcs.push("assets/new/SB Interface.jpg");
     for(var i = 0; i < img_srcs.length; i++)
     {
       images[i] = new Image();

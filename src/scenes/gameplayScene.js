@@ -30,6 +30,10 @@ var GamePlayScene = function(game, stage)
   var grid;
   var swab;
 
+  var images = {};
+  images.interface = new Image();
+  images.interface.src = "assets/new/SB Interface.jpg";
+
   var blubs = [];
   var playing_blub = 0;
   var n_blubs = 20;
@@ -384,75 +388,59 @@ var GamePlayScene = function(game, stage)
     var resistances = [0.03, 0.07, 0.3, 0.9, 4];
     self.antibio_resist = resistances[0];
 
-    self.mode_switch_button = new (function(swab)
-    {
-      var self = this;
-
-      self.w = 80;
-      self.h = 80;
-      self.x = swab.w-(self.w+20);
-      self.y = 30;
-
-      self.click = function(evt)
-      {
-        swab.mode = (swab.mode+1)%SWAB_MODE_COUNT;
-      }
-
-      self.draw = function(canv)
-      {
-        switch(swab.mode)
-        {
-          case SWAB_MODE_ANTIBIO_PLACE:
-            canv.context.fillStyle = "#222222";
-            canv.context.fillRect(self.x,self.y,self.w,self.h);
-            break;
-          case SWAB_MODE_SUCK:
-            canv.context.fillStyle = "#AAAAAA";
-            canv.context.fillRect(self.x,self.y,self.w,self.h);
-            break;
-          case SWAB_MODE_BACTERIA_SPAWN:
-            canv.context.fillStyle = "#AA33AA";
-            canv.context.fillRect(self.x,self.y,self.w,self.h);
-            break;
-          case SWAB_MODE_FOOD_PLACE:
-            canv.context.fillStyle = "#AAAA33";
-            canv.context.fillRect(self.x,self.y,self.w,self.h);
-            break;
-        }
-      }
-    })(self);
-    var resistButton = function(x,y,w,h,r,swab)
+    var modeButton = function(x,y,w,h,mode,antibio_resist,swab)
     {
       var self = this;
       self.x = x;
       self.y = y;
       self.w = w;
       self.h = h;
-      self.r = r;
+      self.img = new Image();
+      if (mode == SWAB_MODE_ANTIBIO_PLACE) {
+        switch (antibio_resist) {
+          case resistances[0]:
+            self.img.src = "assets/new/SB Anit Weakest.png";
+            break;
+          case resistances[1]:
+            self.img.src = "assets/new/SB Anit Weak.png";
+            break;
+          case resistances[2]:
+            self.img.src = "assets/new/SB Anit Medium.png";
+            break
+          case resistances[3]:
+            self.img.src = "assets/new/SB Anit Strong.png";
+            break;
+          case resistances[4]:
+            self.img.src = "assets/new/SB Anit Strongest.png";
+            break;
+        }
+      }
+      else if (mode == SWAB_MODE_BACTERIA_SPAWN) {
+        self.img.src = "assets/new/SB Weakest Bug 30x30.png"
+      }
+      else if (mode == SWAB_MODE_FOOD_PLACE) {
+        self.img.src = "assets/new/SB Food 30x30.png"
+      }
       self.click = function(evt)
       {
-        if(swab.mode == SWAB_MODE_ANTIBIO_PLACE)
-          swab.antibio_resist = self.r;
+        swab.mode           = mode;
+        swab.antibio_resist = antibio_resist;
       }
       self.draw = function(canv)
       {
-        canv.context.fillStyle = "rgba(0,0,0,1)";
-        canv.context.fillRect(self.x,self.y,self.w,self.h);
-        canv.context.strokeStyle = "rgba("+Math.round((1-r)*255)+","+Math.round((1-r)*255)+","+Math.round((1-r)*255)+",1)";
-        canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
-        if(swab.antibio_resist == self.r)
-        {
-          canv.context.strokeStyle = "#FF0000";
-          canv.context.strokeRect(self.x+1.5,self.y+1.5,self.w-3,self.h-3);
+        if (swab.mode != mode || (swab.mode == SWAB_MODE_ANTIBIO_PLACE && swab.antibio_resist != antibio_resist)) {
+          canv.context.globalAlpha = 0.5;
         }
+        canv.context.drawImage(self.img, self.x, self.y, self.w, self.h);
+        canv.context.globalAlpha = 1;
       }
     }
-    self.resist_buttons = [];
-    var n = 5;
-    var w = self.mode_switch_button.w/n;
-    for(var i = 0; i < n; i++)
-      self.resist_buttons[i] = new resistButton(self.mode_switch_button.x+i*w,self.mode_switch_button.y+self.mode_switch_button.h+15+10,w,w,resistances[i],self);
-    self.resist_buttons[n-1].r = 10; //ultra killer
+    self.mode_buttons = [];
+    for (var i = 0; i < resistances.length; i++) {
+      self.mode_buttons.push(new modeButton(781 + i * 35, 163, 24, 24, SWAB_MODE_ANTIBIO_PLACE, resistances[i], self));
+    }
+    self.mode_buttons.push(new modeButton(798, 308, 30, 30, SWAB_MODE_BACTERIA_SPAWN, 0, self));
+    self.mode_buttons.push(new modeButton(895, 308, 30, 30, SWAB_MODE_FOOD_PLACE, 0, self));
     var radiusButton = function(x,y,w,h,d,swab)
     {
       var self = this;
@@ -460,25 +448,26 @@ var GamePlayScene = function(game, stage)
       self.y = y;
       self.w = w;
       self.h = h;
+      self.img = new Image();
+      self.img.src = "assets/new/SB Swab "+d+".png"
       self.click = function(evt)
       {
         swab.select_radius = d;
       }
       self.draw = function(canv)
       {
-        canv.context.strokeStyle = "#000000";
-        canv.context.strokeRect(self.x+0.5,self.y+0.5,self.w-1,self.h-1);
-        if(swab.select_radius == d)
-        {
-          canv.context.strokeStyle = "#FF0000";
-          canv.context.strokeRect(self.x+1.5,self.y+1.5,self.w-3,self.h-3);
+        if (swab.select_radius != d) {
+          canv.context.globalAlpha = 0.5;
         }
+        canv.context.drawImage(self.img, self.x, self.y, self.w, self.h);
+        canv.context.globalAlpha = 1;
       }
     }
     self.radius_buttons = [];
-    var w = self.mode_switch_button.w/n;
-    for(var i = 0; i < 5; i++)
-      self.radius_buttons[i] = new radiusButton(self.mode_switch_button.x+i*w,self.resist_buttons[i].y+self.resist_buttons[i].h+15,w,w,Math.ceil((i+1)*(i+1)/2),self);
+    self.radius_buttons.push(new radiusButton(779, 453, 7 , 7 , 1, self));
+    self.radius_buttons.push(new radiusButton(805, 445, 23, 23, 2, self));
+    self.radius_buttons.push(new radiusButton(840, 437, 39, 39, 3, self));
+    self.radius_buttons.push(new radiusButton(891, 429, 55, 55, 4, self));
 
     self.hover = function(evt)
     {
@@ -596,40 +585,26 @@ var GamePlayScene = function(game, stage)
       var min_r = Math.max(0,self.hovering_r-self.select_radius);
       var max_r = Math.min(grid.n_rows-1,self.hovering_r+self.select_radius);
 
+      canv.context.fillStyle = "#000000";
+      canv.context.font = "18px Arial Black";
+      canv.context.fillText("ANTIBIOTIC", 805, 148);
+      canv.context.font = "12px Arial Black";
+      canv.context.fillText("WEAK", 778, 211);
+      canv.context.fillText("STRONG", 890, 211);
+      canv.context.font = "16px Arial Black";
+      canv.context.fillText("GERM", 786, 295);
+      canv.context.fillText("FOOD", 885, 295);
+      canv.context.font = "16px Arial Black";
+      canv.context.fillText("SWAB SIZE", 808, 417);
+
       for(var r=min_r;r<=max_r;r++)for(var c=min_c;c<=max_c;c++)
       {
         if(Math.abs(c-self.hovering_c)+Math.abs(r-self.hovering_r) < self.select_radius)
           canv.context.strokeRect(grid.x+c*grid.node_w+0.5,grid.y+r*grid.node_h+0.5,grid.node_w-1,grid.node_h-1);
       }
 
-      canv.context.fillStyle = "#000000";
-      canv.context.fillText("Swab type:",self.mode_switch_button.x,self.mode_switch_button.y-2);
-      self.mode_switch_button.draw(canv);
-      canv.context.fillStyle = "#000000";
-      switch(swab.mode)
-      {
-        case SWAB_MODE_ANTIBIO_PLACE:
-          canv.context.fillText("Antibiotics",self.mode_switch_button.x,self.mode_switch_button.y+self.mode_switch_button.h+10);
-          break;
-        case SWAB_MODE_SUCK:
-          canv.context.fillText("Clean",self.mode_switch_button.x,self.mode_switch_button.y+self.mode_switch_button.h+10);
-          break;
-        case SWAB_MODE_BACTERIA_SPAWN:
-          canv.context.fillText("Bacteria",self.mode_switch_button.x,self.mode_switch_button.y+self.mode_switch_button.h+10);
-          break;
-        case SWAB_MODE_FOOD_PLACE:
-          canv.context.fillText("Food",self.mode_switch_button.x,self.mode_switch_button.y+self.mode_switch_button.h+10);
-          break;
-      }
-      if(swab.mode == SWAB_MODE_ANTIBIO_PLACE)
-      {
-        canv.context.fillStyle = "#000000";
-        canv.context.fillText("Antibio strength:",self.resist_buttons[0].x,self.resist_buttons[0].y-2);
-        for(var i = 0; i < self.resist_buttons.length; i++)
-          self.resist_buttons[i].draw(canv);
-      }
-      canv.context.fillStyle = "#000000";
-      canv.context.fillText("Swab size:",self.radius_buttons[0].x,self.radius_buttons[0].y-2);
+      for(var i = 0; i < self.mode_buttons.length; i++)
+        self.mode_buttons[i].draw(canv);
       for(var i = 0; i < self.radius_buttons.length; i++)
         self.radius_buttons[i].draw(canv);
     }
@@ -642,15 +617,14 @@ var GamePlayScene = function(game, stage)
     clicker = new Clicker({source:stage.dispCanv.canvas});
     particler = new Particler({});
 
-    grid = new Grid(20,20,stage.drawCanv.canvas.width-40-100,stage.drawCanv.canvas.height-40, 25, 50);
+    grid = new Grid(94,145,575,525,21,23);
     swab = new Swab(grid);
     hoverer.register(swab);
     dragger.register(swab);
-    clicker.register(swab.mode_switch_button);
-    for(var i = 0; i < swab.resist_buttons.length; i++)
-      clicker.register(swab.resist_buttons[i]);
     for(var i = 0; i < swab.radius_buttons.length; i++)
       clicker.register(swab.radius_buttons[i]);
+    for(var i = 0; i < swab.mode_buttons.length; i++)
+      clicker.register(swab.mode_buttons[i]);
   };
 
   var t = 0;
@@ -665,15 +639,17 @@ var GamePlayScene = function(game, stage)
 
   self.draw = function()
   {
+    stage.drawCanv.context.drawImage(images.interface, 0, 0);
     grid.draw(stage.drawCanv);
     particler.draw(stage.drawCanv);
     swab.draw(stage.drawCanv);
     var notes = grid.bacteriaNotes();
     stage.drawCanv.context.fillStyle = "#000000";
-    stage.drawCanv.context.fillText("Strongest: "+Math.round(notes.strongest*1000)/1000,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-80);
-    stage.drawCanv.context.fillText("Weakest: "+Math.round(notes.weakest*1000)/1000,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-60);
-    stage.drawCanv.context.fillText("Average: "+Math.round(notes.average*1000)/1000,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-40);
-    stage.drawCanv.context.fillText("Count: "+notes.count,stage.drawCanv.canvas.width-100,stage.drawCanv.canvas.height-20);
+    stage.drawCanv.context.font = "12px Arial Black";
+    stage.drawCanv.context.fillText("Strongest: "+Math.round(notes.strongest*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-180);
+    stage.drawCanv.context.fillText("Weakest: "+Math.round(notes.weakest*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-160);
+    stage.drawCanv.context.fillText("Average: "+Math.round(notes.average*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-140);
+    stage.drawCanv.context.fillText("Count: "+notes.count,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-120);
   };
 
   self.cleanup = function()
