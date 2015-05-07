@@ -385,7 +385,7 @@ var GamePlayScene = function(game, stage)
 
     self.mode = SWAB_MODE_ANTIBIO_PLACE;
     self.select_radius = 2;
-    var resistances = [0.03, 0.07, 0.3, 0.9, 4];
+    var resistances = [0.03, 0.07, 0.3, 0.9, 10];
     self.antibio_resist = resistances[0];
 
     var modeButton = function(x,y,w,h,mode,antibio_resist,swab)
