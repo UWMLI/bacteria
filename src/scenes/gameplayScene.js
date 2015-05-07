@@ -33,6 +33,20 @@ var GamePlayScene = function(game, stage)
   var images = {};
   images.interface = new Image();
   images.interface.src = "assets/new/SB Interface.jpg";
+  images.food = new Image();
+  images.food.src = "assets/new/SB Square 25x25 Food.jpg";
+  images.bugs = [];
+  var bug_imgs = [
+    "assets/new/SB Square 25x25 Weakest Bug.jpg",
+    "assets/new/SB Square 25x25 Weak Bug.jpg",
+    "assets/new/SB Square 25x25 Medium Bug.jpg",
+    "assets/new/SB Square 25x25 Strong Bug.jpg",
+    "assets/new/SB Square 25x25 Strongest Bug.jpg",
+  ];
+  for (var i = 0; i < bug_imgs.length; i++) {
+    images.bugs[i] = new Image();
+    images.bugs[i].src = bug_imgs[i];
+  }
 
   var blubs = [];
   var playing_blub = 0;
@@ -90,7 +104,7 @@ var GamePlayScene = function(game, stage)
       self.bounce_vel = 0;
       self.bounce_damp_a = 0.7+Math.random()*0.2;
       self.bounce_damp_b = 0.8+Math.random()*0.15;
-      self.food_col = "rgba("+(Math.round(Math.random()*20-10)+102)+","+(Math.round(Math.random()*20-10)+153)+","+(Math.round(Math.random()*20-10)+17)+",1)";
+      self.food_col = "rgba("+(Math.round(Math.random()*20-10)+102)+","+(Math.round(Math.random()*20-10)+153)+","+(Math.round(Math.random()*20-10)+17)+",0.6)";
     }
 
     self.setBounce = function() { self.bounce = -self.w+(Math.random()*self.w/2); self.bounce_vel = 0; }
@@ -120,10 +134,34 @@ var GamePlayScene = function(game, stage)
 
     self.draw = function(canv)
     {
+      var x = self.x - self.bounce / 2;
+      var y = self.y - self.bounce / 2;
+      var w = self.w + self.bounce;
+      var h = self.h + self.bounce;
+
+      var img;
       switch(self.type)
       {
         case NODE_TYPE_BACTERIA:
-          canv.context.fillStyle = "rgba("+(Math.round(1.16*self.hp))+","+(Math.round(0.55*self.hp))+","+(Math.round(1.04*self.hp))+",1)";
+          if      (self.resist < 0.2) img = images.bugs[0];
+          else if (self.resist < 0.4) img = images.bugs[1];
+          else if (self.resist < 0.6) img = images.bugs[2];
+          else if (self.resist < 0.8) img = images.bugs[3];
+          else                        img = images.bugs[4];
+          break;
+        case NODE_TYPE_FOOD:
+          img = images.food;
+          break;
+      }
+      if (img)
+      {
+        canv.context.drawImage(img, x, y, w, h);
+      }
+
+      switch(self.type)
+      {
+        case NODE_TYPE_BACTERIA:
+          canv.context.fillStyle = "rgba("+(Math.round(1.16*self.hp))+","+(Math.round(0.55*self.hp))+","+(Math.round(1.04*self.hp))+","+(1 - (self.hp / 100))+")";
           canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
           break;
         case NODE_TYPE_ANTIBIO:
@@ -141,8 +179,8 @@ var GamePlayScene = function(game, stage)
           break;
       }
       canv.context.lineWidth = 1;
-      canv.context.fillRect(self.x-self.bounce/2,self.y-self.bounce/2,self.w+self.bounce,self.h+self.bounce);
-      canv.context.strokeRect(self.x-self.bounce/2+0.5,self.y-self.bounce/2+0.5,self.w+self.bounce-1,self.h+self.bounce-1);
+      canv.context.fillRect(x, y, w, h);
+      canv.context.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
     }
   }
 

@@ -36,6 +36,12 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/new/SB Swab 3.png");
     img_srcs.push("assets/new/SB Swab 4.png");
     img_srcs.push("assets/new/SB Interface.jpg");
+    img_srcs.push("assets/new/SB Square 25x25 Food.jpg");
+    img_srcs.push("assets/new/SB Square 25x25 Weakest Bug.jpg");
+    img_srcs.push("assets/new/SB Square 25x25 Weak Bug.jpg");
+    img_srcs.push("assets/new/SB Square 25x25 Medium Bug.jpg");
+    img_srcs.push("assets/new/SB Square 25x25 Strong Bug.jpg");
+    img_srcs.push("assets/new/SB Square 25x25 Strongest Bug.jpg");
     for(var i = 0; i < img_srcs.length; i++)
     {
       images[i] = new Image();
