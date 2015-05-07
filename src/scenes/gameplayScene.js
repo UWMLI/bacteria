@@ -714,10 +714,6 @@ var GamePlayScene = function(game, stage)
     stage.drawCanv.context.drawImage(powerToImage(Math.round(notes.strongest*1000)/1000), 860, 580);
     stage.drawCanv.context.drawImage(powerToImage(Math.round(notes.weakest*1000)/1000), 860, 610);
     stage.drawCanv.context.drawImage(powerToImage(Math.round(notes.average*1000)/1000), 860, 640);
-    //stage.drawCanv.context.fillText("Strongest: "+Math.round(notes.strongest*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-180);
-    //stage.drawCanv.context.fillText("Weakest: "+Math.round(notes.weakest*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-160);
-    //stage.drawCanv.context.fillText("Average: "+Math.round(notes.average*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-140);
-    //stage.drawCanv.context.fillText("Count: "+notes.count,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-120);
   };
 
   self.cleanup = function()
