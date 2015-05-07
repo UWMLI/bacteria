@@ -29,7 +29,6 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/new/SB Anit Medium.png");
     img_srcs.push("assets/new/SB Anit Strong.png");
     img_srcs.push("assets/new/SB Anit Strongest.png");
-    img_srcs.push("assets/new/SB Weakest Bug 30x30.png");
     img_srcs.push("assets/new/SB Food 30x30.png");
     img_srcs.push("assets/new/SB Swab 1.png");
     img_srcs.push("assets/new/SB Swab 2.png");
@@ -42,6 +41,11 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/new/SB Square 25x25 Medium Bug.jpg");
     img_srcs.push("assets/new/SB Square 25x25 Strong Bug.jpg");
     img_srcs.push("assets/new/SB Square 25x25 Strongest Bug.jpg");
+    img_srcs.push("assets/new/SB Weakest Bug 30x30.png");
+    img_srcs.push("assets/new/SB Weak Bug 30x30.png");
+    img_srcs.push("assets/new/SB Medium Bug 30x30.png");
+    img_srcs.push("assets/new/SB Strong Bug 30x30.png");
+    img_srcs.push("assets/new/SB Strongest Bug 30x30.png");
     for(var i = 0; i < img_srcs.length; i++)
     {
       images[i] = new Image();

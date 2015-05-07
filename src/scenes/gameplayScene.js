@@ -47,6 +47,18 @@ var GamePlayScene = function(game, stage)
     images.bugs[i] = new Image();
     images.bugs[i].src = bug_imgs[i];
   }
+  images.full_bugs = [];
+  var full_bug_imgs = [
+    "assets/new/SB Weakest Bug 30x30.png",
+    "assets/new/SB Weak Bug 30x30.png",
+    "assets/new/SB Medium Bug 30x30.png",
+    "assets/new/SB Strong Bug 30x30.png",
+    "assets/new/SB Strongest Bug 30x30.png",
+  ];
+  for (var i = 0; i < full_bug_imgs.length; i++) {
+    images.full_bugs[i] = new Image();
+    images.full_bugs[i].src = full_bug_imgs[i];
+  }
 
   var blubs = [];
   var playing_blub = 0;
@@ -683,11 +695,29 @@ var GamePlayScene = function(game, stage)
     swab.draw(stage.drawCanv);
     var notes = grid.bacteriaNotes();
     stage.drawCanv.context.fillStyle = "#000000";
+    stage.drawCanv.context.font = "15px Arial Black";
+    stage.drawCanv.context.fillText("GERM STRENGTH", 790, 570);
     stage.drawCanv.context.font = "12px Arial Black";
-    stage.drawCanv.context.fillText("Strongest: "+Math.round(notes.strongest*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-180);
-    stage.drawCanv.context.fillText("Weakest: "+Math.round(notes.weakest*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-160);
-    stage.drawCanv.context.fillText("Average: "+Math.round(notes.average*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-140);
-    stage.drawCanv.context.fillText("Count: "+notes.count,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-120);
+    stage.drawCanv.context.fillText("MAXIMUM", 775, 602);
+    stage.drawCanv.context.fillText("MINIMUM", 775, 631);
+    stage.drawCanv.context.fillText("AVERAGE", 775, 660);
+    stage.drawCanv.context.fillText(''+Math.round(notes.strongest*1000)/1000, 900, 602);
+    stage.drawCanv.context.fillText(''+Math.round(notes.weakest*1000)/1000, 900, 631);
+    stage.drawCanv.context.fillText(''+Math.round(notes.average*1000)/1000, 900, 660);
+    function powerToImage(n) {
+      if      (n < 0.2) return images.full_bugs[0];
+      else if (n < 0.4) return images.full_bugs[1];
+      else if (n < 0.6) return images.full_bugs[2];
+      else if (n < 0.8) return images.full_bugs[3];
+      else              return images.full_bugs[4];
+    }
+    stage.drawCanv.context.drawImage(powerToImage(Math.round(notes.strongest*1000)/1000), 860, 580);
+    stage.drawCanv.context.drawImage(powerToImage(Math.round(notes.weakest*1000)/1000), 860, 610);
+    stage.drawCanv.context.drawImage(powerToImage(Math.round(notes.average*1000)/1000), 860, 640);
+    //stage.drawCanv.context.fillText("Strongest: "+Math.round(notes.strongest*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-180);
+    //stage.drawCanv.context.fillText("Weakest: "+Math.round(notes.weakest*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-160);
+    //stage.drawCanv.context.fillText("Average: "+Math.round(notes.average*1000)/1000,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-140);
+    //stage.drawCanv.context.fillText("Count: "+notes.count,stage.drawCanv.canvas.width-215,stage.drawCanv.canvas.height-120);
   };
 
   self.cleanup = function()
