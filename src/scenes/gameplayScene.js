@@ -59,6 +59,18 @@ var GamePlayScene = function(game, stage)
     images.full_bugs[i] = new Image();
     images.full_bugs[i].src = full_bug_imgs[i];
   }
+  images.antibiotics = [];
+  var antibiotic_imgs = [
+    "assets/new/SB Anit Weakest.png",
+    "assets/new/SB Anit Weak.png",
+    "assets/new/SB Anit Medium.png",
+    "assets/new/SB Anit Strong.png",
+    "assets/new/SB Anit Strongest.png",
+  ];
+  for (var i = 0; i < antibiotic_imgs.length; i++) {
+    images.antibiotics[i] = new Image();
+    images.antibiotics[i].src = antibiotic_imgs[i];
+  }
 
   var blubs = [];
   var playing_blub = 0;
@@ -164,10 +176,22 @@ var GamePlayScene = function(game, stage)
         case NODE_TYPE_FOOD:
           img = images.food;
           break;
+        case NODE_TYPE_ANTIBIO:
+          var resistances = [0.03, 0.07, 0.3, 0.9, 10];
+          for (var i = 0; i < resistances.length; i++) {
+            if (self.resist == resistances[i]) {
+              img = images.antibiotics[i];
+            }
+          }
+          break;
       }
       if (img)
       {
+        if (self.type == NODE_TYPE_ANTIBIO) {
+          canv.context.globalAlpha = self.hp / 100;
+        }
         canv.context.drawImage(img, x, y, w, h);
+        canv.context.globalAlpha = 1;
       }
 
       switch(self.type)
@@ -177,8 +201,8 @@ var GamePlayScene = function(game, stage)
           canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
           break;
         case NODE_TYPE_ANTIBIO:
-          canv.context.fillStyle = "rgba("+(Math.round(1.36*(100-self.hp)))+","+(Math.round(1.36*(100-self.hp)))+","+(Math.round(1.36*(100-self.hp)))+",1)";
-          canv.context.strokeStyle = "rgba("+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+","+Math.round((1-self.resist)*255)+",1)";
+          canv.context.fillStyle = "rgba(0, 0, 0, 0)";
+          canv.context.strokeStyle = "rgba(0, 0, 0, 0)";
           break;
         case NODE_TYPE_FOOD:
           canv.context.fillStyle = self.food_col;
@@ -445,31 +469,19 @@ var GamePlayScene = function(game, stage)
       self.y = y;
       self.w = w;
       self.h = h;
-      self.img = new Image();
       if (mode == SWAB_MODE_ANTIBIO_PLACE) {
-        switch (antibio_resist) {
-          case resistances[0]:
-            self.img.src = "assets/new/SB Anit Weakest.png";
-            break;
-          case resistances[1]:
-            self.img.src = "assets/new/SB Anit Weak.png";
-            break;
-          case resistances[2]:
-            self.img.src = "assets/new/SB Anit Medium.png";
-            break
-          case resistances[3]:
-            self.img.src = "assets/new/SB Anit Strong.png";
-            break;
-          case resistances[4]:
-            self.img.src = "assets/new/SB Anit Strongest.png";
-            break;
+        for (var i = 0; i < resistances.length; i++) {
+          if (antibio_resist == resistances[i]) {
+            self.img = images.antibiotics[i];
+          }
         }
       }
       else if (mode == SWAB_MODE_BACTERIA_SPAWN) {
-        self.img.src = "assets/new/SB Weakest Bug 30x30.png"
+        self.img = images.full_bugs[0];
       }
       else if (mode == SWAB_MODE_FOOD_PLACE) {
-        self.img.src = "assets/new/SB Food 30x30.png"
+        self.img = new Image();
+        self.img.src = "assets/new/SB Food 30x30.png";
       }
       self.click = function(evt)
       {
