@@ -483,6 +483,10 @@ var GamePlayScene = function(game, stage)
         self.img = new Image();
         self.img.src = "assets/new/SB Food 30x30.png";
       }
+      else if (mode == SWAB_MODE_SUCK) {
+        self.img = new Image();
+        self.img.src = "assets/new/SB Swab 1.png";
+      }
       self.click = function(evt)
       {
         swab.mode           = mode;
@@ -501,8 +505,9 @@ var GamePlayScene = function(game, stage)
     for (var i = 0; i < resistances.length; i++) {
       self.mode_buttons.push(new modeButton(781 + i * 35, 163, 24, 24, SWAB_MODE_ANTIBIO_PLACE, resistances[i], self));
     }
-    self.mode_buttons.push(new modeButton(798, 308, 30, 30, SWAB_MODE_BACTERIA_SPAWN, 0, self));
-    self.mode_buttons.push(new modeButton(895, 308, 30, 30, SWAB_MODE_FOOD_PLACE, 0, self));
+    self.mode_buttons.push(new modeButton(788, 308, 30, 30, SWAB_MODE_BACTERIA_SPAWN, 0, self));
+    self.mode_buttons.push(new modeButton(845, 308, 30, 30, SWAB_MODE_FOOD_PLACE, 0, self));
+    self.mode_buttons.push(new modeButton(905, 308, 30, 30, SWAB_MODE_SUCK, 0, self));
     var radiusButton = function(x,y,w,h,d,swab)
     {
       var self = this;
@@ -653,9 +658,10 @@ var GamePlayScene = function(game, stage)
       canv.context.font = "12px Arial Black";
       canv.context.fillText("WEAK", 778, 211);
       canv.context.fillText("STRONG", 890, 211);
-      canv.context.font = "16px Arial Black";
-      canv.context.fillText("GERM", 786, 295);
-      canv.context.fillText("FOOD", 885, 295);
+      canv.context.font = "14px Arial Black";
+      canv.context.fillText("GERM", 779, 295);
+      canv.context.fillText("FOOD", 839, 295);
+      canv.context.fillText("CLEAN", 893, 295);
       canv.context.font = "16px Arial Black";
       canv.context.fillText("SWAB SIZE", 808, 417);
 
