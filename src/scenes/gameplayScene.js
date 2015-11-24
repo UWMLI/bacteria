@@ -96,8 +96,8 @@ var GamePlayScene = function(game, stage)
 
     self.x = 0;
     self.y = 0;
-    self.w = 640;
-    self.h = 320;
+    self.w = stage.dispCanv.canvas.width;
+    self.h = stage.dispCanv.canvas.height;
 
     self.rows = 25;
     self.cols = 50;
