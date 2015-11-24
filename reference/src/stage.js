@@ -11,8 +11,8 @@ var Stage = function(init)
   var self = this;
   doMapInitDefaults(self,init,default_init);
 
-  self.drawCanv = new Canv({width:self.width,height:self.height});
-  self.dispCanv = new Canv({width:self.width,height:self.height});
+  self.drawCanv = new Canv({width:self.width,height:self.height,smoothing:true});
+  self.dispCanv = new Canv({width:self.width,height:self.height,smoothing:true});
   self.dispCanv.canvas.style.border = "1px solid black";
 
   self.draw = function()
