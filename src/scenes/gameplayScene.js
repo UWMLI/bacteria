@@ -40,12 +40,48 @@ var GamePlayScene = function(game, stage)
       self.type = t;
     }
 
+    self.clone = function(n)
+    {
+      self.x = n.x;
+      self.y = n.y;
+      self.w = n.w;
+      self.h = n.h;
+
+      self.row = n.row;
+      self.col = n.col;
+
+      self.cloneMutables(n);
+    }
+    self.cloneMutables = function(n)
+    {
+      self.type = n.type;
+    }
+
     self.draw = function(canv)
     {
-      canv.context.fillStyle = "#222222";
-      canv.context.fillRect(self.x,self.y,self.w,self.h);
-      canv.context.strokeStyle = "#ffffff";
-      canv.context.strokeRect(self.x,self.y,self.w,self.h);
+      switch(self.type)
+      {
+        case NODE_TYPE_NONE:
+          break;
+        case NODE_TYPE_BACT:
+          canv.context.fillStyle = "#AA4499";
+          canv.context.strokeStyle = "#ffffff";
+          canv.context.fillRect(self.x,self.y,self.w,self.h);
+          canv.context.strokeRect(self.x,self.y,self.w,self.h);
+          break;
+        case NODE_TYPE_ANTI:
+          canv.context.fillStyle = "#222222";
+          canv.context.strokeStyle = "#ffffff";
+          canv.context.fillRect(self.x,self.y,self.w,self.h);
+          canv.context.strokeRect(self.x,self.y,self.w,self.h);
+          break;
+        case NODE_TYPE_FOOD:
+          canv.context.fillStyle = "#882222";
+          canv.context.strokeStyle = "#ffffff";
+          canv.context.fillRect(self.x,self.y,self.w,self.h);
+          canv.context.strokeRect(self.x,self.y,self.w,self.h);
+          break;
+      }
     }
 
     self.tick = function()
@@ -60,29 +96,66 @@ var GamePlayScene = function(game, stage)
 
     self.rows = 25;
     self.cols = 50;
-    self.nodes = [];
+    //double buffer nodes. unfortunate indirection, but yields cleaner sim.
+    self.nodes_a = [];
+    self.nodes_b = [];
+    self.node_buffs = [self.nodes_a,self.nodes_b];
+    self.node_buff = 0;
+    self.ifor = function(col,row) { col = (col+self.cols)%self.cols; row = (row+self.rows)%self.rows; return row*self.cols+col; };
+
     var rect = {x:0,y:0,w:640,h:320};
+    var n_a;
+    var n_b;
     for(var i = 0; i < self.rows; i++)
     {
       for(var j = 0; j < self.cols; j++)
       {
-        var n = new Node();
-        n.setPos(j,i,self.rows,self.cols,rect);
-        n.setType(NODE_TYPE_NONE);
-        self.nodes.push(n);
+        n_a = new Node();
+        n_a.setPos(j,i,self.rows,self.cols,rect);
+        n_a.setType(NODE_TYPE_NONE);
+        n_b = new Node();
+        n_b.clone(n_a);
+        self.nodes_a.push(n_a);
+        self.nodes_b.push(n_b);
       }
+    }
+
+    self.nodeAt = function(col,row)
+    {
+      return self.node_buffs[self.node_buff][self.ifor(col,row)];
     }
 
     self.draw = function(canv)
     {
-      for(var i = 0; i < self.nodes.length; i++)
-        self.nodes[i].draw(canv);
+      var nodes = self.node_buffs[self.node_buff];
+      for(var i = 0; i < nodes.length; i++)
+        nodes[i].draw(canv);
     }
 
     self.tick = function()
     {
-      for(var i = 0; i < self.nodes.length; i++)
-        self.nodes[i].tick();
+      var old_nodes = self.node_buffs[self.node_buff];
+      self.node_buff = (self.node_buff+1)%2;
+      var new_nodes = self.node_buffs[self.node_buff];
+
+      //clone buff
+      for(var i = 0; i < new_nodes.length; i++)
+        new_nodes[i].cloneMutables(old_nodes[i]);
+
+      //update grid changes
+      var i = 0;
+      for(var r = 0; r < self.rows; r++)
+      {
+        for(var c = 0; c < self.cols; c++)
+        {
+          //i = self.ifor(c,r);
+          //if()
+        }
+      }
+
+      //tick nodes
+      for(var i = 0; i < new_nodes.length; i++)
+        new_nodes[i].tick();
     }
   }
 
@@ -91,6 +164,7 @@ var GamePlayScene = function(game, stage)
   self.ready = function()
   {
     self.grid = new Grid();
+    self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
   };
 
   self.tick = function()
