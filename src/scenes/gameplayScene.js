@@ -139,6 +139,17 @@ var GamePlayScene = function(game, stage)
       return self.nodeAt(x,y);
     }
 
+    self.dose = function(amt)
+    {
+      var nodes = self.node_buffs[self.node_buff];
+      for(var i = 0; i < nodes.length; i++)
+      {
+        var n = nodes[i];
+        if(n.type == NODE_TYPE_BACT && amt > n.resist)
+          n.setType(NODE_TYPE_NONE);
+      }
+    }
+
     self.draw = function(canv)
     {
 
@@ -235,35 +246,53 @@ var GamePlayScene = function(game, stage)
     }
   }
 
+  self.presser;
   self.hoverer;
   self.dragger;
 
   self.grid;
 
+  self.dose_amt;
+  self.dose_slider;
+  self.dose_button;
+
   self.ready = function()
   {
+    var c = stage.drawCanv;
+    self.presser = new Presser({source:stage.dispCanv.canvas});
     self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
     self.grid = new Grid();
     self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
-
     self.hoverer.register(self.grid);
     self.dragger.register(self.grid);
+
+    self.dose_amt = 0.;
+    self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
+    self.dragger.register(self.dose_slider);
+
+    self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.grid.dose(self.dose_amt); })
+    self.presser.register(self.dose_button);
   };
 
   self.tick = function()
   {
+    self.presser.flush();
     self.hoverer.flush();
     self.dragger.flush();
 
     self.grid.tick();
+    self.dose_slider.tick();
   };
 
   self.draw = function()
   {
     var canv = stage.drawCanv;
     self.grid.draw(canv);
+
+    self.dose_slider.draw(canv);
+    self.dose_button.draw(canv);
   };
 
   self.cleanup = function()

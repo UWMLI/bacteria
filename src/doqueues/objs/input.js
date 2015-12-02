@@ -154,6 +154,7 @@ function ButtonBox(x,y,w,h,callback)
   self.unpress = function(evt)
   {
     self.down = false;
+    self.hit();
   }
 
   self.click = function(evt)
