@@ -23,6 +23,7 @@ var GamePlayScene = function(game, stage)
     self.col = 0;
 
     self.type = 0;
+    self.resist = 0.1;
 
     self.setPos = function(row,col,n_rows,n_cols,rect)
     {
@@ -55,6 +56,7 @@ var GamePlayScene = function(game, stage)
     self.cloneMutables = function(n)
     {
       self.type = n.type;
+      self.resist = n.resist;
     }
 
     self.draw = function(canv)
@@ -66,6 +68,8 @@ var GamePlayScene = function(game, stage)
         case NODE_TYPE_BACT:
           canv.context.fillStyle = "#AA4499";
           canv.context.strokeStyle = "#ffffff";
+          var r = Math.floor(self.resist*255);
+          canv.context.fillStyle = "rgba("+r+","+r+","+r+",1)";
           canv.context.fillRect(self.x,self.y,self.w,self.h);
           canv.context.strokeRect(self.x,self.y,self.w,self.h);
           break;
@@ -137,16 +141,15 @@ var GamePlayScene = function(game, stage)
 
     self.draw = function(canv)
     {
-      canv.context.fillStyle = "#0000FF";
-      if(self.hovering_node)
-        canv.context.fillRect(self.hovering_node.x,self.hovering_node.y,self.hovering_node.w,self.hovering_node.h);
-      canv.context.fillStyle = "#00FFFF";
-      if(self.dragging_node)
-        canv.context.fillRect(self.dragging_node.x,self.dragging_node.y,self.dragging_node.w,self.dragging_node.h);
 
       var nodes = self.node_buffs[self.node_buff];
       for(var i = 0; i < nodes.length; i++)
         nodes[i].draw(canv);
+
+      canv.context.strokeStyle = "#0000FF";
+      if(self.hovering_node) canv.context.strokeRect(self.hovering_node.x,self.hovering_node.y,self.hovering_node.w,self.hovering_node.h);
+      canv.context.strokeStyle = "#00FFFF";
+      if(self.dragging_node) canv.context.strokeRect(self.dragging_node.x,self.dragging_node.y,self.dragging_node.w,self.dragging_node.h);
     }
 
     self.tick = function()
@@ -169,17 +172,29 @@ var GamePlayScene = function(game, stage)
           switch(new_nodes[i].type)
           {
             case NODE_TYPE_NONE:
-              if(
-                Math.random() < 0.01 &&
-                  (
-                  old_nodes[self.ifor(c-1,r)].type == NODE_TYPE_BACT ||
-                  old_nodes[self.ifor(c,r-1)].type == NODE_TYPE_BACT ||
-                  old_nodes[self.ifor(c+1,r)].type == NODE_TYPE_BACT ||
-                  old_nodes[self.ifor(c,r+1)].type == NODE_TYPE_BACT
-                  )
-                )
+              if(Math.random() < 0.01)
               {
-                new_nodes[i].setType(NODE_TYPE_BACT);
+                var n_neighbors = 0;
+                var resist = 0.;
+                var n;
+                n = old_nodes[self.ifor(c-1,r)];
+                if(n.type == NODE_TYPE_BACT) { n_neighbors++; resist = n.resist; }
+                n = old_nodes[self.ifor(c,r-1)];
+                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) resist = n.resist; }
+                n = old_nodes[self.ifor(c+1,r)];
+                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) resist = n.resist; }
+                n = old_nodes[self.ifor(c,r+1)];
+                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) resist = n.resist; }
+
+                if(n_neighbors > 0)
+                {
+                  new_nodes[i].setType(NODE_TYPE_BACT);
+                  if(Math.random() < 0.5) resist -= 0.1;
+                  else resist += 0.1;
+                  if(resist < 0) resist = 0;
+                  if(resist > 1) resist = 1;
+                  new_nodes[i].resist = resist;
+                }
               }
               break;
           }
