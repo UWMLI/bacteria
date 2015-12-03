@@ -7,8 +7,8 @@ var GamePlayScene = function(game, stage)
   ENUM = 0;
   var NODE_TYPE_NONE = ENUM; ENUM++;
   var NODE_TYPE_BACT = ENUM; ENUM++;
-  var NODE_TYPE_ANTI = ENUM; ENUM++;
-  var NODE_TYPE_FOOD = ENUM; ENUM++;
+  var NODE_TYPE_BIOT = ENUM; ENUM++;
+  var NODE_TYPE_BODY = ENUM; ENUM++;
 
   var Node = function()
   {
@@ -23,8 +23,10 @@ var GamePlayScene = function(game, stage)
     self.col = 0;
 
     self.type = 0;
-    self.resist = 0.1;
+    self.biot_resist = 0.1;
+    self.body_resist = 0.1;
     self.age = 0;
+    self.bounce_prog = 0;
 
     self.setPos = function(row,col,n_rows,n_cols,rect)
     {
@@ -37,10 +39,13 @@ var GamePlayScene = function(game, stage)
       self.h = 1/n_rows*rect.h;
     }
 
-    self.setType= function(t)
+    self.setType = function(t)
     {
       self.type = t;
       self.age = 0;
+      self.bounce_prog = 1;
+      if(t == NODE_TYPE_BACT) self.body_resist = 0.3;
+      else if(t == NODE_TYPE_BODY) self.biot_resist = Math.random();
     }
 
     self.clone = function(n)
@@ -58,12 +63,28 @@ var GamePlayScene = function(game, stage)
     self.cloneMutables = function(n)
     {
       self.type = n.type;
-      self.resist = n.resist;
+      self.biot_resist = n.biot_resist;
+      self.body_resist = n.body_resist;
       self.age = n.age;
+      self.bounce_prog = n.bounce_prog;
     }
 
     self.draw = function(canv)
     {
+      var x = self.x;
+      var y = self.y;
+      var w = self.w;
+      var h = self.h;
+
+      if(self.bounce_prog > 0)
+      {
+        var b = Math.sin((1-self.bounce_prog)*Math.PI*2*3)*self.bounce_prog*3;
+        x -= b/2;
+        y -= b/2;
+        w += b;
+        h += b;
+      }
+
       switch(self.type)
       {
         case NODE_TYPE_NONE:
@@ -71,34 +92,42 @@ var GamePlayScene = function(game, stage)
         case NODE_TYPE_BACT:
           canv.context.fillStyle = "#AA4499";
           canv.context.strokeStyle = "#ffffff";
-          var r = Math.floor(self.resist*255);
+          var r = Math.floor(self.biot_resist*255);
           canv.context.fillStyle = "rgba("+r+","+r+","+r+",1)";
-          canv.context.fillRect(self.x,self.y,self.w,self.h);
-          canv.context.strokeRect(self.x,self.y,self.w,self.h);
+          canv.context.fillRect(x,y,w,h);
+          canv.context.strokeRect(x,y,w,h);
           break;
-        case NODE_TYPE_ANTI:
+        case NODE_TYPE_BIOT:
           canv.context.fillStyle = "#222222";
           canv.context.strokeStyle = "#ffffff";
-          canv.context.fillRect(self.x,self.y,self.w,self.h);
-          canv.context.strokeRect(self.x,self.y,self.w,self.h);
+          canv.context.fillRect(x,y,w,h);
+          canv.context.strokeRect(x,y,w,h);
           break;
-        case NODE_TYPE_FOOD:
+        case NODE_TYPE_BODY:
           canv.context.fillStyle = "#882222";
           canv.context.strokeStyle = "#ffffff";
-          canv.context.fillRect(self.x,self.y,self.w,self.h);
-          canv.context.strokeRect(self.x,self.y,self.w,self.h);
+          canv.context.fillRect(x,y,w,h);
+          canv.context.strokeRect(x,y,w,h);
           break;
       }
     }
 
     self.tick = function()
     {
+      if(self.bounce_prog > 0) self.bounce_prog -= 0.01;
+
       if(self.type == NODE_TYPE_BACT)
         self.age++;
+      if(self.type == NODE_TYPE_BODY)
+      {
+        self.age++;
+        self.body_resist -= 0.001;
+        if(self.body_resist < 0) self.body_resist = 0;
+      }
     }
   }
 
-  var Grid = function()
+  var Grid = function(cols,rows)
   {
     var self = this;
 
@@ -107,8 +136,8 @@ var GamePlayScene = function(game, stage)
     self.w = stage.dispCanv.canvas.width;
     self.h = stage.dispCanv.canvas.height;
 
-    self.rows = 25;
-    self.cols = 50;
+    self.cols = cols;
+    self.rows = rows;
     //double buffer nodes. unfortunate indirection, but yields cleaner sim.
     self.nodes_a = [];
     self.nodes_b = [];
@@ -152,7 +181,7 @@ var GamePlayScene = function(game, stage)
       for(var i = 0; i < nodes.length; i++)
       {
         var n = nodes[i];
-        if(n.type == NODE_TYPE_BACT && amt > n.resist)
+        if((n.type == NODE_TYPE_BACT || n.type == NODE_TYPE_BODY) && amt > n.biot_resist)
           n.setType(NODE_TYPE_NONE);
       }
     }
@@ -183,7 +212,7 @@ var GamePlayScene = function(game, stage)
         new_nodes[i].tick();
       }
 
-      //update grid changes
+      //update in-node grid changes
       var i = 0;
       for(var r = 0; r < self.rows; r++)
       {
@@ -196,48 +225,72 @@ var GamePlayScene = function(game, stage)
               if(Math.random() < 0.01) //should gen
               {
                 var n_neighbors = 0;
-                var resist = 0.;
+                var biot_resist = 0.;
                 var n;
                 n = old_nodes[self.ifor(c-1,r)];
-                if(n.type == NODE_TYPE_BACT) { n_neighbors++; resist = n.resist; }
+                if(n.type == NODE_TYPE_BACT) { n_neighbors++; biot_resist = n.biot_resist; }
                 n = old_nodes[self.ifor(c,r-1)];
-                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) resist = n.resist; }
+                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) biot_resist = n.biot_resist; }
                 n = old_nodes[self.ifor(c+1,r)];
-                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) resist = n.resist; }
+                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) biot_resist = n.biot_resist; }
                 n = old_nodes[self.ifor(c,r+1)];
-                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) resist = n.resist; }
+                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) biot_resist = n.biot_resist; }
 
                 if(n_neighbors > 0)
                 {
                   new_nodes[i].setType(NODE_TYPE_BACT);
                   if(Math.random() < 0.2) //should mutate
                   {
-                    if(Math.random() < 0.6) resist -= 0.1;
-                    else resist += 0.1;
-                    if(resist < 0) resist = 0;
-                    if(resist > 1)
+                    if(Math.random() < 0.6) biot_resist -= 0.1;
+                    else biot_resist += 0.1;
+                    if(biot_resist < 0) biot_resist = 0;
+                    if(biot_resist > 1)
                     {
-                      if(Math.random() < 0.2) resist = 1; //should super mutate
-                      else resist = 0.9;
+                      if(Math.random() < 0.2) biot_resist = 1; //should super mutate
+                      else biot_resist = 0.9;
                     }
                   }
-                  new_nodes[i].resist = resist;
+                  new_nodes[i].biot_resist = biot_resist;
                 }
               }
               break;
             case NODE_TYPE_BACT:
               if(new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
+            case NODE_TYPE_BODY:
+              if(new_nodes[i].age > 2000) new_nodes[i].setType(NODE_TYPE_NONE);
+              break;
+          }
+        }
+      }
+
+      //tick outer-node movements
+      for(var r = 0; r < self.rows; r++)
+      {
+        for(var c = 0; c < self.cols; c++)
+        {
+          var i = self.ifor(c,r);
+          var on = old_nodes[i];
+          var reprod = 0;
+          if(on.type == NODE_TYPE_BODY && !on.body_resist)
+          {
+            nn = new_nodes[self.ifor(c-1,r)]; if(nn.type == NODE_TYPE_BACT) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
+            nn = new_nodes[self.ifor(c,r-1)]; if(nn.type == NODE_TYPE_BACT) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
+            nn = new_nodes[self.ifor(c+1,r)]; if(nn.type == NODE_TYPE_BACT) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
+            nn = new_nodes[self.ifor(c,r+1)]; if(nn.type == NODE_TYPE_BACT) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
+            if(reprod) nn = new_nodes[i]; nn.setType(NODE_TYPE_NONE);
           }
         }
       }
 
       //tick nodes
       self.n_bact = 0;
+      self.n_body = 0;
       for(var i = 0; i < new_nodes.length; i++)
       {
         new_nodes[i].tick();
-        if(new_nodes[i].type == NODE_TYPE_BACT) self.n_bact++;
+             if(new_nodes[i].type == NODE_TYPE_BACT) self.n_bact++;
+        else if(new_nodes[i].type == NODE_TYPE_BODY) self.n_body++;
       }
     }
 
@@ -277,6 +330,8 @@ var GamePlayScene = function(game, stage)
   self.grid;
 
   self.dose_amt;
+  self.dosing_prog;
+  self.dosing_prog_rate;
   self.dose_slider;
   self.dose_button;
   self.reset_button;
@@ -288,19 +343,23 @@ var GamePlayScene = function(game, stage)
     self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
-    self.grid = new Grid();
+    self.grid = new Grid(50,25);
     self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
+    self.grid.nodeAt(5,5).biot_resist = 0.1;
+    self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
     self.hoverer.register(self.grid);
     self.dragger.register(self.grid);
 
     self.dose_amt = 0.;
+    self.dosing_prog = 0;
+    self.dosing_prog_rate = 0.01;
     self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
     self.dragger.register(self.dose_slider);
 
-    self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.grid.dose(self.dose_amt); })
+    self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.dosing_prog = self.dosing_prog_rate; })
     self.presser.register(self.dose_button);
 
-    self.reset_button = new ButtonBox(10,10,20,20,function(){ if(self.grid.n_bact == 0) self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT); })
+    self.reset_button = new ButtonBox(10,10,20,20,function(){ if(self.grid.n_bact == 0) self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT); self.grid.nodeAt(5,5).biot_resist = 0.1; })
     self.presser.register(self.reset_button);
   };
 
@@ -309,6 +368,14 @@ var GamePlayScene = function(game, stage)
     self.presser.flush();
     self.hoverer.flush();
     self.dragger.flush();
+
+    if(self.dosing_prog)
+    {
+      self.grid.dose(self.dosing_prog);
+      self.dosing_prog += self.dosing_prog_rate;
+      if(self.dosing_prog > self.dose_amt)
+        self.dosing_prog = 0;
+    }
 
     self.grid.tick();
     self.dose_slider.tick();
@@ -324,6 +391,13 @@ var GamePlayScene = function(game, stage)
     canv.context.strokeStyle = "#00FF00";
     self.dose_slider.draw(canv);
     self.dose_button.draw(canv);
+
+    if(self.dosing_prog)
+    {
+      canv.context.strokeStyle = "#00FF00";
+      canv.context.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
+    }
+
     if(self.grid.n_bact == 0) self.reset_button.draw(canv);
   };
 
