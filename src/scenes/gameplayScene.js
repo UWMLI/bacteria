@@ -127,6 +127,75 @@ var GamePlayScene = function(game, stage)
     }
   }
 
+  var Smiley = function(x,y,w,h)
+  {
+    var self = this;
+
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+
+    self.center_x = self.x+self.w/2;
+    self.center_y = self.y+self.w/2;
+    self.r = self.w/2;
+
+    self.happiness = 0.5;
+
+    self.draw = function(canv)
+    {
+      canv.context.beginPath();
+      canv.context.arc(self.center_x,self.center_y,self.r,0,Math.PI*2,true);
+      canv.context.stroke();
+
+      var smile_r = 1/(self.happiness-0.5);
+      if(!isFinite(smile_r)) smile_r = 99;
+           if(smile_r > 0) smile_r += 5;
+      else if(smile_r < 0) smile_r -= 5;
+      var theta = Math.abs(Math.atan((self.w/4)/smile_r));
+
+      canv.context.beginPath();
+      if(smile_r > 0) canv.context.arc(self.center_x,self.center_y+self.h/6-smile_r,Math.abs(smile_r),Math.PI/2-theta,Math.PI/2+theta,false);
+      else canv.context.arc(self.center_x,self.center_y+self.h/6-smile_r,Math.abs(smile_r),Math.PI*(3/2)-theta,Math.PI*(3/2)+theta,false);
+      canv.context.stroke();
+
+      canv.context.strokeRect(self.center_x-self.w/6-1,self.center_y-self.h/6,2,2);
+      canv.context.strokeRect(self.center_x+self.w/6-1,self.center_y-self.h/6,2,2);
+      /*
+
+      // graph
+
+      var w = canv.canvas.width;
+      var h = canv.canvas.height;
+      canv.context.beginPath();
+      canv.context.moveTo(0,h/2);
+      for(var i = 0; i < w; i++)
+      {
+        var eqnx = (-0.5+i/w)*10; //-5 to 5
+        var eqny = Math.tan(eqnx);
+        var eqny = 1/eqnx;
+        if(isNaN(eqny)) eqny = 0;
+        var x = i;
+        var y = h/2-(eqny*10);
+        canv.context.lineTo(x,y);
+      }
+      canv.context.stroke();
+
+      canv.context.beginPath();
+      canv.context.moveTo(0,h/2);
+      canv.context.lineTo(w,h/2);
+      canv.context.stroke();
+
+      canv.context.beginPath();
+      canv.context.moveTo(w/2,0);
+      canv.context.lineTo(w/2,h);
+      canv.context.stroke();
+
+      */
+
+    }
+  }
+
   var Grid = function(cols,rows)
   {
     var self = this;
@@ -328,6 +397,7 @@ var GamePlayScene = function(game, stage)
   self.dragger;
 
   self.grid;
+  self.smiley;
 
   self.dose_amt;
   self.dosing_prog;
@@ -350,14 +420,16 @@ var GamePlayScene = function(game, stage)
     self.hoverer.register(self.grid);
     self.dragger.register(self.grid);
 
+    self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.dosing_prog = self.dosing_prog_rate; })
+    self.presser.register(self.dose_button);
+
     self.dose_amt = 0.;
     self.dosing_prog = 0;
     self.dosing_prog_rate = 0.01;
     self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
     self.dragger.register(self.dose_slider);
 
-    self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.dosing_prog = self.dosing_prog_rate; })
-    self.presser.register(self.dose_button);
+    self.smiley = new Smiley(40+100+10,c.canvas.height-30,20,20);
 
     self.reset_button = new ButtonBox(10,10,20,20,function(){ if(self.grid.n_bact == 0) self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT); self.grid.nodeAt(5,5).biot_resist = 0.1; })
     self.presser.register(self.reset_button);
@@ -389,8 +461,11 @@ var GamePlayScene = function(game, stage)
     self.grid.draw(canv);
 
     canv.context.strokeStyle = "#00FF00";
-    self.dose_slider.draw(canv);
     self.dose_button.draw(canv);
+    canv.context.strokeStyle = "#00FF00";
+    self.dose_slider.draw(canv);
+    canv.context.strokeStyle = "#00FF00";
+    self.smiley.draw(canv);
 
     if(self.dosing_prog)
     {
@@ -399,6 +474,12 @@ var GamePlayScene = function(game, stage)
     }
 
     if(self.grid.n_bact == 0) self.reset_button.draw(canv);
+
+    /*
+    //for more visible debugging overlay
+    canv.context.fillStyle = "#FFFFFF";
+    canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height/2);
+    */
   };
 
   self.cleanup = function()
