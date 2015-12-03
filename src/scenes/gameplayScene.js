@@ -24,6 +24,7 @@ var GamePlayScene = function(game, stage)
 
     self.type = 0;
     self.resist = 0.1;
+    self.age = 0;
 
     self.setPos = function(row,col,n_rows,n_cols,rect)
     {
@@ -39,6 +40,7 @@ var GamePlayScene = function(game, stage)
     self.setType= function(t)
     {
       self.type = t;
+      self.age = 0;
     }
 
     self.clone = function(n)
@@ -57,6 +59,7 @@ var GamePlayScene = function(game, stage)
     {
       self.type = n.type;
       self.resist = n.resist;
+      self.age = n.age;
     }
 
     self.draw = function(canv)
@@ -90,7 +93,8 @@ var GamePlayScene = function(game, stage)
 
     self.tick = function()
     {
-
+      if(self.type == NODE_TYPE_BACT)
+        self.age++;
     }
   }
 
@@ -110,6 +114,9 @@ var GamePlayScene = function(game, stage)
     self.nodes_b = [];
     self.node_buffs = [self.nodes_a,self.nodes_b];
     self.node_buff = 0;
+
+    self.n_bact = 0;
+
     self.ifor = function(col,row) { col = (col+self.cols)%self.cols; row = (row+self.rows)%self.rows; return row*self.cols+col; };
 
     var n_a;
@@ -171,7 +178,10 @@ var GamePlayScene = function(game, stage)
 
       //clone buff
       for(var i = 0; i < new_nodes.length; i++)
+      {
         new_nodes[i].cloneMutables(old_nodes[i]);
+        new_nodes[i].tick();
+      }
 
       //update grid changes
       var i = 0;
@@ -183,7 +193,7 @@ var GamePlayScene = function(game, stage)
           switch(new_nodes[i].type)
           {
             case NODE_TYPE_NONE:
-              if(Math.random() < 0.01)
+              if(Math.random() < 0.01) //should gen
               {
                 var n_neighbors = 0;
                 var resist = 0.;
@@ -200,21 +210,35 @@ var GamePlayScene = function(game, stage)
                 if(n_neighbors > 0)
                 {
                   new_nodes[i].setType(NODE_TYPE_BACT);
-                  if(Math.random() < 0.5) resist -= 0.1;
-                  else resist += 0.1;
-                  if(resist < 0) resist = 0;
-                  if(resist > 1) resist = 1;
+                  if(Math.random() < 0.5) //should mutate
+                  {
+                    if(Math.random() < 0.7) resist -= 0.1;
+                    else resist += 0.1;
+                    if(resist < 0) resist = 0;
+                    if(resist > 1)
+                    {
+                      if(Math.random() < 0.2) resist = 1.1; //should super mutate
+                      else resist = 0.99;
+                    }
+                  }
                   new_nodes[i].resist = resist;
                 }
               }
+              break;
+            case NODE_TYPE_BACT:
+              if(new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
           }
         }
       }
 
       //tick nodes
+      self.n_bact = 0;
       for(var i = 0; i < new_nodes.length; i++)
+      {
         new_nodes[i].tick();
+        if(new_nodes[i].type == NODE_TYPE_BACT) self.n_bact++;
+      }
     }
 
     self.hovering = false;
@@ -255,6 +279,7 @@ var GamePlayScene = function(game, stage)
   self.dose_amt;
   self.dose_slider;
   self.dose_button;
+  self.reset_button;
 
   self.ready = function()
   {
@@ -274,6 +299,9 @@ var GamePlayScene = function(game, stage)
 
     self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.grid.dose(self.dose_amt); })
     self.presser.register(self.dose_button);
+
+    self.reset_button = new ButtonBox(10,10,20,20,function(){ if(self.grid.n_bact == 0) self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT); })
+    self.presser.register(self.reset_button);
   };
 
   self.tick = function()
@@ -289,10 +317,14 @@ var GamePlayScene = function(game, stage)
   self.draw = function()
   {
     var canv = stage.drawCanv;
+    canv.context.fillStyle = "#330000";
+    canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
     self.grid.draw(canv);
 
+    canv.context.strokeStyle = "#00FF00";
     self.dose_slider.draw(canv);
     self.dose_button.draw(canv);
+    if(self.grid.n_bact == 0) self.reset_button.draw(canv);
   };
 
   self.cleanup = function()
