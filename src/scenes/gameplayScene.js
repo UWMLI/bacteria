@@ -210,15 +210,15 @@ var GamePlayScene = function(game, stage)
                 if(n_neighbors > 0)
                 {
                   new_nodes[i].setType(NODE_TYPE_BACT);
-                  if(Math.random() < 0.5) //should mutate
+                  if(Math.random() < 0.2) //should mutate
                   {
-                    if(Math.random() < 0.7) resist -= 0.1;
+                    if(Math.random() < 0.6) resist -= 0.1;
                     else resist += 0.1;
                     if(resist < 0) resist = 0;
                     if(resist > 1)
                     {
-                      if(Math.random() < 0.2) resist = 1.1; //should super mutate
-                      else resist = 0.99;
+                      if(Math.random() < 0.2) resist = 1; //should super mutate
+                      else resist = 0.9;
                     }
                   }
                   new_nodes[i].resist = resist;
