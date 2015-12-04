@@ -149,7 +149,7 @@ var GamePlayScene = function(game, stage)
       canv.context.stroke();
 
       var smile_r = 1/(self.happiness-0.5);
-      if(!isFinite(smile_r)) smile_r = 99;
+      if(!isFinite(smile_r)) smile_r = 999;
            if(smile_r > 0) smile_r += 5;
       else if(smile_r < 0) smile_r -= 5;
       var theta = Math.abs(Math.atan((self.w/4)/smile_r));
@@ -244,6 +244,23 @@ var GamePlayScene = function(game, stage)
       return self.nodeAt(x,y);
     }
 
+    self.average_biot_resist = function()
+    {
+      var ave = 0;
+      var n_bact = 0;
+      var nodes = self.node_buffs[self.node_buff];
+      for(var i = 0; i < nodes.length; i++)
+      {
+        var n = nodes[i];
+        if(n.type == NODE_TYPE_BACT)
+        {
+          n_bact++;
+          ave += n.biot_resist;
+        }
+      }
+      return ave/n_bact;
+    }
+
     self.dose = function(amt)
     {
       var nodes = self.node_buffs[self.node_buff];
@@ -313,7 +330,7 @@ var GamePlayScene = function(game, stage)
                     if(Math.random() < 0.6) biot_resist -= 0.1;
                     else biot_resist += 0.1;
                     if(biot_resist < 0) biot_resist = 0;
-                    if(biot_resist > 1)
+                    if(biot_resist >= 1)
                     {
                       if(Math.random() < 0.2) biot_resist = 1; //should super mutate
                       else biot_resist = 0.9;
@@ -404,6 +421,11 @@ var GamePlayScene = function(game, stage)
   self.dosing_prog_rate;
   self.dose_slider;
   self.dose_button;
+
+  self.external_biot_resist;
+  self.sneeze_button;
+  self.catch_button;
+
   self.reset_button;
 
   self.ready = function()
@@ -423,6 +445,15 @@ var GamePlayScene = function(game, stage)
     self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.dosing_prog = self.dosing_prog_rate; })
     self.presser.register(self.dose_button);
 
+    self.external_biot_resist = 0.1;
+    self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.average_biot_resist(); })
+    self.presser.register(self.sneeze_button);
+    self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
+      self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
+      self.grid.nodeAt(5,5).biot_resist = self.external_biot_resist;
+    })
+    self.presser.register(self.catch_button);
+
     self.dose_amt = 0.;
     self.dosing_prog = 0;
     self.dosing_prog_rate = 0.01;
@@ -431,7 +462,7 @@ var GamePlayScene = function(game, stage)
 
     self.smiley = new Smiley(40+100+10,c.canvas.height-30,20,20);
 
-    self.reset_button = new ButtonBox(10,10,20,20,function(){ if(self.grid.n_bact == 0) self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT); self.grid.nodeAt(5,5).biot_resist = 0.1; })
+    self.reset_button = new ButtonBox(10,10,20,20,function(){ if(self.grid.n_bact == 0) self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT); self.grid.nodeAt(5,5).biot_resist = self.external_biot_resist; })
     self.presser.register(self.reset_button);
   };
 
@@ -444,10 +475,15 @@ var GamePlayScene = function(game, stage)
     if(self.dosing_prog)
     {
       self.grid.dose(self.dosing_prog);
+      self.smiley.happiness -= 0.01;
       self.dosing_prog += self.dosing_prog_rate;
       if(self.dosing_prog > self.dose_amt)
         self.dosing_prog = 0;
     }
+    self.smiley.happiness += 0.001;
+
+    if(self.smiley.happiness < 0) self.smiley.happiness = 0;
+    if(self.smiley.happiness > 1) self.smiley.happiness = 1;
 
     self.grid.tick();
     self.dose_slider.tick();
@@ -466,6 +502,9 @@ var GamePlayScene = function(game, stage)
     self.dose_slider.draw(canv);
     canv.context.strokeStyle = "#00FF00";
     self.smiley.draw(canv);
+
+    self.sneeze_button.draw(canv);
+    self.catch_button.draw(canv);
 
     if(self.dosing_prog)
     {
