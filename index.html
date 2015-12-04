@@ -233,7 +233,7 @@ window.addEventListener("load",begin,false);
     &nbsp;&nbsp;&nbsp;To make this more interesting, let's add some more rules.<br /><br />
     &nbsp;&nbsp;&nbsp;4. Bacteria can be different colors (on a spectrum from black to white).<br />
     &nbsp;&nbsp;&nbsp;5. Any bacteria born will be the same color as its parent.<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5a. <i>Except</i> in cases where a small mutation occurs, leaving a slightly lighter or slightly darker child.<br /><br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5a. <i>Except</i> in random cases where a small mutation occurs, leaving a slightly lighter or slightly darker child.<br /><br />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's again check it out.<br />
     <div id="mutate_content" style="display:block; margin:50px auto; width:640px; position:relative;">
       <div id="mutate_stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
@@ -250,8 +250,8 @@ window.addEventListener("load",begin,false);
       </div>
     </div>
     &nbsp;&nbsp;&nbsp;You might notice that once you have a sizeable majority of a given shade, the conformity starts working for itself. By killing bacteria of one color, you are not only removing the specific bactrium you have killed from the colony- you're eliminating their ability to produce more of a like color.<br />
-    &nbsp;&nbsp;&nbsp;An environment that is hostile to a specific attribute (for example: you actively killing all bacteria of one color) results in a phenomenon known as <i>selection</i>. In this case, what you are doing might be called <i>selective breeding</i>- or the intentional removal (or accentuation) of an attribute from a reproductive pool.<br />
-    &nbsp;&nbsp;&nbsp;An important note is that the bacteria have no internal desire nor power to mutate one way or another- the rules for mutation are the same as before. The environment changed around them causing the phenomenon of selection to occur. (If you remove that environment- in other words, stop killing bacteria -the colony will return to a diverse range of color.)<br /><br />
+    &nbsp;&nbsp;&nbsp;An environment that is hostile to a specific attribute (for example: you actively killing all bacteria of one color) results in a phenomenon known as <i>selection</i>. In this case, what you are doing might be called <i>selective breeding</i>- the intentional removal (or accentuation) of an attribute from a reproductive pool.<br />
+    &nbsp;&nbsp;&nbsp;An important note is that the bacteria have no internal desire nor power to mutate one way or another- the rules for mutation are the same as before (ie, totally random). The environment changed around them causing the phenomenon of selection to occur. (If you remove that environment [in other words, "stop killing bacteria"] the colony will return to a diverse range of color.)<br /><br />
     &nbsp;&nbsp;&nbsp;Ok. So manually killing to <i>select for</i> a specific color is a bit contrived (not to mention tedious). Let's say rather than color, the attribute that we are concerned with is <i>antibiotic resistance</i>.<br />
     &nbsp;&nbsp;&nbsp;<i>Antibiotics</i> are a means by which you can flush a system with a bacteria-killing agent. Some bacteria might be slightly more resistant to antibiotics, and thus require more to kill them.<br />
     &nbsp;&nbsp;&nbsp;We'll use the same visualizationas before- this time, the lighter the bacteria, the more resistant it is to antibiotics. Click to add bacteria. Use the slider to determine the dosage. Press the button to flush the system.<br /><br />
@@ -263,7 +263,7 @@ window.addEventListener("load",begin,false);
     </div>
     &nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you click to manually create more). But if your dosage is too small, you've only temporariliy weakened the colony. And worse, you've only left the strongest bactera alive to reproduce!<br />
     &nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria. With careful dosing, you can create a colony that even the maximum doses of antibiotics won't be able to kill! Once the colony is of a significant majority strong bacteria, it takes a very long time with the hostile environment removed (no dosing!) for the colony to return to a reasonably susceptible population.<br />
-    &nbsp;&nbsp;&nbsp;It is important again to note that no bacteria is <i>trying</i> to get stronger, nor <i>trying</i> to return to normalcy in the absence of a hostile environment. The mutations are small, uncontrolled, and random. The environment dictates whether or not <i>selection</i> occurs subtley nudging the population by biasing the reproductive pool.<br />
+    &nbsp;&nbsp;&nbsp;It is important again to note that no bacteria is <i>trying</i> to get stronger, nor <i>trying</i> to return to normalcy in the absence of a hostile environment. The mutations are small, uncontrolled, and random. The environment dictates whether or not <i>selection</i> occurs, subtley nudging the population by biasing the reproductive pool.<br />
     &nbsp;&nbsp;&nbsp;<br />
 
 
