@@ -27,14 +27,20 @@ var Hoverer = function(init)
   self.attach = function() //will get auto-called on creation
   {
     if(platform == "PC")
+    {
       self.source.addEventListener('mousemove', hover, false);
+      window.addEventListener('mousemove', detectOut, false);
+    }
     else if(platform == "MOBILE")
       ; //no hover on mobile, dummy
   }
   self.detach = function()
   {
     if(platform == "PC")
+    {
       self.source.removeEventListener('mousemove', hover);
+      window.removeEventListener('mousemove', detectOut, false);
+    }
     else if(platform == "MOBILE")
       ; //no hover on mobile, dummy
   }
@@ -43,6 +49,20 @@ var Hoverer = function(init)
   function hover(evt)
   {
     doSetPosOnEvent(evt);
+
+    var r = self.source.getBoundingClientRect();
+    if(evt.clientX < r.left || evt.clientY < r.top || evt.clientX > r.right || evt.clientY > r.bottom)
+    {
+      for(var i = 0; i < hovering.length; i++)
+      {
+        nothoverCallbackQueue.push(hovering[i].unhover);
+        nothoverEvtQueue.push(evt);
+
+        nothovering.push(hovering[i]);
+        hovering.splice(i--,1);
+      }
+      return;
+    }
 
     for(var i = 0; i < nothovering.length; i++)
     {
@@ -89,6 +109,22 @@ var Hoverer = function(init)
       nothoverCallbackQueue[i](nothoverEvtQueue[i]);
     nothoverCallbackQueue = [];
     nothoverEvtQueue = [];
+  }
+
+  function detectOut(evt)
+  {
+    var r = self.source.getBoundingClientRect();
+    if(evt.clientX < r.left || evt.clientY < r.top || evt.clientX > r.right || evt.clientY > r.bottom)
+    {
+      for(var i = 0; i < hovering.length; i++)
+      {
+        nothoverCallbackQueue.push(hovering[i].unhover);
+        nothoverEvtQueue.push(evt);
+
+        nothovering.push(hovering[i]);
+        hovering.splice(i--,1);
+      }
+    }
   }
 
   self.attach();

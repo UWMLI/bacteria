@@ -20,6 +20,7 @@ var GamePlayScene = function(game, stage, config)
   {
     grid_cols:50,
     grid_rows:25,
+    hover_to_play:true,
     allow_dose:true,
     allow_smile:true,
     allow_reset:true,
@@ -269,6 +270,13 @@ var GamePlayScene = function(game, stage, config)
       x = Math.floor(((x-self.x)/self.w)*self.cols);
       y = Math.floor(((y-self.y)/self.h)*self.rows);
       return self.nodeAt(x,y);
+    }
+
+    self.clear = function()
+    {
+      var nodes = self.node_buffs[self.node_buff];
+      for(var i = 0; i < nodes.length; i++)
+        nodes[i].setType(NODE_TYPE_NONE);
     }
 
     self.average_biot_resist = function()
@@ -522,49 +530,52 @@ var GamePlayScene = function(game, stage, config)
 
     if(config.allow_reset)
     {
-      self.reset_button = new ButtonBox(10,10,20,20,function(){ if(self.grid.n_bact == 0) self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT); self.grid.nodeAt(5,5).biot_resist = self.external_biot_resist; })
+      self.reset_button = new ButtonBox(10,10,20,20,function(){ self.grid.clear(); })
       self.presser.register(self.reset_button);
     }
   };
 
   self.tick = function()
   {
-    self.presser.flush();
     self.hoverer.flush();
-    self.dragger.flush();
-
-    if(config.allow_dose && self.dosing_prog)
+    if(!config.hover_to_play || self.grid.hovering)
     {
-      self.grid.dose(self.dosing_prog);
+      self.presser.flush();
+      self.dragger.flush();
+
+      if(config.allow_dose && self.dosing_prog)
+      {
+        self.grid.dose(self.dosing_prog);
+        if(config.allow_smile)
+        {
+          self.smiley.happiness -= 0.01;
+        }
+        self.dosing_prog += self.dosing_prog_rate;
+        if(self.dosing_prog > self.dose_amt)
+          self.dosing_prog = 0;
+      }
       if(config.allow_smile)
       {
-        self.smiley.happiness -= 0.01;
+        self.smiley.happiness += 0.001;
+
+        if(self.smiley.happiness < 0) self.smiley.happiness = 0;
+        if(self.smiley.happiness > 1) self.smiley.happiness = 1;
       }
-      self.dosing_prog += self.dosing_prog_rate;
-      if(self.dosing_prog > self.dose_amt)
-        self.dosing_prog = 0;
-    }
-    if(config.allow_smile)
-    {
-      self.smiley.happiness += 0.001;
 
-      if(self.smiley.happiness < 0) self.smiley.happiness = 0;
-      if(self.smiley.happiness > 1) self.smiley.happiness = 1;
-    }
-
-    self.grid.tick();
-    if(config.allow_dose)
-    {
-      self.dose_slider.tick();
-    }
-    if(config.reinit_bact && self.grid.n_bact == 0)
-    {
-      self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
-      self.grid.nodeAt(5,5).biot_resist = 0.1;
-    }
-    if(config.allow_body && config.reinit_body && self.grid.n_body == 0)
-    {
-      self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+      self.grid.tick();
+      if(config.allow_dose)
+      {
+        self.dose_slider.tick();
+      }
+      if(config.reinit_bact && self.grid.n_bact == 0)
+      {
+        self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
+        self.grid.nodeAt(5,5).biot_resist = 0.1;
+      }
+      if(config.allow_body && config.reinit_body && self.grid.n_body == 0)
+      {
+        self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+      }
     }
   };
 
@@ -602,7 +613,7 @@ var GamePlayScene = function(game, stage, config)
 
     if(config.allow_reset)
     {
-      if(self.grid.n_bact == 0) self.reset_button.draw(canv);
+      self.reset_button.draw(canv);
     }
 
     /*
