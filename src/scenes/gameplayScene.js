@@ -1,14 +1,40 @@
-var GamePlayScene = function(game, stage)
+var ENUM;
+
+ENUM = 0;
+var NODE_TYPE_NONE = ENUM; ENUM++;
+var NODE_TYPE_BACT = ENUM; ENUM++;
+var NODE_TYPE_BIOT = ENUM; ENUM++;
+var NODE_TYPE_BODY = ENUM; ENUM++;
+
+ENUM = 0;
+var CLICK_FUNC_NONE = ENUM; ENUM++;
+var CLICK_FUNC_KILL = ENUM; ENUM++;
+var CLICK_FUNC_BACT = ENUM; ENUM++;
+var CLICK_FUNC_BODY = ENUM; ENUM++;
+
+var GamePlayScene = function(game, stage, config)
 {
   var self = this;
 
-  var ENUM;
+  var default_config =
+  {
+    grid_cols:50,
+    grid_rows:25,
+    allow_dose:true,
+    allow_smile:true,
+    allow_reset:true,
+    allow_contaminate:true,
+    init_bact:true,
+    allow_body:true,
+    init_body:true,
+    allow_reinit_body:true,
+    click_function:CLICK_FUNC_NONE,
+    mutate:true,
+    reproduce:true,
+    age:true,
+  };
 
-  ENUM = 0;
-  var NODE_TYPE_NONE = ENUM; ENUM++;
-  var NODE_TYPE_BACT = ENUM; ENUM++;
-  var NODE_TYPE_BIOT = ENUM; ENUM++;
-  var NODE_TYPE_BODY = ENUM; ENUM++;
+  if(!config) config = default_config;
 
   var Node = function()
   {
@@ -308,7 +334,7 @@ var GamePlayScene = function(game, stage)
           switch(new_nodes[i].type)
           {
             case NODE_TYPE_NONE:
-              if(Math.random() < 0.01) //should gen
+              if(config.reproduce && Math.random() < 0.01) //should gen
               {
                 var n_neighbors = 0;
                 var biot_resist = 0.;
@@ -325,7 +351,7 @@ var GamePlayScene = function(game, stage)
                 if(n_neighbors > 0)
                 {
                   new_nodes[i].setType(NODE_TYPE_BACT);
-                  if(Math.random() < 0.2) //should mutate
+                  if(config.mutate && Math.random() < 0.2) //should mutate
                   {
                     if(Math.random() < 0.6) biot_resist -= 0.1;
                     else biot_resist += 0.1;
@@ -341,10 +367,10 @@ var GamePlayScene = function(game, stage)
               }
               break;
             case NODE_TYPE_BACT:
-              if(new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
+              if(config.age && new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
             case NODE_TYPE_BODY:
-              if(new_nodes[i].age > 2000) new_nodes[i].setType(NODE_TYPE_NONE);
+              if(config.age && new_nodes[i].age > 2000) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
           }
         }
@@ -396,11 +422,27 @@ var GamePlayScene = function(game, stage)
     self.dragStart = function(evt)
     {
       self.dragging = true;
-      self.dragging_node = self.nodeAtCanv(evt.doX,evt.doY);
+      self.drag(evt);
     }
     self.drag = function(evt)
     {
       self.dragging_node = self.nodeAtCanv(evt.doX,evt.doY);
+      switch(config.click_function)
+      {
+        case CLICK_FUNC_KILL:
+          self.dragging_node.setType(NODE_TYPE_NONE);
+          break;
+        case CLICK_FUNC_BACT:
+          self.dragging_node.setType(NODE_TYPE_BACT);
+          self.dragging_node.biot_resist = 0.1;
+          break;
+        case CLICK_FUNC_BODY:
+          self.dragging_node.setType(NODE_TYPE_BODY);
+          break;
+        case CLICK_FUNC_NONE:
+        default:
+          break;
+      }
     }
     self.dragFinish = function()
     {
@@ -435,35 +477,53 @@ var GamePlayScene = function(game, stage)
     self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
-    self.grid = new Grid(50,25);
-    self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
-    self.grid.nodeAt(5,5).biot_resist = 0.1;
-    self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+    self.grid = new Grid(config.grid_cols,config.grid_rows);
+    if(config.init_bact)
+    {
+      self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
+      self.grid.nodeAt(5,5).biot_resist = 0.1;
+    }
+    if(config.allow_body && config.init_body)
+    {
+      self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+    }
     self.hoverer.register(self.grid);
     self.dragger.register(self.grid);
 
-    self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.dosing_prog = self.dosing_prog_rate; })
-    self.presser.register(self.dose_button);
-
     self.external_biot_resist = 0.1;
-    self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.average_biot_resist(); })
-    self.presser.register(self.sneeze_button);
-    self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
-      self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
-      self.grid.nodeAt(5,5).biot_resist = self.external_biot_resist;
-    })
-    self.presser.register(self.catch_button);
+    if(config.allow_contaminate)
+    {
+      self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.average_biot_resist(); })
+      self.presser.register(self.sneeze_button);
+      self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
+        self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
+        self.grid.nodeAt(5,5).biot_resist = self.external_biot_resist;
+      })
+      self.presser.register(self.catch_button);
+    }
 
-    self.dose_amt = 0.;
-    self.dosing_prog = 0;
-    self.dosing_prog_rate = 0.01;
-    self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
-    self.dragger.register(self.dose_slider);
+    if(config.allow_dose)
+    {
+      self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.dosing_prog = self.dosing_prog_rate; })
+      self.presser.register(self.dose_button);
 
-    self.smiley = new Smiley(40+100+10,c.canvas.height-30,20,20);
+      self.dose_amt = 0.;
+      self.dosing_prog = 0;
+      self.dosing_prog_rate = 0.01;
+      self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
+      self.dragger.register(self.dose_slider);
+    }
 
-    self.reset_button = new ButtonBox(10,10,20,20,function(){ if(self.grid.n_bact == 0) self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT); self.grid.nodeAt(5,5).biot_resist = self.external_biot_resist; })
-    self.presser.register(self.reset_button);
+    if(config.allow_smile)
+    {
+      self.smiley = new Smiley(40+100+10,c.canvas.height-30,20,20);
+    }
+
+    if(config.allow_reset)
+    {
+      self.reset_button = new ButtonBox(10,10,20,20,function(){ if(self.grid.n_bact == 0) self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT); self.grid.nodeAt(5,5).biot_resist = self.external_biot_resist; })
+      self.presser.register(self.reset_button);
+    }
   };
 
   self.tick = function()
@@ -472,22 +532,34 @@ var GamePlayScene = function(game, stage)
     self.hoverer.flush();
     self.dragger.flush();
 
-    if(self.dosing_prog)
+    if(config.allow_dose && self.dosing_prog)
     {
       self.grid.dose(self.dosing_prog);
-      self.smiley.happiness -= 0.01;
+      if(config.allow_smile)
+      {
+        self.smiley.happiness -= 0.01;
+      }
       self.dosing_prog += self.dosing_prog_rate;
       if(self.dosing_prog > self.dose_amt)
         self.dosing_prog = 0;
     }
-    self.smiley.happiness += 0.001;
+    if(config.allow_smile)
+    {
+      self.smiley.happiness += 0.001;
 
-    if(self.smiley.happiness < 0) self.smiley.happiness = 0;
-    if(self.smiley.happiness > 1) self.smiley.happiness = 1;
+      if(self.smiley.happiness < 0) self.smiley.happiness = 0;
+      if(self.smiley.happiness > 1) self.smiley.happiness = 1;
+    }
 
     self.grid.tick();
-    self.dose_slider.tick();
-    if(self.grid.n_body == 0) self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+    if(config.allow_dose)
+    {
+      self.dose_slider.tick();
+    }
+    if(config.allow_body && config.allow_reinit_body)
+    {
+      if(self.grid.n_body == 0) self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+    }
   };
 
   self.draw = function()
@@ -497,23 +569,35 @@ var GamePlayScene = function(game, stage)
     canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
     self.grid.draw(canv);
 
-    canv.context.strokeStyle = "#00FF00";
-    self.dose_button.draw(canv);
-    canv.context.strokeStyle = "#00FF00";
-    self.dose_slider.draw(canv);
-    canv.context.strokeStyle = "#00FF00";
-    self.smiley.draw(canv);
+    if(config.allow_dose)
+    {
+      canv.context.strokeStyle = "#00FF00";
+      self.dose_button.draw(canv);
+      canv.context.strokeStyle = "#00FF00";
+      self.dose_slider.draw(canv);
+    }
+    if(config.allow_smile)
+    {
+      canv.context.strokeStyle = "#00FF00";
+      self.smiley.draw(canv);
+    }
 
-    self.sneeze_button.draw(canv);
-    self.catch_button.draw(canv);
+    if(config.allow_contaminate)
+    {
+      self.sneeze_button.draw(canv);
+      self.catch_button.draw(canv);
+    }
 
-    if(self.dosing_prog)
+    if(config.allow_dose && self.dosing_prog)
     {
       canv.context.strokeStyle = "#00FF00";
       canv.context.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
     }
 
-    if(self.grid.n_bact == 0) self.reset_button.draw(canv);
+    if(config.allow_reset)
+    {
+      if(self.grid.n_bact == 0) self.reset_button.draw(canv);
+    }
 
     /*
     //for more visible debugging overlay
