@@ -20,7 +20,9 @@ var GamePlayScene = function(game, stage, config)
   {
     grid_cols:50,
     grid_rows:25,
+    sim_speed:1,
     hover_to_play:true,
+    display_pause:true,
     allow_dose:true,
     allow_smile:true,
     allow_reset:true,
@@ -32,6 +34,7 @@ var GamePlayScene = function(game, stage, config)
     reinit_body:true,
     click_function:CLICK_FUNC_NONE,
     mutate:true,
+    bias_mutate:true,
     reproduce:true,
     age:true,
   };
@@ -145,11 +148,11 @@ var GamePlayScene = function(game, stage, config)
       if(self.bounce_prog > 0) self.bounce_prog -= 0.01;
 
       if(self.type == NODE_TYPE_BACT)
-        self.age++;
+        self.age += config.sim_speed;
       if(self.type == NODE_TYPE_BODY)
       {
-        self.age++;
-        self.body_resist -= 0.001;
+        self.age += config.sim_speed;
+        self.body_resist -= 0.001*config.sim_speed;
         if(self.body_resist < 0) self.body_resist = 0;
       }
     }
@@ -343,7 +346,7 @@ var GamePlayScene = function(game, stage, config)
           switch(new_nodes[i].type)
           {
             case NODE_TYPE_NONE:
-              if(config.reproduce && Math.random() < 0.01) //should gen
+              if(config.reproduce && Math.random()/config.sim_speed < 0.01) //should gen
               {
                 var n_neighbors = 0;
                 var biot_resist = 0.;
@@ -362,8 +365,16 @@ var GamePlayScene = function(game, stage, config)
                   new_nodes[i].setType(NODE_TYPE_BACT);
                   if(config.mutate && Math.random() < 0.2) //should mutate
                   {
-                    if(Math.random() < 0.6) biot_resist -= 0.1;
-                    else biot_resist += 0.1;
+                    if(config.bias_mutate)
+                    {
+                      if(Math.random() < 0.6) biot_resist -= 0.1;
+                      else biot_resist += 0.1;
+                    }
+                    else
+                    {
+                      if(Math.random() < 0.5) biot_resist -= 0.1;
+                      else biot_resist += 0.1;
+                    }
                     if(biot_resist < 0) biot_resist = 0;
                     if(biot_resist >= 1)
                     {
@@ -489,8 +500,8 @@ var GamePlayScene = function(game, stage, config)
     self.grid = new Grid(config.grid_cols,config.grid_rows);
     if(config.init_bact)
     {
-      self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
-      self.grid.nodeAt(5,5).biot_resist = 0.1;
+      self.grid.nodeAt(10,10).setType(NODE_TYPE_BACT);
+      self.grid.nodeAt(10,10).biot_resist = 0.1;
     }
     if(config.allow_body && config.init_body)
     {
@@ -505,8 +516,8 @@ var GamePlayScene = function(game, stage, config)
       self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.average_biot_resist(); })
       self.presser.register(self.sneeze_button);
       self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
-        self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
-        self.grid.nodeAt(5,5).biot_resist = self.external_biot_resist;
+        self.grid.nodeAt(10,10).setType(NODE_TYPE_BACT);
+        self.grid.nodeAt(10,10).biot_resist = self.external_biot_resist;
       })
       self.presser.register(self.catch_button);
     }
@@ -569,8 +580,8 @@ var GamePlayScene = function(game, stage, config)
       }
       if(config.reinit_bact && self.grid.n_bact == 0)
       {
-        self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
-        self.grid.nodeAt(5,5).biot_resist = 0.1;
+        self.grid.nodeAt(10,10).setType(NODE_TYPE_BACT);
+        self.grid.nodeAt(10,10).biot_resist = 0.1;
       }
       if(config.allow_body && config.reinit_body && self.grid.n_body == 0)
       {
@@ -614,6 +625,12 @@ var GamePlayScene = function(game, stage, config)
     if(config.allow_reset)
     {
       self.reset_button.draw(canv);
+    }
+
+    if(config.hover_to_play && !self.grid.hovering && config.display_pause)
+    {
+      canv.context.fillStyle = "rgba(255,255,255,0.5)";
+      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
     }
 
     /*

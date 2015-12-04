@@ -63,7 +63,9 @@ function begin()
     {
       grid_cols:50,
       grid_rows:25,
+      sim_speed:1,
       hover_to_play:true,
+      display_pause:true,
       allow_dose:true,
       allow_smile:true,
       allow_reset:true,
@@ -75,6 +77,7 @@ function begin()
       reinit_body:true,
       click_function:CLICK_FUNC_NONE,
       mutate:true,
+      bias_mutate:true,
       reproduce:true,
       age:true,
     }
@@ -90,7 +93,9 @@ function begin()
     {
       grid_cols:20,
       grid_rows:20,
+      sim_speed:1,
       hover_to_play:true,
+      display_pause:true,
       allow_dose:false,
       allow_smile:false,
       allow_reset:true,
@@ -102,6 +107,7 @@ function begin()
       reinit_body:false,
       click_function:CLICK_FUNC_BACT,
       mutate:false,
+      bias_mutate:false,
       reproduce:true,
       age:true,
     }
@@ -117,7 +123,9 @@ function begin()
     {
       grid_cols:20,
       grid_rows:20,
+      sim_speed:1,
       hover_to_play:true,
+      display_pause:true,
       allow_dose:false,
       allow_smile:false,
       allow_reset:true,
@@ -129,11 +137,73 @@ function begin()
       reinit_body:false,
       click_function:CLICK_FUNC_BACT,
       mutate:true,
+      bias_mutate:false,
       reproduce:true,
       age:true,
     }
   });
   g.begin();
+
+  prefix = "genocide_";
+  w = 256;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",
+    config:
+    {
+      grid_cols:20,
+      grid_rows:20,
+      sim_speed:0.2,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:false,
+      allow_smile:false,
+      allow_reset:true,
+      allow_contaminate:false,
+      init_bact:true,
+      reinit_bact:true,
+      allow_body:false,
+      init_body:false,
+      reinit_body:false,
+      click_function:CLICK_FUNC_KILL,
+      mutate:true,
+      bias_mutate:false,
+      reproduce:true,
+      age:true,
+    }
+  });
+  g.begin();
+
+  prefix = "antibiotic_";
+  w = 256;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",
+    config:
+    {
+      grid_cols:20,
+      grid_rows:20,
+      sim_speed:1,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:true,
+      allow_smile:false,
+      allow_reset:true,
+      allow_contaminate:false,
+      init_bact:false,
+      reinit_bact:false,
+      allow_body:false,
+      init_body:false,
+      reinit_body:false,
+      click_function:CLICK_FUNC_BACT,
+      mutate:true,
+      bias_mutate:true,
+      reproduce:true,
+      age:true,
+    }
+  });
+  g.begin();
+
 }
 window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
 window.addEventListener("load",begin,false);
@@ -160,7 +230,7 @@ window.addEventListener("load",begin,false);
       </div>
     </div>
     &nbsp;&nbsp;&nbsp;As you can see, a single click quickly results in a thriving colony of bacteria! Of course, in reality bacteria would require some food source, and couldn't multiply <i>that</i> quickly- but again, we're speeding up and simplifying for now, because things are about to get more complex.<br /><br />
-    &nbsp;&nbsp;&nbsp;To make this more interesting, let's add some rules.<br /><br />
+    &nbsp;&nbsp;&nbsp;To make this more interesting, let's add some more rules.<br /><br />
     &nbsp;&nbsp;&nbsp;4. Bacteria can be different colors (on a spectrum from black to white).<br />
     &nbsp;&nbsp;&nbsp;5. Any bacteria born will be the same color as its parent.<br />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5a. <i>Except</i> in cases where a small mutation occurs, leaving a slightly lighter or slightly darker child.<br /><br />
@@ -171,9 +241,33 @@ window.addEventListener("load",begin,false);
         <img id="mutate_shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
       </div>
     </div>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br /><br />
+    &nbsp;&nbsp;&nbsp;Given enough time, a diverse array of colored (well, gray...) bacteria will have formed. You'll notice that because there are no rules that particularly <i>care</i> what color any bacterium is, the color range stays diverse; that is, no color will eventually dominate the colony.<br /><br />
+    &nbsp;&nbsp;&nbsp;This time, rather than add more rules, let's change the environment- specifically you. Now, clicking will <i>kill</i> bacteria rather than create it. Don't worry, if you kill all of them it will automatically respawn one. See if you can bias the average color to be totally black or totally white. As a hint- if trying for lighter bacteria, try to only kill those bacteria that are darker than the average of the current population. (Note that the simulation is also slowed down to make it more manageable).<br />
+    <div id="genocide_content" style="display:block; margin:50px auto; width:640px; position:relative;">
+      <div id="genocide_stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
+      <div id="genocide_shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
+        <img id="genocide_shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;You might notice that once you have a sizeable majority of a given shade, the conformity starts working for itself. By killing bacteria of one color, you are not only removing the specific bactrium you have killed from the colony- you're eliminating their ability to produce more of a like color.<br />
+    &nbsp;&nbsp;&nbsp;An environment that is hostile to a specific attribute (for example: you actively killing all bacteria of one color) results in a phenomenon known as <i>selection</i>. In this case, what you are doing might be called <i>selective breeding</i>- or the intentional removal (or accentuation) of an attribute from a reproductive pool.<br />
+    &nbsp;&nbsp;&nbsp;An important note is that the bacteria have no internal desire nor power to mutate one way or another- the rules for mutation are the same as before. The environment changed around them causing the phenomenon of selection to occur. (If you remove that environment- in other words, stop killing bacteria -the colony will return to a diverse range of color.)<br /><br />
+    &nbsp;&nbsp;&nbsp;Ok. So manually killing to <i>select for</i> a specific color is a bit contrived (not to mention tedious). Let's say rather than color, the attribute that we are concerned with is <i>antibiotic resistance</i>.<br />
+    &nbsp;&nbsp;&nbsp;<i>Antibiotics</i> are a means by which you can flush a system with a bacteria-killing agent. Some bacteria might be slightly more resistant to antibiotics, and thus require more to kill them.<br />
+    &nbsp;&nbsp;&nbsp;We'll use the same visualizationas before- this time, the lighter the bacteria, the more resistant it is to antibiotics. Click to add bacteria. Use the slider to determine the dosage. Press the button to flush the system.<br /><br />
+    <div id="antibiotic_content" style="display:block; margin:50px auto; width:640px; position:relative;">
+      <div id="antibiotic_stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
+      <div id="antibiotic_shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
+        <img id="antibiotic_shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you click to manually create more). But if your dosage is too small, you've only temporariliy weakened the colony. And worse, you've only left the strongest bactera alive to reproduce!<br />
+    &nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria. With careful dosing, you can create a colony that even the maximum doses of antibiotics won't be able to kill! Once the colony is of a significant majority strong bacteria, it takes a very long time with the hostile environment removed (no dosing!) for the colony to return to a reasonably susceptible population.<br />
+    &nbsp;&nbsp;&nbsp;It is important again to note that no bacteria is <i>trying</i> to get stronger, nor <i>trying</i> to return to normalcy in the absence of a hostile environment. The mutations are small, uncontrolled, and random. The environment dictates whether or not <i>selection</i> occurs subtley nudging the population by biasing the reproductive pool.<br />
+    &nbsp;&nbsp;&nbsp;<br />
 
 
+    &nbsp;&nbsp;&nbsp;<br /><br /><br /><br /><br />
     &nbsp;&nbsp;&nbsp;Our bodies are filled with all sorts of bacteria. In fact, according to Dr. Carolyn Bohach (University of Idaho), our body houses <i>ten times</i> more bacteria cells than it does human ones (enough to fill a large soup can)! Fortunately for us, a majority of these living organisms within us are beneficial (or even necessary!) to our everyday bodily processes (helping digest our food and maintain balance throughout our digestive tract). <br />
     &nbsp;&nbsp;&nbsp;However, when our body gets exposed to <i>bad bacteria</i>, it might result in us getting sick, or a wound failing to heal cleanly. In most cases, our body has enough resources to fight off the infection itself- all we need to do is give it time. But if the infection is severe enough, our bodies might need external help from <i>antibiotics</i>.<br />
     &nbsp;&nbsp;&nbsp;And here's where things get tricky. Bacteria are incredibly complex, and have a variety of subtle mechanisms that dictate how they respond to antibiotics (many of these mechanisms are not yet fully understood by scientists!). For the most part, prolonged exposure to certain substances deemed "antibiotic" will kill any bacteria into which it comes in contact. But it isn't that simple.<br />
