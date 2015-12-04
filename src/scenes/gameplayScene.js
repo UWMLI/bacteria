@@ -487,6 +487,7 @@ var GamePlayScene = function(game, stage)
 
     self.grid.tick();
     self.dose_slider.tick();
+    if(self.grid.n_body == 0) self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
   };
 
   self.draw = function()
