@@ -25,9 +25,10 @@ var GamePlayScene = function(game, stage, config)
     allow_reset:true,
     allow_contaminate:true,
     init_bact:true,
+    reinit_bact:false,
     allow_body:true,
     init_body:true,
-    allow_reinit_body:true,
+    reinit_body:true,
     click_function:CLICK_FUNC_NONE,
     mutate:true,
     reproduce:true,
@@ -556,9 +557,14 @@ var GamePlayScene = function(game, stage, config)
     {
       self.dose_slider.tick();
     }
-    if(config.allow_body && config.allow_reinit_body)
+    if(config.reinit_bact && self.grid.n_bact == 0)
     {
-      if(self.grid.n_body == 0) self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+      self.grid.nodeAt(5,5).setType(NODE_TYPE_BACT);
+      self.grid.nodeAt(5,5).biot_resist = 0.1;
+    }
+    if(config.allow_body && config.reinit_body && self.grid.n_body == 0)
+    {
+      self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
     }
   };
 
