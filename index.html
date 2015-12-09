@@ -419,7 +419,7 @@ window.addEventListener("load",begin,false);
       &nbsp;&nbsp;&nbsp;&nbsp;Ok. So manually killing to <i>select for</i> a specific shade of gray is a bit contrived (not to mention tedious). Let's say rather than shade, the attribute that we are concerned with is <i>antibiotic resistance</i>. Time for some new rules.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A bacterium's lightness represents its antibiotic resistance.</span><br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A dose of antibiotics will kill a bacterium if the dose is stronger than its resistance </span><br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;We're again changing the environment to allow for fast, largescale killings of bactera susceptible to antibiotics.
+      &nbsp;&nbsp;&nbsp;&nbsp;We're again changing the environment. This time, you'll be able to apply a dose of antibiotics to all the bacteria on the grid with a click of a button.
     </div>
     <div class="margin margin_right">
       <br />
@@ -450,15 +450,17 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you click to manually create more). But if your dosage is too small, you've only temporariliy reduced the colony. And worse, you've only left the strongest bactera alive to reproduce!<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria (an extremely, incredibly bad thing). With careful dosing, you can create a colony that even the maximum doses of antibiotics won't be able to kill! Once the colony is of a significant majority strong bacteria, it takes a very long time with the hostile environment removed (no dosing!) for the colony to return to a reasonably susceptible population. And because there is no known method for <i>selecting</i> against antibiotic-resistant bacteria, there is no known way to speed up this normalization!<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;By now, we've moved at least a small amount away from the "totally abstract", and are talking about a very real phenomenon, and a very real problem, <i>in the real world</i>: bacteria is becoming resistant to the only tools we have available to combat infection. So how can we prevent this? How can we fix it to the degree that it has already spread beyond "prevention"?<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Unfortunately, the problem gets more complex still. A good answer to the first question, regarding prevention, is "kill the bacteria before it can evolve!". In the simulation above, we've shown that an early, high dose of antibiotics will wipe out all the bacteria in one motion. In the simple world of our current models, that would work brilliantly. In practice, there are a couple factors preventing that strategy's function. Time to add more complexity to our model!<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;First- antibiotics, if not taken carefully, can be harmful. A healthy body contains hundreds of trillions of <br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you click to manually create more). But if your dosage is too small, you've only temporariliy reduced the colony. And worse, you've only left the strongest bactera alive to reproduce!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria (an extremely, incredibly bad thing). Not only are too-weak doses of antibiotics a hostile environment for non-resistant bacteria, they are incredibly efficient at it as well (notice how easy it is to create a super-bacteria in this simulation compared to the previous).<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;If we see "super bacteria" as a problem we'd like to prevent, it seems a good answer is "take more antibiotics!". As long as all of them are killed, none survive to become super! Right?<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;It's important to note here that, while models can be a great method to come to an intuitive understanding of a system, we can't bring conclusions from them back into the thing they represent without acknowledging the differences between our models and reality.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;That said, there are a couple factors that make this proposed solution insufficient.<br /><br />
     </div>
     <div class="margin margin_right">
+      <br />
+      <br />
+      <br />
+      - Unfortunately, this closely parallels what happens when people stop taking the full amount of their doctor prescribed antibiotics!
     </div>
   </div>
 
@@ -466,7 +468,7 @@ window.addEventListener("load",begin,false);
   - Antibiotic will never kill *all* of the bacteria<br />
   - People are contagious while taking the antibiotic (and further, are contagious with only the resistant bacteria)<br />
   - Antibiotics are harmful to humans in large, frequent doses.<br />
-  - People are fickle, don't take their medicine.<br />
+  - People are unreliable, don't take their medicine.<br />
 
 
   &nbsp;&nbsp;&nbsp;&nbsp;<br /><br /><br />Test Essay...<br /><br />
