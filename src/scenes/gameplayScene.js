@@ -2,14 +2,15 @@ var ENUM;
 
 ENUM = 0;
 var NODE_TYPE_NONE = ENUM; ENUM++;
-var NODE_TYPE_BACT = ENUM; ENUM++;
-var NODE_TYPE_BIOT = ENUM; ENUM++;
+var NODE_TYPE_BADB = ENUM; ENUM++;
+var NODE_TYPE_GOOD = ENUM; ENUM++;
 var NODE_TYPE_BODY = ENUM; ENUM++;
 
 ENUM = 0;
 var CLICK_FUNC_NONE = ENUM; ENUM++;
 var CLICK_FUNC_KILL = ENUM; ENUM++;
-var CLICK_FUNC_BACT = ENUM; ENUM++;
+var CLICK_FUNC_BADB = ENUM; ENUM++;
+var CLICK_FUNC_GOOD = ENUM; ENUM++;
 var CLICK_FUNC_BODY = ENUM; ENUM++;
 
 var GamePlayScene = function(game, stage, config)
@@ -27,8 +28,11 @@ var GamePlayScene = function(game, stage, config)
     allow_smile:true,
     allow_reset:true,
     allow_contaminate:true,
-    init_bact:true,
-    reinit_bact:false,
+    init_badb:true,
+    reinit_badb:true,
+    allow_good:true,
+    init_good:true,
+    reinit_good:true,
     allow_body:true,
     init_body:true,
     reinit_body:true,
@@ -75,7 +79,7 @@ var GamePlayScene = function(game, stage, config)
       self.type = t;
       self.age = 0;
       self.bounce_prog = 1;
-      if(t == NODE_TYPE_BACT) self.body_resist = 0.3;
+      if(t == NODE_TYPE_BADB) self.body_resist = 0.3;
       else if(t == NODE_TYPE_BODY) self.biot_resist = Math.random();
     }
 
@@ -120,7 +124,7 @@ var GamePlayScene = function(game, stage, config)
       {
         case NODE_TYPE_NONE:
           break;
-        case NODE_TYPE_BACT:
+        case NODE_TYPE_BADB:
           canv.context.fillStyle = "#AA4499";
           canv.context.strokeStyle = "#ffffff";
           var r = Math.floor(self.biot_resist*255);
@@ -128,9 +132,11 @@ var GamePlayScene = function(game, stage, config)
           canv.context.fillRect(x,y,w,h);
           canv.context.strokeRect(x,y,w,h);
           break;
-        case NODE_TYPE_BIOT:
-          canv.context.fillStyle = "#222222";
+        case NODE_TYPE_GOOD:
+          canv.context.fillStyle = "#AAFF99";
           canv.context.strokeStyle = "#ffffff";
+          var r = Math.floor(self.biot_resist*255);
+          canv.context.fillStyle = "rgba(FF,"+r+","+r+",1)";
           canv.context.fillRect(x,y,w,h);
           canv.context.strokeRect(x,y,w,h);
           break;
@@ -146,12 +152,10 @@ var GamePlayScene = function(game, stage, config)
     self.tick = function()
     {
       if(self.bounce_prog > 0) self.bounce_prog -= 0.01;
+      self.age += config.sim_speed;
 
-      if(self.type == NODE_TYPE_BACT)
-        self.age += config.sim_speed;
       if(self.type == NODE_TYPE_BODY)
       {
-        self.age += config.sim_speed;
         self.body_resist -= 0.001*config.sim_speed;
         if(self.body_resist < 0) self.body_resist = 0;
       }
@@ -244,7 +248,7 @@ var GamePlayScene = function(game, stage, config)
     self.node_buffs = [self.nodes_a,self.nodes_b];
     self.node_buff = 0;
 
-    self.n_bact = 0;
+    self.n_badb = 0;
 
     self.ifor = function(col,row) { col = (col+self.cols)%self.cols; row = (row+self.rows)%self.rows; return row*self.cols+col; };
 
@@ -285,18 +289,18 @@ var GamePlayScene = function(game, stage, config)
     self.average_biot_resist = function()
     {
       var ave = 0;
-      var n_bact = 0;
+      var n_badb = 0;
       var nodes = self.node_buffs[self.node_buff];
       for(var i = 0; i < nodes.length; i++)
       {
         var n = nodes[i];
-        if(n.type == NODE_TYPE_BACT)
+        if(n.type == NODE_TYPE_BADB)
         {
-          n_bact++;
+          n_badb++;
           ave += n.biot_resist;
         }
       }
-      return ave/n_bact;
+      return ave/n_badb;
     }
 
     self.dose = function(amt)
@@ -305,7 +309,7 @@ var GamePlayScene = function(game, stage, config)
       for(var i = 0; i < nodes.length; i++)
       {
         var n = nodes[i];
-        if((n.type == NODE_TYPE_BACT || n.type == NODE_TYPE_BODY) && amt > n.biot_resist)
+        if(amt > n.biot_resist)
           n.setType(NODE_TYPE_NONE);
       }
     }
@@ -343,51 +347,55 @@ var GamePlayScene = function(game, stage, config)
         for(var c = 0; c < self.cols; c++)
         {
           var i = self.ifor(c,r);
-          switch(new_nodes[i].type)
+          switch(new_nodes[i] && new_nodes[i].type)
           {
             case NODE_TYPE_NONE:
-              if(config.reproduce && Math.random()/config.sim_speed < 0.01) //should gen
+              if(config.reproduce && Math.random()/config.sim_speed < 0.02) //should gen
               {
-                var n_neighbors = 0;
-                var biot_resist = 0.;
                 var n;
-                n = old_nodes[self.ifor(c-1,r)];
-                if(n.type == NODE_TYPE_BACT) { n_neighbors++; biot_resist = n.biot_resist; }
-                n = old_nodes[self.ifor(c,r-1)];
-                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) biot_resist = n.biot_resist; }
-                n = old_nodes[self.ifor(c+1,r)];
-                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) biot_resist = n.biot_resist; }
-                n = old_nodes[self.ifor(c,r+1)];
-                if(n.type == NODE_TYPE_BACT) { n_neighbors++; if(Math.random() < 1/n_neighbors) biot_resist = n.biot_resist; }
+                var biot_resist = 0.;
+                var r_neighb = Math.random();
 
-                if(n_neighbors > 0)
+                     if(r_neighb > 3/4) n = old_nodes[self.ifor(c-1,r)];
+                else if(r_neighb > 2/4) n = old_nodes[self.ifor(c,r-1)];
+                else if(r_neighb > 1/4) n = old_nodes[self.ifor(c+1,r)];
+                else if(r_neighb > 0/4) n = old_nodes[self.ifor(c,r+1)];
+
+                if(n)
                 {
-                  new_nodes[i].setType(NODE_TYPE_BACT);
-                  if(config.mutate && Math.random() < 0.2) //should mutate
+                  if(n.type == NODE_TYPE_BADB || (n.type == NODE_TYPE_GOOD && Math.random() < 0.5)) //slightly lower chance for good bact repro
                   {
-                    if(config.bias_mutate)
+                    biot_resist = n.biot_resist;
+                    new_nodes[i].setType(n.type);
+                    if(config.mutate && Math.random() < 0.2) //should mutate
                     {
-                      if(Math.random() < 0.6) biot_resist -= 0.1;
-                      else biot_resist += 0.1;
+                      if(config.bias_mutate)
+                      {
+                        if(Math.random() < 0.6) biot_resist -= 0.1;
+                        else biot_resist += 0.1;
+                      }
+                      else
+                      {
+                        if(Math.random() < 0.5) biot_resist -= 0.1;
+                        else biot_resist += 0.1;
+                      }
+                      if(biot_resist < 0) biot_resist = 0;
+                      if(biot_resist >= 1)
+                      {
+                        if(Math.random() < 0.2) biot_resist = 1; //should super mutate
+                        else biot_resist = 0.9;
+                      }
                     }
-                    else
-                    {
-                      if(Math.random() < 0.5) biot_resist -= 0.1;
-                      else biot_resist += 0.1;
-                    }
-                    if(biot_resist < 0) biot_resist = 0;
-                    if(biot_resist >= 1)
-                    {
-                      if(Math.random() < 0.2) biot_resist = 1; //should super mutate
-                      else biot_resist = 0.9;
-                    }
+                    new_nodes[i].biot_resist = biot_resist;
                   }
-                  new_nodes[i].biot_resist = biot_resist;
                 }
               }
               break;
-            case NODE_TYPE_BACT:
+            case NODE_TYPE_BADB:
               if(config.age && new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
+              break;
+            case NODE_TYPE_GOOD:
+              if(config.age && new_nodes[i].age > 1000) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
             case NODE_TYPE_BODY:
               if(config.age && new_nodes[i].age > 2000) new_nodes[i].setType(NODE_TYPE_NONE);
@@ -406,22 +414,24 @@ var GamePlayScene = function(game, stage, config)
           var reprod = 0;
           if(on.type == NODE_TYPE_BODY && !on.body_resist)
           {
-            nn = new_nodes[self.ifor(c-1,r)]; if(nn.type == NODE_TYPE_BACT) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
-            nn = new_nodes[self.ifor(c,r-1)]; if(nn.type == NODE_TYPE_BACT) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
-            nn = new_nodes[self.ifor(c+1,r)]; if(nn.type == NODE_TYPE_BACT) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
-            nn = new_nodes[self.ifor(c,r+1)]; if(nn.type == NODE_TYPE_BACT) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
+            nn = new_nodes[self.ifor(c-1,r)]; if(nn.type == NODE_TYPE_BADB) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
+            nn = new_nodes[self.ifor(c,r-1)]; if(nn.type == NODE_TYPE_BADB) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
+            nn = new_nodes[self.ifor(c+1,r)]; if(nn.type == NODE_TYPE_BADB) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
+            nn = new_nodes[self.ifor(c,r+1)]; if(nn.type == NODE_TYPE_BADB) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
             if(reprod) nn = new_nodes[i]; nn.setType(NODE_TYPE_NONE);
           }
         }
       }
 
       //tick nodes
-      self.n_bact = 0;
+      self.n_badb = 0;
+      self.n_good = 0;
       self.n_body = 0;
       for(var i = 0; i < new_nodes.length; i++)
       {
         new_nodes[i].tick();
-             if(new_nodes[i].type == NODE_TYPE_BACT) self.n_bact++;
+             if(new_nodes[i].type == NODE_TYPE_BADB) self.n_badb++;
+        else if(new_nodes[i].type == NODE_TYPE_GOOD) self.n_good++;
         else if(new_nodes[i].type == NODE_TYPE_BODY) self.n_body++;
       }
     }
@@ -452,8 +462,12 @@ var GamePlayScene = function(game, stage, config)
         case CLICK_FUNC_KILL:
           self.dragging_node.setType(NODE_TYPE_NONE);
           break;
-        case CLICK_FUNC_BACT:
-          self.dragging_node.setType(NODE_TYPE_BACT);
+        case CLICK_FUNC_BADB:
+          self.dragging_node.setType(NODE_TYPE_BADB);
+          self.dragging_node.biot_resist = 0.1;
+          break;
+        case CLICK_FUNC_GOOD:
+          self.dragging_node.setType(NODE_TYPE_GOOD);
           self.dragging_node.biot_resist = 0.1;
           break;
         case CLICK_FUNC_BODY:
@@ -498,14 +512,19 @@ var GamePlayScene = function(game, stage, config)
     self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
     self.grid = new Grid(config.grid_cols,config.grid_rows);
-    if(config.init_bact)
+    if(config.init_badb)
     {
-      self.grid.nodeAt(10,10).setType(NODE_TYPE_BACT);
+      self.grid.nodeAt(10,10).setType(NODE_TYPE_BADB);
       self.grid.nodeAt(10,10).biot_resist = 0.1;
+    }
+    if(config.init_good)
+    {
+      self.grid.nodeAt(self.grid.cols-10,10).setType(NODE_TYPE_GOOD);
+      self.grid.nodeAt(self.grid.cols-10,10).biot_resist = 0.1;
     }
     if(config.allow_body && config.init_body)
     {
-      self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+      self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
     }
     self.hoverer.register(self.grid);
     self.dragger.register(self.grid);
@@ -516,7 +535,7 @@ var GamePlayScene = function(game, stage, config)
       self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.average_biot_resist(); })
       self.presser.register(self.sneeze_button);
       self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
-        self.grid.nodeAt(10,10).setType(NODE_TYPE_BACT);
+        self.grid.nodeAt(10,10).setType(NODE_TYPE_BADB);
         self.grid.nodeAt(10,10).biot_resist = self.external_biot_resist;
       })
       self.presser.register(self.catch_button);
@@ -578,14 +597,19 @@ var GamePlayScene = function(game, stage, config)
       {
         self.dose_slider.tick();
       }
-      if(config.reinit_bact && self.grid.n_bact == 0)
+      if(config.reinit_badb && self.grid.n_badb == 0)
       {
-        self.grid.nodeAt(10,10).setType(NODE_TYPE_BACT);
+        self.grid.nodeAt(10,10).setType(NODE_TYPE_BADB);
         self.grid.nodeAt(10,10).biot_resist = 0.1;
+      }
+      if(config.reinit_good && self.grid.n_good == 0)
+      {
+        self.grid.nodeAt(self.grid.cols-10,10).setType(NODE_TYPE_GOOD);
+        self.grid.nodeAt(self.grid.cols-10,10).biot_resist = 0.1;
       }
       if(config.allow_body && config.reinit_body && self.grid.n_body == 0)
       {
-        self.grid.nodeAt(self.grid.cols-1-5,self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+        self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
       }
     }
   };

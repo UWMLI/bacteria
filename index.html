@@ -1,5 +1,99 @@
 <html>
 <head>
+<style type='text/css'>
+body,div
+{
+  position:relative;
+  overflow:auto;
+  margin:0px;
+  padding:0px;
+}
+body
+{
+}
+.content /*outer-width: 1140px; 2*margin+paragraph*/
+{
+  width:1140px; /*margins+paragraphs*/
+  margin:0px auto;
+  /*
+  background-color:#AAFFAA;
+  */
+}
+.title
+{
+  text-align:center;
+}
+.blurb
+{
+}
+.margin /*outer-width: 240px*/
+{
+  width:200px;
+  padding:10px;
+  min-height:10px;
+  float:left;
+  /*
+  background-color:white;
+  */
+  font-style:italic;
+}
+.paragraph /*outer-width: 660px*/
+{
+  width:640px;
+  padding:10px;
+  float:left;
+  /*
+  background-color:#EEEEEE;
+  */
+}
+.experiment
+{
+  margin:0px auto;
+  overflow:hidden;
+}
+.stage_container
+{
+  position:absolute;
+  top:0px;
+  left:0px;
+  overflow:hidden;
+  user-select:none;
+}
+.shadow_container
+{
+  position:absolute;
+  left:0px;
+  overflow:hidden;
+  pointer-events:none;
+  user-select:none;
+}
+.shadow
+{
+  display:block;
+  overflow:hidden;
+  pointer-events:none;
+  user-select:none;
+}
+.description
+{
+  width:540px;
+  text-align:center;
+  margin:0px auto 10px auto;
+  font-style:italic;
+}
+.keyword
+{
+  font-style:italic;
+}
+.rule
+{
+  font-weight:bold;
+}
+.expired
+{
+  text-decoration:line-through;
+}
+</style>
 <script type='text/javascript' src='src/config.js'></script>
 <script type='text/javascript' src='src/utils/utils.js'></script>
 <script type='text/javascript' src='src/utils/webgl-utils.js'></script>
@@ -36,10 +130,10 @@ var g_basic;
 
 function size_prefix(w,h,prefix)
 {
-  document.getElementById(prefix+"content").style.width  = w+"px";
-  document.getElementById(prefix+"content").style.height = h+"px";
-  document.getElementById(prefix+"stage_container").style.width  = w+"px";
-  document.getElementById(prefix+"stage_container").style.height = h+"px";
+  document.getElementById(prefix+"experiment").style.width  = (w+2)+"px";
+  document.getElementById(prefix+"experiment").style.height = (h+22)+"px";
+  document.getElementById(prefix+"stage_container").style.width  = (w+2)+"px";
+  document.getElementById(prefix+"stage_container").style.height = (h+2)+"px";
   document.getElementById(prefix+"shadow_container").style.width = w+"px";
   document.getElementById(prefix+"shadow_container").style.top = (h+2)+"px";
   document.getElementById(prefix+"shadow").style.width = w+"px";
@@ -70,8 +164,11 @@ function begin()
       allow_smile:true,
       allow_reset:true,
       allow_contaminate:true,
-      init_bact:true,
-      reinit_bact:false,
+      init_badb:true,
+      reinit_badb:true,
+      allow_good:true,
+      init_good:true,
+      reinit_good:true,
       allow_body:true,
       init_body:true,
       reinit_body:true,
@@ -100,12 +197,15 @@ function begin()
       allow_smile:false,
       allow_reset:true,
       allow_contaminate:false,
-      init_bact:false,
-      reinit_bact:false,
+      init_badb:false,
+      reinit_badb:false,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
       allow_body:false,
       init_body:false,
       reinit_body:false,
-      click_function:CLICK_FUNC_BACT,
+      click_function:CLICK_FUNC_BADB,
       mutate:false,
       bias_mutate:false,
       reproduce:true,
@@ -130,12 +230,15 @@ function begin()
       allow_smile:false,
       allow_reset:true,
       allow_contaminate:false,
-      init_bact:false,
-      reinit_bact:false,
+      init_badb:false,
+      reinit_badb:false,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
       allow_body:false,
       init_body:false,
       reinit_body:false,
-      click_function:CLICK_FUNC_BACT,
+      click_function:CLICK_FUNC_BADB,
       mutate:true,
       bias_mutate:false,
       reproduce:true,
@@ -153,15 +256,18 @@ function begin()
     {
       grid_cols:20,
       grid_rows:20,
-      sim_speed:0.2,
+      sim_speed:0.5,
       hover_to_play:true,
       display_pause:true,
       allow_dose:false,
       allow_smile:false,
       allow_reset:true,
       allow_contaminate:false,
-      init_bact:true,
-      reinit_bact:true,
+      init_badb:true,
+      reinit_badb:true,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
       allow_body:false,
       init_body:false,
       reinit_body:false,
@@ -190,12 +296,15 @@ function begin()
       allow_smile:false,
       allow_reset:true,
       allow_contaminate:false,
-      init_bact:false,
-      reinit_bact:false,
+      init_badb:false,
+      reinit_badb:false,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
       allow_body:false,
       init_body:false,
       reinit_body:false,
-      click_function:CLICK_FUNC_BACT,
+      click_function:CLICK_FUNC_BADB,
       mutate:true,
       bias_mutate:true,
       reproduce:true,
@@ -212,80 +321,174 @@ window.addEventListener("load",begin,false);
 </head>
 <body>
 
-<div id="bigthing" style="display:block; margin:20px auto; padding:20px; width:640px; height:1000px; position:relative; background-color:#F0F0F0;">
-  <h1>Evolution + Antibiotic Resistance!</h1>
-
-  <div>
-    &nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;Let's look at bacteria. In this activity, we're going to greatly simplify their behavior for the purposes of examining a complex system.<br />
-    &nbsp;&nbsp;&nbsp;To start, we'll define a bacterium's life by a couple of simple rules.<br /><br />
-    &nbsp;&nbsp;&nbsp;1. Bacteria are aligned to a grid.<br />
-    &nbsp;&nbsp;&nbsp;2. After a few seconds, bacteria will die.<br />
-    &nbsp;&nbsp;&nbsp;3. Bacteria sometimes self-reproduces into an adjacent space.<br /><br />
-    &nbsp;&nbsp;&nbsp;Simple enough! Let's see what that looks like: (Click to add bacteria)<br />
-    <div id="basic_content" style="display:block; margin:50px auto; width:640px; position:relative;">
-      <div id="basic_stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
-      <div id="basic_shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
-        <img id="basic_shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
-      </div>
-    </div>
-    &nbsp;&nbsp;&nbsp;As you can see, a single click quickly results in a thriving colony of bacteria! Of course, in reality bacteria would require some food source, and couldn't multiply <i>that</i> quickly- but again, we're speeding up and simplifying for now, because things are about to get more complex.<br /><br />
-    &nbsp;&nbsp;&nbsp;To make this more interesting, let's add some more rules.<br /><br />
-    &nbsp;&nbsp;&nbsp;4. Bacteria can be different colors (on a spectrum from black to white).<br />
-    &nbsp;&nbsp;&nbsp;5. Any bacteria born will be the same color as its parent.<br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5a. <i>Except</i> in random cases where a small mutation occurs, leaving a slightly lighter or slightly darker child.<br /><br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's again check it out.<br />
-    <div id="mutate_content" style="display:block; margin:50px auto; width:640px; position:relative;">
-      <div id="mutate_stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
-      <div id="mutate_shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
-        <img id="mutate_shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
-      </div>
-    </div>
-    &nbsp;&nbsp;&nbsp;Given enough time, a diverse array of colored (well, gray...) bacteria will have formed. You'll notice that because there are no rules that particularly <i>care</i> what color any bacterium is, the color range stays diverse; that is, no color will eventually dominate the colony.<br /><br />
-    &nbsp;&nbsp;&nbsp;This time, rather than add more rules, let's change the environment- specifically you. Now, clicking will <i>kill</i> bacteria rather than create it. Don't worry, if you kill all of them it will automatically respawn one. See if you can bias the average color to be totally black or totally white. As a hint- if trying for lighter bacteria, try to only kill those bacteria that are darker than the average of the current population. (Note that the simulation is also slowed down to make it more manageable).<br />
-    <div id="genocide_content" style="display:block; margin:50px auto; width:640px; position:relative;">
-      <div id="genocide_stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
-      <div id="genocide_shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
-        <img id="genocide_shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
-      </div>
-    </div>
-    &nbsp;&nbsp;&nbsp;You might notice that once you have a sizeable majority of a given shade, the conformity starts working for itself. By killing bacteria of one color, you are not only removing the specific bactrium you have killed from the colony- you're eliminating their ability to produce more of a like color.<br />
-    &nbsp;&nbsp;&nbsp;An environment that is hostile to a specific attribute (for example: you actively killing all bacteria of one color) results in a phenomenon known as <i>selection</i>. In this case, what you are doing might be called <i>selective breeding</i>- the intentional removal (or accentuation) of an attribute from a reproductive pool.<br />
-    &nbsp;&nbsp;&nbsp;An important note is that the bacteria have no internal desire nor power to mutate one way or another- the rules for mutation are the same as before (ie, totally random). The environment changed around them causing the phenomenon of selection to occur. (If you remove that environment [in other words, "stop killing bacteria"] the colony will return to a diverse range of color.)<br /><br />
-    &nbsp;&nbsp;&nbsp;Ok. So manually killing to <i>select for</i> a specific color is a bit contrived (not to mention tedious). Let's say rather than color, the attribute that we are concerned with is <i>antibiotic resistance</i>.<br />
-    &nbsp;&nbsp;&nbsp;<i>Antibiotics</i> are a means by which you can flush a system with a bacteria-killing agent. Some bacteria might be slightly more resistant to antibiotics, and thus require more to kill them.<br />
-    &nbsp;&nbsp;&nbsp;We'll use the same visualizationas before- this time, the lighter the bacteria, the more resistant it is to antibiotics. Click to add bacteria. Use the slider to determine the dosage. Press the button to flush the system.<br /><br />
-    <div id="antibiotic_content" style="display:block; margin:50px auto; width:640px; position:relative;">
-      <div id="antibiotic_stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
-      <div id="antibiotic_shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
-        <img id="antibiotic_shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
-      </div>
-    </div>
-    &nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you click to manually create more). But if your dosage is too small, you've only temporariliy weakened the colony. And worse, you've only left the strongest bactera alive to reproduce!<br />
-    &nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria. With careful dosing, you can create a colony that even the maximum doses of antibiotics won't be able to kill! Once the colony is of a significant majority strong bacteria, it takes a very long time with the hostile environment removed (no dosing!) for the colony to return to a reasonably susceptible population.<br />
-    &nbsp;&nbsp;&nbsp;It is important again to note that no bacteria is <i>trying</i> to get stronger, nor <i>trying</i> to return to normalcy in the absence of a hostile environment. The mutations are small, uncontrolled, and random. The environment dictates whether or not <i>selection</i> occurs, subtley nudging the population by biasing the reproductive pool.<br />
-    &nbsp;&nbsp;&nbsp;<br />
-
-
-    &nbsp;&nbsp;&nbsp;<br /><br /><br /><br /><br />
-    &nbsp;&nbsp;&nbsp;Our bodies are filled with all sorts of bacteria. In fact, according to Dr. Carolyn Bohach (University of Idaho), our body houses <i>ten times</i> more bacteria cells than it does human ones (enough to fill a large soup can)! Fortunately for us, a majority of these living organisms within us are beneficial (or even necessary!) to our everyday bodily processes (helping digest our food and maintain balance throughout our digestive tract). <br />
-    &nbsp;&nbsp;&nbsp;However, when our body gets exposed to <i>bad bacteria</i>, it might result in us getting sick, or a wound failing to heal cleanly. In most cases, our body has enough resources to fight off the infection itself- all we need to do is give it time. But if the infection is severe enough, our bodies might need external help from <i>antibiotics</i>.<br />
-    &nbsp;&nbsp;&nbsp;And here's where things get tricky. Bacteria are incredibly complex, and have a variety of subtle mechanisms that dictate how they respond to antibiotics (many of these mechanisms are not yet fully understood by scientists!). For the most part, prolonged exposure to certain substances deemed "antibiotic" will kill any bacteria into which it comes in contact. But it isn't that simple.<br />
-    &nbsp;&nbsp;&nbsp;There are approximately 10^14 bacteria organisms in your body- that's hundreds of trillions! And each bacteria interacts <i>ever so slightly</i> differently to the antibiotic than the next. These small, subtle differences are results of mutations- or errors- in the reproductive process. Every time a new bacteria is created, there is a small chance that it will differ from its parent in random, unpredictable ways.<br />
-    &nbsp;&nbsp;&nbsp;The key thing to note here are the terms <i>unpredictable</i> and <i>random</i>. Sometimes, a mutation will lead to the bacteria dying off immediately after its creation. Other times it will result in the bacteria being a different or unique shape. And other times still it might slightly change the way it interacts with, say, antibiotics. The bacteria has no control over which of these mutations happen, if any; each mutation is the result of random chance.<br />
-    &nbsp;&nbsp;&nbsp;This becomes very interesting when these mutations result in some bacteria becoming able to survive long exposures to antibiotics much more successfully than others. If some bad bacteria has the ability to withstand antibiotics, that's bad news for the person infected!<br />
-    &nbsp;&nbsp;&nbsp;So, how do these "super bacteria", able to survive large doses of antibiotics, come to be? Unfortunately, it's in large part due to our universal use of antibiotics! If left on their own, it would be unlikely that large colonies of bacteria would all have mutations resulting in them becoming highly resistent. But when 
-
-
+<div class="content">
+  <div class="title">
+    <h1>Evolution + Antibiotic Resistance!</h1>
   </div>
 
-  <div id="content" style="display:block; margin:50px auto; width:640px; position:relative;">
-    <div id="stage_container" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; user-select:none;"> </div>
-    <div id="shadow_container" style="display:block; width:640px; position:absolute; left:0px; top:322px; pointer-events:none; user-select:none;">
-      <img id="shadow" src="assets/shadow.png" style="display:block; pointer-events:none; user-select:none;"/>
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;Bacteria. We all have tons (trillions!) of 'em in our bodies. They sometimes make us sick. And bacterial infections are getting harder to treat effectively. Let's examine why, and see if we can figure out a way to prevent or reverse this trend.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;To start, we'll create an incredibly simple <span class="keyword">model</span> of a colony of bacteria. For our purposes, we'll just create a grid, and define a bacteria as a position on that grid that follows a few simple rules:<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A bacterium will sometimes self-reproduce into an adjacent space.</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- After a few seconds, a bacterium will die.</span><br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Simple enough! Let's see what that looks like:<br />
+    </div>
+    <div class="margin margin_right">
+      <br />
+      <br />
+      <br />
+      <br />
+      - Creating a simplified model will allow us to poke at the things we find interesting about a system without worrying about specifics.
+    </div>
+  </div>
+
+  <div class="experiment" id="basic_experiment">
+    <div class="stage_container" id="basic_stage_container"> </div>
+    <div class="shadow_container" id="basic_shadow_container">
+      <img class="shadow" id="basic_shadow" src="assets/shadow.png" />
+    </div>
+  </div>
+  <div class="description">
+    Click to add bacteria. Hit reset to clear the grid.
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;As you can see, a single click quickly results in a thriving colony of bacteria! Our model consists of only two rules, and already we have a basic simulation of how colonies of bacteria grow. But, while this simulation looks fun and lively, it doesn't yet get at the interesting things we'd like to examine. So, let's add more rules!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A bacterium can be one of many different shades of gray.</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Any bacterium born will be the same shade as its parent.</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- <i>Except</i> in random cases where a <i>small</i> mutation in shade occurs.</span><br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;So we have a new model- here's an opportunity to stop and think of what you might be expecting of the simulation given the new rules...<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;And now, the test:<br />
+    </div>
+    <div class="margin margin_right">
+      - Of course, in reality bacteria would require food, couldn't multiply -that- quickly, etc... Such are simplified models!<br /><br />
+    </div>
+  </div>
+
+  <div class="experiment" id="mutate_experiment" style="position:relative;">
+    <div class="stage_container" id="mutate_stage_container"> </div>
+    <div class="shadow_container" id="mutate_shadow_container">
+      <img class="shadow" id="mutate_shadow" src="assets/shadow.png" />
+    </div>
+  </div>
+  <div class="description">
+    Add some bacteria, then sit back, watch, and wait.
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;Given enough time, you should start to see a diverse spectrum of shaded bacteria form. Upon further examination, the diverse shades seem to stay grouped together into small, similarly shaded patches. Remember, this simulation is obeying only the rules we've listed for it; there's no rule stating that they should stay in patches!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;The bacteria's tendency to group together with other bacteria of a similar shade is an example of an <span class="keyword">emergent behavior</span>. We can see that, though no bacteria has any explicit instruction to stay in a group, the rules that "parents generate like-colored bacteria", and that "parents generate bacteria in a nearby cell" have combined to result in this phenomenon.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;This time, rather than add more rules, let's change the bacteria's environment. Now, clicking will <i>kill</i> bacteria rather than create it. See if you can bias the average shade to be very light gray. As a hint- try to maintain a small population, killing only those bacteria that are <i>darker</i> than the <i>average</i> of the current population.<br />
+    </div>
+    <div class="margin margin_right">
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      - An emergent property is one that is a result of the combination of simpler rules, rather than being a property explicitly listed as a rule itself.
+    </div>
+  </div>
+
+  <div class="experiment" id="genocide_experiment" style="position:relative;">
+    <div class="stage_container" id="genocide_stage_container"> </div>
+    <div class="shadow_container" id="genocide_shadow_container">
+      <img class="shadow" id="genocide_shadow" src="assets/shadow.png" />
+    </div>
+  </div>
+  <div class="description">
+    Click to kill bacteria. (One will automatically spawn if you've killed all of them.) Try to bias the population toward being mostly light gray.
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;You might notice that once you have a sizeable majority of a given shade, the conformity starts working for itself. By killing bacteria of one shade, you are not only removing the specific bacterium you have killed from the colony- you're eliminating their ability to produce more of a like shade.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;In this case, your "hawking over the colony, murdering dark bacteria" can be considered a <span class="keyword">hostile environment</span> for a given attribute (darkness). This is a basic form of <span class="keyword">selection</span>, resulting in <span class="keyword">evolution</span>. <span class="keyword">Evolution</span>, like the tendency to group with like colors, is an <span class="keyword">emergent behavior</span>. There is no rule in place saying how the population ought react toward a <span class="keyword">hostile environment</span>, yet all the rules contribute to the result.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So manually killing to <i>select for</i> a specific shade of gray is a bit contrived (not to mention tedious). Let's say rather than shade, the attribute that we are concerned with is <i>antibiotic resistance</i>. Time for some new rules.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A bacterium's lightness represents its antibiotic resistance.</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A dose of antibiotics will kill a bacterium if the dose is stronger than its resistance </span><br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;We're again changing the environment to allow for fast, largescale killings of bactera susceptible to antibiotics.
+    </div>
+    <div class="margin margin_right">
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      - In this example, the colony of bacteria evolved to be lighter in shade, adapting to an environment that is hostile towards those not as light.
+      <br />
+      <br />
+      - Antibiotics kill bacteria. The ability with which a bacterium can survive the presence of antibiotics is its antibiotic resistance.
+    </div>
+  </div>
+
+  <div class="experiment" id="antibiotic_experiment" style="position:relative;">
+    <div class="stage_container" id="antibiotic_stage_container"> </div>
+    <div class="shadow_container" id="antibiotic_shadow_container">
+      <img class="shadow" id="antibiotic_shadow" src="assets/shadow.png" />
+    </div>
+  </div>
+  <div class="description">
+    Click on the grid to add bacteria. Move the slider to size your antibiotic dosage. Click "dose" to flood the grid with antibiotics, killing all bacteria weaker than the specified dose.
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you click to manually create more). But if your dosage is too small, you've only temporariliy reduced the colony. And worse, you've only left the strongest bactera alive to reproduce!<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria (an extremely, incredibly bad thing). With careful dosing, you can create a colony that even the maximum doses of antibiotics won't be able to kill! Once the colony is of a significant majority strong bacteria, it takes a very long time with the hostile environment removed (no dosing!) for the colony to return to a reasonably susceptible population. And because there is no known method for <i>selecting</i> against antibiotic-resistant bacteria, there is no known way to speed up this normalization!<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;By now, we've moved at least a small amount away from the "totally abstract", and are talking about a very real phenomenon, and a very real problem, <i>in the real world</i>: bacteria is becoming resistant to the only tools we have available to combat infection. So how can we prevent this? How can we fix it to the degree that it has already spread beyond "prevention"?<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Unfortunately, the problem gets more complex still. A good answer to the first question, regarding prevention, is "kill the bacteria before it can evolve!". In the simulation above, we've shown that an early, high dose of antibiotics will wipe out all the bacteria in one motion. In the simple world of our current models, that would work brilliantly. In practice, there are a couple factors preventing that strategy's function. Time to add more complexity to our model!<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;First- antibiotics, if not taken carefully, can be harmful. A healthy body contains hundreds of trillions of <br />
+    </div>
+    <div class="margin margin_right">
+    </div>
+  </div>
+
+
+  - Antibiotic will never kill *all* of the bacteria<br />
+  - People are contagious while taking the antibiotic (and further, are contagious with only the resistant bacteria)<br />
+  - Antibiotics are harmful to humans in large, frequent doses.<br />
+  - People are fickle, don't take their medicine.<br />
+
+
+  &nbsp;&nbsp;&nbsp;&nbsp;<br /><br /><br />Test Essay...<br /><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;Our bodies are filled with all sorts of bacteria. In fact, according to Dr. Carolyn Bohach (University of Idaho), our body houses <i>ten times</i> more bacteria cells than it does human ones (enough to fill a large soup can)! Fortunately for us, a majority of these living organisms within us are beneficial (or even necessary!) to our everyday bodily processes (helping digest our food and maintain balance throughout our digestive tract). <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;However, when our body gets exposed to <i>bad bacteria</i>, it might result in us getting sick, or a wound failing to heal cleanly. In most cases, our body has enough resources to fight off the infection itself- all we need to do is give it time. But if the infection is severe enough, our bodies might need external help from <i>antibiotics</i>.<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;And here's where things get tricky. Bacteria are incredibly complex, and have a variety of subtle mechanisms that dictate how they respond to antibiotics (many of these mechanisms are not yet fully understood by scientists!). For the most part, prolonged exposure to certain substances deemed "antibiotic" will kill any bacteria into which it comes in contact. But it isn't that simple.<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;There are approximately 10^14 bacteria organisms in your body- that's hundreds of trillions! And each bacteria interacts <i>ever so slightly</i> differently to the antibiotic than the next. These small, subtle differences are results of mutations- or errors- in the reproductive process. Every time a new bacteria is created, there is a small chance that it will differ from its parent in random, unpredictable ways.<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;The key thing to note here are the terms <i>unpredictable</i> and <i>random</i>. Sometimes, a mutation will lead to the bacteria dying off immediately after its creation. Other times it will result in the bacteria being a different or unique shape. And other times still it might slightly change the way it interacts with, say, antibiotics. The bacteria has no control over which of these mutations happen, if any; each mutation is the result of random chance.<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;This becomes very interesting when these mutations result in some bacteria becoming able to survive long exposures to antibiotics much more successfully than others. If some bad bacteria has the ability to withstand antibiotics, that's bad news for the person infected!<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;So, how do these "super bacteria", able to survive large doses of antibiotics, come to be? Unfortunately, it's in large part due to our universal use of antibiotics! If left on their own, it would be unlikely that large colonies of bacteria would all have mutations resulting in them becoming highly resistent. But when 
+
+  <div class="experiment" id="experiment">
+    <div class="stage_container" id="stage_container"> </div>
+    <div class="shadow_container" id="shadow_container">
+      <img class="shadow" id="shadow" src="assets/shadow.png" />
     </div>
     <div id="debug_div" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
   </div>
+  <div class="description">
+    This is a test description.
+  </div>
+
 </div>
 
 </body>
