@@ -19,6 +19,10 @@ var GamePlayScene = function(game, stage, config)
 
   var default_config =
   {
+    grid_x:0,
+    grid_y:0,
+    grid_w:-1,
+    grid_h:-1,
     grid_cols:50,
     grid_rows:25,
     sim_speed:1,
@@ -28,6 +32,7 @@ var GamePlayScene = function(game, stage, config)
     allow_smile:true,
     allow_reset:true,
     allow_contaminate:true,
+    default_badb_resist:0.1,
     init_badb:true,
     reinit_badb:true,
     allow_good:true,
@@ -41,6 +46,7 @@ var GamePlayScene = function(game, stage, config)
     bias_mutate:true,
     reproduce:true,
     age:true,
+    ave_display_width:0,
   };
 
   if(!config) config = default_config;
@@ -231,14 +237,51 @@ var GamePlayScene = function(game, stage, config)
     }
   }
 
-  var Grid = function(cols,rows)
+  var AveDisplay = function(x,y,w,h,grid)
   {
     var self = this;
 
-    self.x = 0;
-    self.y = 0;
-    self.w = stage.dispCanv.canvas.width;
-    self.h = stage.dispCanv.canvas.height;
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+
+    self.gradient;
+
+    self.draw = function(canv)
+    {
+      if(!self.gradient)
+      {
+        self.gradient = canv.context.createLinearGradient(0, self.y+self.h, 0, self.y);
+        self.gradient.addColorStop(0, "black");
+        self.gradient.addColorStop(1, "white");
+      }
+
+      canv.context.fillStyle = self.gradient;
+      canv.context.fillRect(self.x,self.y,self.w,self.h);
+
+      var y = (1-grid.ave_badb_biot_resist)*self.h+self.y;
+
+      canv.context.fillStyle = "white";
+      canv.context.strokeStyle = "black";
+      canv.context.beginPath();
+      canv.context.moveTo(self.x-2, y);
+      canv.context.lineTo(self.x-8, y-4);
+      canv.context.lineTo(self.x-8, y+4);
+      canv.context.closePath();
+      canv.context.stroke();
+      canv.context.fill();
+    }
+  }
+
+  var Grid = function(x,y,w,h,cols,rows)
+  {
+    var self = this;
+
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
 
     self.cols = cols;
     self.rows = rows;
@@ -248,7 +291,9 @@ var GamePlayScene = function(game, stage, config)
     self.node_buffs = [self.nodes_a,self.nodes_b];
     self.node_buff = 0;
 
-    self.n_badb = 0;
+    self.n_badb = 0; self.ave_badb_biot_resist = 0;
+    self.n_good = 0; self.ave_badb_biot_resist = 0;
+    self.n_body = 0; self.ave_badb_biot_resist = 0;
 
     self.ifor = function(col,row) { col = (col+self.cols)%self.cols; row = (row+self.rows)%self.rows; return row*self.cols+col; };
 
@@ -284,23 +329,6 @@ var GamePlayScene = function(game, stage, config)
       var nodes = self.node_buffs[self.node_buff];
       for(var i = 0; i < nodes.length; i++)
         nodes[i].setType(NODE_TYPE_NONE);
-    }
-
-    self.average_biot_resist = function()
-    {
-      var ave = 0;
-      var n_badb = 0;
-      var nodes = self.node_buffs[self.node_buff];
-      for(var i = 0; i < nodes.length; i++)
-      {
-        var n = nodes[i];
-        if(n.type == NODE_TYPE_BADB)
-        {
-          n_badb++;
-          ave += n.biot_resist;
-        }
-      }
-      return ave/n_badb;
     }
 
     self.dose = function(amt)
@@ -424,16 +452,19 @@ var GamePlayScene = function(game, stage, config)
       }
 
       //tick nodes
-      self.n_badb = 0;
-      self.n_good = 0;
-      self.n_body = 0;
+      self.n_badb = 0; self.ave_badb_biot_resist = 0;
+      self.n_good = 0; self.ave_badb_biot_resist = 0;
+      self.n_body = 0; self.ave_badb_biot_resist = 0;
       for(var i = 0; i < new_nodes.length; i++)
       {
         new_nodes[i].tick();
-             if(new_nodes[i].type == NODE_TYPE_BADB) self.n_badb++;
-        else if(new_nodes[i].type == NODE_TYPE_GOOD) self.n_good++;
-        else if(new_nodes[i].type == NODE_TYPE_BODY) self.n_body++;
+             if(new_nodes[i].type == NODE_TYPE_BADB) { self.n_badb++; self.ave_badb_biot_resist += new_nodes[i].biot_resist; }
+        else if(new_nodes[i].type == NODE_TYPE_GOOD) { self.n_good++; self.ave_good_biot_resist += new_nodes[i].biot_resist; }
+        else if(new_nodes[i].type == NODE_TYPE_BODY) { self.n_body++; self.ave_body_biot_resist += new_nodes[i].biot_resist; }
       }
+      if(self.n_badb > 0) self.ave_badb_biot_resist /= self.n_badb;
+      if(self.n_good > 0) self.ave_good_biot_resist /= self.n_good;
+      if(self.n_body > 0) self.ave_body_biot_resist /= self.n_body;
     }
 
     self.hovering = false;
@@ -464,11 +495,11 @@ var GamePlayScene = function(game, stage, config)
           break;
         case CLICK_FUNC_BADB:
           self.dragging_node.setType(NODE_TYPE_BADB);
-          self.dragging_node.biot_resist = 0.1;
+          self.dragging_node.biot_resist = config.default_badb_resist;
           break;
         case CLICK_FUNC_GOOD:
           self.dragging_node.setType(NODE_TYPE_GOOD);
-          self.dragging_node.biot_resist = 0.1;
+          self.dragging_node.biot_resist = config.default_badb_resist;
           break;
         case CLICK_FUNC_BODY:
           self.dragging_node.setType(NODE_TYPE_BODY);
@@ -491,6 +522,7 @@ var GamePlayScene = function(game, stage, config)
 
   self.grid;
   self.smiley;
+  self.ave_disp;
 
   self.dose_amt;
   self.dosing_prog;
@@ -511,7 +543,9 @@ var GamePlayScene = function(game, stage, config)
     self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
-    self.grid = new Grid(config.grid_cols,config.grid_rows);
+    if(config.grid_w == -1) config.grid_w = c.canvas.width;
+    if(config.grid_h == -1) config.grid_h = c.canvas.height;
+    self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows);
     if(config.init_badb)
     {
       self.grid.nodeAt(10,10).setType(NODE_TYPE_BADB);
@@ -532,7 +566,7 @@ var GamePlayScene = function(game, stage, config)
     self.external_biot_resist = 0.1;
     if(config.allow_contaminate)
     {
-      self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.average_biot_resist(); })
+      self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.ave_badb_biot_resist; })
       self.presser.register(self.sneeze_button);
       self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
         self.grid.nodeAt(10,10).setType(NODE_TYPE_BADB);
@@ -556,6 +590,11 @@ var GamePlayScene = function(game, stage, config)
     if(config.allow_smile)
     {
       self.smiley = new Smiley(40+100+10,c.canvas.height-30,20,20);
+    }
+
+    if(config.ave_display_width > 0)
+    {
+      self.ave_disp = new AveDisplay(c.canvas.width-config.ave_display_width,0,config.ave_display_width,c.canvas.height,self.grid);
     }
 
     if(config.allow_reset)
@@ -600,12 +639,12 @@ var GamePlayScene = function(game, stage, config)
       if(config.reinit_badb && self.grid.n_badb == 0)
       {
         self.grid.nodeAt(10,10).setType(NODE_TYPE_BADB);
-        self.grid.nodeAt(10,10).biot_resist = 0.1;
+        self.grid.nodeAt(10,10).biot_resist = config.default_badb_resist;
       }
       if(config.reinit_good && self.grid.n_good == 0)
       {
         self.grid.nodeAt(self.grid.cols-10,10).setType(NODE_TYPE_GOOD);
-        self.grid.nodeAt(self.grid.cols-10,10).biot_resist = 0.1;
+        self.grid.nodeAt(self.grid.cols-10,10).biot_resist = config.default_badb_resist;
       }
       if(config.allow_body && config.reinit_body && self.grid.n_body == 0)
       {
@@ -632,6 +671,10 @@ var GamePlayScene = function(game, stage, config)
     {
       canv.context.strokeStyle = "#00FF00";
       self.smiley.draw(canv);
+    }
+    if(config.ave_display_width > 0)
+    {
+      self.ave_disp.draw(canv);
     }
 
     if(config.allow_contaminate)

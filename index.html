@@ -155,6 +155,10 @@ function begin()
   g = new Game({width:w,height:h,container:prefix+"stage_container",
     config:
     {
+      grid_x:0,
+      grid_y:0,
+      grid_w:-1,
+      grid_h:-1,
       grid_cols:50,
       grid_rows:25,
       sim_speed:1,
@@ -164,6 +168,7 @@ function begin()
       allow_smile:true,
       allow_reset:true,
       allow_contaminate:true,
+      default_badb_resist:0.1,
       init_badb:true,
       reinit_badb:true,
       allow_good:true,
@@ -177,6 +182,7 @@ function begin()
       bias_mutate:true,
       reproduce:true,
       age:true,
+      ave_display_width:0,
     }
   });
   g.begin();
@@ -188,6 +194,10 @@ function begin()
   g = new Game({width:w,height:h,container:prefix+"stage_container",
     config:
     {
+      grid_x:0,
+      grid_y:0,
+      grid_w:-1,
+      grid_h:-1,
       grid_cols:20,
       grid_rows:20,
       sim_speed:1,
@@ -197,6 +207,7 @@ function begin()
       allow_smile:false,
       allow_reset:true,
       allow_contaminate:false,
+      default_badb_resist:0.1,
       init_badb:false,
       reinit_badb:false,
       allow_good:false,
@@ -210,6 +221,7 @@ function begin()
       bias_mutate:false,
       reproduce:true,
       age:true,
+      ave_display_width:0,
     }
   });
   g.begin();
@@ -221,6 +233,10 @@ function begin()
   g = new Game({width:w,height:h,container:prefix+"stage_container",
     config:
     {
+      grid_x:0,
+      grid_y:0,
+      grid_w:-1,
+      grid_h:-1,
       grid_cols:20,
       grid_rows:20,
       sim_speed:1,
@@ -230,6 +246,7 @@ function begin()
       allow_smile:false,
       allow_reset:true,
       allow_contaminate:false,
+      default_badb_resist:0.1,
       init_badb:false,
       reinit_badb:false,
       allow_good:false,
@@ -243,17 +260,22 @@ function begin()
       bias_mutate:false,
       reproduce:true,
       age:true,
+      ave_display_width:0,
     }
   });
   g.begin();
 
   prefix = "genocide_";
-  w = 256;
+  w = 266;
   h = 256;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",
     config:
     {
+      grid_x:0,
+      grid_y:0,
+      grid_w:256,
+      grid_h:-1,
       grid_cols:20,
       grid_rows:20,
       sim_speed:0.5,
@@ -263,6 +285,7 @@ function begin()
       allow_smile:false,
       allow_reset:true,
       allow_contaminate:false,
+      default_badb_resist:0.01,
       init_badb:true,
       reinit_badb:true,
       allow_good:false,
@@ -276,17 +299,22 @@ function begin()
       bias_mutate:false,
       reproduce:true,
       age:true,
+      ave_display_width:10,
     }
   });
   g.begin();
 
   prefix = "antibiotic_";
-  w = 256;
+  w = 266;
   h = 256;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",
     config:
     {
+      grid_x:0,
+      grid_y:0,
+      grid_w:256,
+      grid_h:-1,
       grid_cols:20,
       grid_rows:20,
       sim_speed:1,
@@ -296,6 +324,7 @@ function begin()
       allow_smile:false,
       allow_reset:true,
       allow_contaminate:false,
+      default_badb_resist:0.1,
       init_badb:false,
       reinit_badb:false,
       allow_good:false,
@@ -309,6 +338,7 @@ function begin()
       bias_mutate:true,
       reproduce:true,
       age:true,
+      ave_display_width:10,
     }
   });
   g.begin();
