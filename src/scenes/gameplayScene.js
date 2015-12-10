@@ -26,6 +26,7 @@ var GamePlayScene = function(game, stage, config)
     grid_cols:50,
     grid_rows:25,
     sim_speed:1,
+    badb_sim_speed:1,
     hover_to_play:true,
     display_pause:true,
     allow_dose:true,
@@ -314,24 +315,19 @@ var GamePlayScene = function(game, stage, config)
     self.w = w;
     self.h = h;
 
-    self.gradient;
-
     self.draw = function(canv)
     {
-      if(!self.gradient)
-      {
-        self.gradient = canv.context.createLinearGradient(0, self.y+self.h, 0, self.y);
-        self.gradient.addColorStop(0, "black");
-        self.gradient.addColorStop(1, "green");
-      }
-
       canv.context.fillStyle = self.gradient;
-      canv.context.fillRect(self.x,self.y,self.w,self.h);
 
       var y = 0;
            if(grid.n_badb < 1) y = 1;
       else if(grid.n_good < 1) y = 0;
-      else                     y = (grid.n_badb/grid.n_good)*self.h+self.y;
+      else                     y = (grid.n_badb/(grid.n_badb+grid.n_good))*self.h+self.y;
+
+      canv.context.fillStyle = "black";
+      canv.context.fillRect(self.x,self.y,self.w,y-self.y);
+      canv.context.fillStyle = "green";
+      canv.context.fillRect(self.x,y,self.w,self.h-(y-self.y));
 
       canv.context.fillStyle = "white";
       canv.context.strokeStyle = "black";
@@ -451,7 +447,18 @@ var GamePlayScene = function(game, stage, config)
           switch(new_nodes[i] && new_nodes[i].type)
           {
             case NODE_TYPE_NONE:
-              if(config.reproduce && Math.random()/config.sim_speed < 0.02) //should gen
+              //yikes this is silly code...
+              var should_repro = false;
+              var only_bad_repro = false;
+              should_repro = config.reproduce && Math.random()/config.sim_speed < 0.02;
+              if(!should_repro && (config.badb_sim_speed-1 > 0))
+              {
+                should_repro = config.reproduce && Math.random()/(config.badb_sim_speed-1) < 0.02;
+                only_bad_repro = true;
+              }
+              //done with silly code
+
+              if(should_repro) //should gen
               {
                 var n;
                 var biot_resist = 0.;
@@ -464,7 +471,7 @@ var GamePlayScene = function(game, stage, config)
 
                 if(n)
                 {
-                  if(n.type == NODE_TYPE_BADB || n.type == NODE_TYPE_GOOD)//(n.type == NODE_TYPE_GOOD && Math.random() < 0.5)) //slightly lower chance for good bact repro
+                  if(n.type == NODE_TYPE_BADB || (!only_bad_repro && n.type == NODE_TYPE_GOOD))//(n.type == NODE_TYPE_GOOD && Math.random() < 0.5)) //slightly lower chance for good bact repro
                   {
                     biot_resist = n.biot_resist;
                     new_nodes[i].setType(n.type);
@@ -499,7 +506,7 @@ var GamePlayScene = function(game, stage, config)
               if(config.age && new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
             case NODE_TYPE_BODY:
-              //if(config.age && new_nodes[i].age > 2000) new_nodes[i].setType(NODE_TYPE_NONE);
+              if(config.age && new_nodes[i].age > 2000) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
           }
         }
@@ -753,7 +760,7 @@ var GamePlayScene = function(game, stage, config)
   self.draw = function()
   {
     var canv = stage.drawCanv;
-    canv.context.fillStyle = "#883333";
+    canv.context.fillStyle = "#888833";
     canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
 
     self.grid.draw(canv);

@@ -162,6 +162,7 @@ function begin()
       grid_cols:50,
       grid_rows:25,
       sim_speed:1,
+      badb_sim_speed:1,
       hover_to_play:true,
       display_pause:true,
       allow_dose:true,
@@ -203,6 +204,7 @@ function begin()
       grid_cols:20,
       grid_rows:20,
       sim_speed:1,
+      badb_sim_speed:1,
       hover_to_play:true,
       display_pause:true,
       allow_dose:false,
@@ -244,6 +246,7 @@ function begin()
       grid_cols:20,
       grid_rows:20,
       sim_speed:1,
+      badb_sim_speed:1,
       hover_to_play:true,
       display_pause:true,
       allow_dose:false,
@@ -285,6 +288,7 @@ function begin()
       grid_cols:20,
       grid_rows:20,
       sim_speed:0.5,
+      badb_sim_speed:1,
       hover_to_play:true,
       display_pause:true,
       allow_dose:false,
@@ -326,6 +330,7 @@ function begin()
       grid_cols:20,
       grid_rows:20,
       sim_speed:1,
+      badb_sim_speed:1,
       hover_to_play:true,
       display_pause:true,
       allow_dose:true,
@@ -367,6 +372,7 @@ function begin()
       grid_cols:20,
       grid_rows:20,
       sim_speed:1,
+      badb_sim_speed:1,
       hover_to_play:true,
       display_pause:true,
       allow_dose:true,
@@ -408,6 +414,7 @@ function begin()
       grid_cols:20,
       grid_rows:20,
       sim_speed:1,
+      badb_sim_speed:1,
       hover_to_play:true,
       display_pause:true,
       allow_dose:false,
@@ -423,7 +430,7 @@ function begin()
       reinit_good:false,
       allow_body:true,
       init_body:true,
-      reinit_body:false,
+      reinit_body:true,
       click_function:CLICK_FUNC_NONE,
       mutate:true,
       bias_mutate:true,
@@ -434,6 +441,49 @@ function begin()
     }
   });
   g.begin();
+
+  prefix = "alltogether_";
+  w = 266;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",
+    config:
+    {
+      grid_x:0,
+      grid_y:0,
+      grid_w:256,
+      grid_h:-1,
+      grid_cols:20,
+      grid_rows:20,
+      sim_speed:1,
+      badb_sim_speed:2,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:true,
+      allow_smile:false,
+      allow_reset:true,
+      allow_contaminate:false,
+      default_badb_resist:0.1,
+      init_badb:true,
+      reinit_badb:false,
+      default_good_resist:0.1,
+      allow_good:true,
+      init_good:true,
+      reinit_good:false,
+      allow_body:true,
+      init_body:true,
+      reinit_body:true,
+      click_function:CLICK_FUNC_NONE,
+      mutate:true,
+      bias_mutate:true,
+      reproduce:true,
+      age:true,
+      ave_display_width:0,
+      split_display_width:10,
+    }
+  });
+  g.begin();
+
 
 }
 window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
@@ -631,13 +681,26 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Blah blah blah<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Spoilers- the good side wins. The antibodies act as a <span class="keyword">hostile environment</span> for the bad bacteria. Since they don't attack the good bacteria, the good will naturally be left to reproduce more freely.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Because of this, it is more often than not totally unnecessary to take any kind of external antibiotic! But woah. Now we've gone from "take all the antibiotics!" to "never take antibiotics!" and something still sounds off... doctors still prescribe antibiotics- why?<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;There are many different kinds of bacteria. Many of them have properties that render them difficult for our bodies to combat on their own (such as the rate and means through which they replicate, the difficulty for our antibodies to effectively kill them, etc...). In these cases, antibiotics can offer quick assitance.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Let's introduce bad bacteria that grows too quickly for antibodies alone to fight it. Again, try to use the antibiotics to kill the bad while leaving the good. This time, with help from some natural antibodies.<br />
     </div>
     <div class="margin margin_right">
       <br />
+      - But wait, if antibodies are a hostile environment toward bad bacteria, why doesn't bacteria evolve to be resistant to them? Answer: Wow that's complicated. Long story short- they do! But antibodies have been evolving alongside the bacteria as well! This quickly gets too complicated to be worth adding to our simulation, so for now, we'll act as though neither evolve in their ability to effect each other.
     </div>
   </div>
 
+  <div class="experiment" id="alltogether_experiment" style="position:relative;">
+    <div class="stage_container" id="alltogether_stage_container"> </div>
+    <div class="shadow_container" id="alltogether_shadow_container">
+      <img class="shadow" id="alltogether_shadow" src="assets/shadow.png" />
+    </div>
+  </div>
+  <div class="description">
+    Use careful, controlled dosing of antibiotics to rid the bad bacteria while leaving the good.
+  </div>
 
 
   - Antibiotic will never kill *all* of the bacteria<br />
