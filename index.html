@@ -171,6 +171,7 @@ function begin()
       default_badb_resist:0.1,
       init_badb:true,
       reinit_badb:true,
+      default_good_resist:0.1,
       allow_good:true,
       init_good:true,
       reinit_good:true,
@@ -183,6 +184,7 @@ function begin()
       reproduce:true,
       age:true,
       ave_display_width:0,
+      split_display_width:0,
     }
   });
   g.begin();
@@ -210,6 +212,7 @@ function begin()
       default_badb_resist:0.1,
       init_badb:false,
       reinit_badb:false,
+      default_good_resist:0.1,
       allow_good:false,
       init_good:false,
       reinit_good:false,
@@ -222,6 +225,7 @@ function begin()
       reproduce:true,
       age:true,
       ave_display_width:0,
+      split_display_width:0,
     }
   });
   g.begin();
@@ -249,6 +253,7 @@ function begin()
       default_badb_resist:0.1,
       init_badb:false,
       reinit_badb:false,
+      default_good_resist:0.1,
       allow_good:false,
       init_good:false,
       reinit_good:false,
@@ -261,6 +266,7 @@ function begin()
       reproduce:true,
       age:true,
       ave_display_width:0,
+      split_display_width:0,
     }
   });
   g.begin();
@@ -288,6 +294,7 @@ function begin()
       default_badb_resist:0.01,
       init_badb:true,
       reinit_badb:true,
+      default_good_resist:0.1,
       allow_good:false,
       init_good:false,
       reinit_good:false,
@@ -300,6 +307,7 @@ function begin()
       reproduce:true,
       age:true,
       ave_display_width:10,
+      split_display_width:0,
     }
   });
   g.begin();
@@ -327,6 +335,7 @@ function begin()
       default_badb_resist:0.1,
       init_badb:false,
       reinit_badb:false,
+      default_good_resist:0.1,
       allow_good:false,
       init_good:false,
       reinit_good:false,
@@ -339,6 +348,89 @@ function begin()
       reproduce:true,
       age:true,
       ave_display_width:10,
+      split_display_width:0,
+    }
+  });
+  g.begin();
+
+  prefix = "good_";
+  w = 256;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",
+    config:
+    {
+      grid_x:0,
+      grid_y:0,
+      grid_w:-1,
+      grid_h:-1,
+      grid_cols:20,
+      grid_rows:20,
+      sim_speed:1,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:true,
+      allow_smile:false,
+      allow_reset:true,
+      allow_contaminate:false,
+      default_badb_resist:0.1,
+      init_badb:true,
+      reinit_badb:false,
+      default_good_resist:0.1,
+      allow_good:true,
+      init_good:true,
+      reinit_good:false,
+      allow_body:false,
+      init_body:false,
+      reinit_body:false,
+      click_function:CLICK_FUNC_NONE,
+      mutate:true,
+      bias_mutate:true,
+      reproduce:true,
+      age:true,
+      ave_display_width:0,
+      split_display_width:0,
+    }
+  });
+  g.begin();
+
+  prefix = "antibody_";
+  w = 266;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",
+    config:
+    {
+      grid_x:0,
+      grid_y:0,
+      grid_w:256,
+      grid_h:-1,
+      grid_cols:20,
+      grid_rows:20,
+      sim_speed:1,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:false,
+      allow_smile:false,
+      allow_reset:true,
+      allow_contaminate:false,
+      default_badb_resist:0.1,
+      init_badb:true,
+      reinit_badb:false,
+      default_good_resist:0.1,
+      allow_good:true,
+      init_good:true,
+      reinit_good:false,
+      allow_body:true,
+      init_body:true,
+      reinit_body:false,
+      click_function:CLICK_FUNC_NONE,
+      mutate:true,
+      bias_mutate:true,
+      reproduce:true,
+      age:true,
+      ave_display_width:0,
+      split_display_width:10,
     }
   });
   g.begin();
@@ -483,9 +575,14 @@ window.addEventListener("load",begin,false);
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you click to manually create more). But if your dosage is too small, you've only temporariliy reduced the colony. And worse, you've only left the strongest bactera alive to reproduce!<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria (an extremely, incredibly bad thing). Not only are too-weak doses of antibiotics a hostile environment for non-resistant bacteria, they are incredibly efficient at it as well (notice how easy it is to create a super-bacteria in this simulation compared to the previous).<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;If we see "super bacteria" as a problem we'd like to prevent, it seems a good answer is "take more antibiotics!". As long as all of them are killed, none survive to become super! Right?<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;It's important to note here that, while models can be a great method to come to an intuitive understanding of a system, we can't bring conclusions drawn from the model back into the thing they represent without acknowledging the differences between our models and reality.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;That said, there are a couple factors that make this proposed solution insufficient.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;If we see "super bacteria" as a problem we'd like to prevent in real life, it seems a good answer is "take more antibiotics!". As long as all of them are killed, none survive to become super! Right?<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;It's important to note here that, while models can be a great method to come to an intuitive understanding of a system, we must be careful to not bring conclusions drawn from the model back into the thing they represent, without first acknowledging the differences between our models and reality.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;That said, there are a couple factors that make this proposed solution ("take more antibiotics!") insufficient.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;First, most of the bacteria in our body is <i>good</i> for us! Even necessary! It is difficult for <span class="keyword">antibiotics</span> to distinguish between the two, and so "loading up on antibiotics" every time we're sick might just make us sicker. Time for some more rules.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Bacteria can be either good, or bad.</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Good bacteria is green.</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Good bacteria will produce more good, bad will produce bad.</span><br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Other than that, good bacteria behaves equivalently to bad. Try using antibiotics to eliminate the bad bacteria, but leave the good.<br /><br />
     </div>
     <div class="margin margin_right">
       <br />
@@ -494,6 +591,53 @@ window.addEventListener("load",begin,false);
       - Unfortunately, this closely parallels what happens when people stop taking the full amount of their doctor prescribed antibiotics!
     </div>
   </div>
+
+  <div class="experiment" id="good_experiment" style="position:relative;">
+    <div class="stage_container" id="good_stage_container"> </div>
+    <div class="shadow_container" id="good_shadow_container">
+      <img class="shadow" id="good_shadow" src="assets/shadow.png" />
+    </div>
+  </div>
+  <div class="description">
+    Try to dose with antibiotics in such a way that the bad bacteria dies, but the good lives.
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;There isn't much nuance to this simulation- it's simply incredibly difficult (if not impossible) to realiably take out only bad bacteria, while leaving the good. But antibiotics <i>are</i> useful in real life!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Fortunately, antibiotics aren't the only defense we have against bacterial infection. Our body naturally produces <span class="keyword">antibodies</span> with no external prodding!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Antibodies are red.</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Antibodies will sometimes multiply to attack nearby bad bacteria.</span><br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Well, that's simple. Let's see how that effects the populations:<br /><br />
+    </div>
+    <div class="margin margin_right">
+      <br />
+    </div>
+  </div>
+
+  <div class="experiment" id="antibody_experiment" style="position:relative;">
+    <div class="stage_container" id="antibody_stage_container"> </div>
+    <div class="shadow_container" id="antibody_shadow_container">
+      <img class="shadow" id="antibody_shadow" src="assets/shadow.png" />
+    </div>
+  </div>
+  <div class="description">
+    Will good bacteria win? Or will bad? Place your bets!
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;Blah blah blah<br /><br />
+    </div>
+    <div class="margin margin_right">
+      <br />
+    </div>
+  </div>
+
 
 
   - Antibiotic will never kill *all* of the bacteria<br />

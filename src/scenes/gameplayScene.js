@@ -35,6 +35,7 @@ var GamePlayScene = function(game, stage, config)
     default_badb_resist:0.1,
     init_badb:true,
     reinit_badb:true,
+    default_good_resist:0.1,
     allow_good:true,
     init_good:true,
     reinit_good:true,
@@ -47,6 +48,7 @@ var GamePlayScene = function(game, stage, config)
     reproduce:true,
     age:true,
     ave_display_width:0,
+    split_display_width:0,
   };
 
   if(!config) config = default_config;
@@ -74,10 +76,10 @@ var GamePlayScene = function(game, stage, config)
       self.row = row;
       self.col = col;
 
-      self.x = rect.x+row/n_cols*rect.w;
-      self.y = rect.y+col/n_rows*rect.h;
-      self.w = 1/n_cols*rect.w;
-      self.h = 1/n_rows*rect.h;
+      self.x = Math.floor(rect.x+row/n_cols*rect.w);
+      self.y = Math.floor(rect.y+col/n_rows*rect.h);
+      self.w = Math.ceil(1/n_cols*rect.w);
+      self.h = Math.ceil(1/n_rows*rect.h);
     }
 
     self.setType = function(t)
@@ -136,20 +138,49 @@ var GamePlayScene = function(game, stage, config)
           var r = Math.floor(self.biot_resist*255);
           canv.context.fillStyle = "rgba("+r+","+r+","+r+",1)";
           canv.context.fillRect(x,y,w,h);
-          canv.context.strokeRect(x,y,w,h);
+          //canv.context.strokeRect(x,y,w,h);
           break;
         case NODE_TYPE_GOOD:
           canv.context.fillStyle = "#AAFF99";
           canv.context.strokeStyle = "#ffffff";
-          var r = Math.floor(self.biot_resist*255);
-          canv.context.fillStyle = "rgba(FF,"+r+","+r+",1)";
+          var r = Math.floor(self.biot_resist*(0.9*255));
+          canv.context.fillStyle = "rgba("+r+","+Math.floor((0.1*255)+r)+","+r+",1)";
           canv.context.fillRect(x,y,w,h);
-          canv.context.strokeRect(x,y,w,h);
+          //canv.context.strokeRect(x,y,w,h);
           break;
         case NODE_TYPE_BODY:
           canv.context.fillStyle = "#882222";
           canv.context.strokeStyle = "#ffffff";
           canv.context.fillRect(x,y,w,h);
+          //canv.context.strokeRect(x,y,w,h);
+          break;
+      }
+    }
+
+    self.stroke = function(canv)
+    {
+      var x = self.x;
+      var y = self.y;
+      var w = self.w;
+      var h = self.h;
+
+      if(self.bounce_prog > 0)
+      {
+        var b = Math.sin((1-self.bounce_prog)*Math.PI*2*3)*self.bounce_prog*3;
+        x -= b/2;
+        y -= b/2;
+        w += b;
+        h += b;
+      }
+
+      switch(self.type)
+      {
+        case NODE_TYPE_NONE:
+          break;
+        case NODE_TYPE_BADB:
+        case NODE_TYPE_GOOD:
+        case NODE_TYPE_BODY:
+          canv.context.strokeStyle = "#ffffff";
           canv.context.strokeRect(x,y,w,h);
           break;
       }
@@ -274,6 +305,46 @@ var GamePlayScene = function(game, stage, config)
     }
   }
 
+  var SplitDisplay = function(x,y,w,h,grid)
+  {
+    var self = this;
+
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+
+    self.gradient;
+
+    self.draw = function(canv)
+    {
+      if(!self.gradient)
+      {
+        self.gradient = canv.context.createLinearGradient(0, self.y+self.h, 0, self.y);
+        self.gradient.addColorStop(0, "black");
+        self.gradient.addColorStop(1, "green");
+      }
+
+      canv.context.fillStyle = self.gradient;
+      canv.context.fillRect(self.x,self.y,self.w,self.h);
+
+      var y = 0;
+           if(grid.n_badb < 1) y = 1;
+      else if(grid.n_good < 1) y = 0;
+      else                     y = (grid.n_badb/grid.n_good)*self.h+self.y;
+
+      canv.context.fillStyle = "white";
+      canv.context.strokeStyle = "black";
+      canv.context.beginPath();
+      canv.context.moveTo(self.x-2, y);
+      canv.context.lineTo(self.x-8, y-4);
+      canv.context.lineTo(self.x-8, y+4);
+      canv.context.closePath();
+      canv.context.stroke();
+      canv.context.fill();
+    }
+  }
+
   var Grid = function(x,y,w,h,cols,rows)
   {
     var self = this;
@@ -347,6 +418,8 @@ var GamePlayScene = function(game, stage, config)
 
       var nodes = self.node_buffs[self.node_buff];
       for(var i = 0; i < nodes.length; i++)
+        nodes[i].stroke(canv);
+      for(var i = 0; i < nodes.length; i++)
         nodes[i].draw(canv);
 
       canv.context.strokeStyle = "#0000FF";
@@ -391,7 +464,7 @@ var GamePlayScene = function(game, stage, config)
 
                 if(n)
                 {
-                  if(n.type == NODE_TYPE_BADB || (n.type == NODE_TYPE_GOOD && Math.random() < 0.5)) //slightly lower chance for good bact repro
+                  if(n.type == NODE_TYPE_BADB || n.type == NODE_TYPE_GOOD)//(n.type == NODE_TYPE_GOOD && Math.random() < 0.5)) //slightly lower chance for good bact repro
                   {
                     biot_resist = n.biot_resist;
                     new_nodes[i].setType(n.type);
@@ -423,10 +496,10 @@ var GamePlayScene = function(game, stage, config)
               if(config.age && new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
             case NODE_TYPE_GOOD:
-              if(config.age && new_nodes[i].age > 1000) new_nodes[i].setType(NODE_TYPE_NONE);
+              if(config.age && new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
             case NODE_TYPE_BODY:
-              if(config.age && new_nodes[i].age > 2000) new_nodes[i].setType(NODE_TYPE_NONE);
+              //if(config.age && new_nodes[i].age > 2000) new_nodes[i].setType(NODE_TYPE_NONE);
               break;
           }
         }
@@ -499,7 +572,7 @@ var GamePlayScene = function(game, stage, config)
           break;
         case CLICK_FUNC_GOOD:
           self.dragging_node.setType(NODE_TYPE_GOOD);
-          self.dragging_node.biot_resist = config.default_badb_resist;
+          self.dragging_node.biot_resist = config.default_good_resist;
           break;
         case CLICK_FUNC_BODY:
           self.dragging_node.setType(NODE_TYPE_BODY);
@@ -523,6 +596,7 @@ var GamePlayScene = function(game, stage, config)
   self.grid;
   self.smiley;
   self.ave_disp;
+  self.split_disp;
 
   self.dose_amt;
   self.dosing_prog;
@@ -548,13 +622,13 @@ var GamePlayScene = function(game, stage, config)
     self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows);
     if(config.init_badb)
     {
-      self.grid.nodeAt(10,10).setType(NODE_TYPE_BADB);
-      self.grid.nodeAt(10,10).biot_resist = 0.1;
+      self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
+      self.grid.nodeAt(9,10).biot_resist = 0.1;
     }
     if(config.init_good)
     {
-      self.grid.nodeAt(self.grid.cols-10,10).setType(NODE_TYPE_GOOD);
-      self.grid.nodeAt(self.grid.cols-10,10).biot_resist = 0.1;
+      self.grid.nodeAt(self.grid.cols-9,10).setType(NODE_TYPE_GOOD);
+      self.grid.nodeAt(self.grid.cols-9,10).biot_resist = 0.1;
     }
     if(config.allow_body && config.init_body)
     {
@@ -569,8 +643,8 @@ var GamePlayScene = function(game, stage, config)
       self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.ave_badb_biot_resist; })
       self.presser.register(self.sneeze_button);
       self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
-        self.grid.nodeAt(10,10).setType(NODE_TYPE_BADB);
-        self.grid.nodeAt(10,10).biot_resist = self.external_biot_resist;
+        self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
+        self.grid.nodeAt(9,10).biot_resist = self.external_biot_resist;
       })
       self.presser.register(self.catch_button);
     }
@@ -597,9 +671,32 @@ var GamePlayScene = function(game, stage, config)
       self.ave_disp = new AveDisplay(c.canvas.width-config.ave_display_width,0,config.ave_display_width,c.canvas.height,self.grid);
     }
 
+    if(config.split_display_width > 0)
+    {
+      self.split_disp = new SplitDisplay(c.canvas.width-config.split_display_width,0,config.split_display_width,c.canvas.height,self.grid);
+    }
+
     if(config.allow_reset)
     {
-      self.reset_button = new ButtonBox(10,10,20,20,function(){ self.grid.clear(); })
+      self.reset_button = new ButtonBox(10,10,20,20,
+      function()
+      {
+        self.grid.clear();
+        if(config.init_badb)
+        {
+          self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
+          self.grid.nodeAt(9,10).biot_resist = 0.1;
+        }
+        if(config.init_good)
+        {
+          self.grid.nodeAt(self.grid.cols-9,10).setType(NODE_TYPE_GOOD);
+          self.grid.nodeAt(self.grid.cols-9,10).biot_resist = 0.1;
+        }
+        if(config.allow_body && config.init_body)
+        {
+          self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+        }
+      })
       self.presser.register(self.reset_button);
     }
   };
@@ -638,13 +735,13 @@ var GamePlayScene = function(game, stage, config)
       }
       if(config.reinit_badb && self.grid.n_badb == 0)
       {
-        self.grid.nodeAt(10,10).setType(NODE_TYPE_BADB);
-        self.grid.nodeAt(10,10).biot_resist = config.default_badb_resist;
+        self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
+        self.grid.nodeAt(9,10).biot_resist = config.default_badb_resist;
       }
       if(config.reinit_good && self.grid.n_good == 0)
       {
-        self.grid.nodeAt(self.grid.cols-10,10).setType(NODE_TYPE_GOOD);
-        self.grid.nodeAt(self.grid.cols-10,10).biot_resist = config.default_badb_resist;
+        self.grid.nodeAt(self.grid.cols-9,10).setType(NODE_TYPE_GOOD);
+        self.grid.nodeAt(self.grid.cols-9,10).biot_resist = config.default_good_resist;
       }
       if(config.allow_body && config.reinit_body && self.grid.n_body == 0)
       {
@@ -656,8 +753,9 @@ var GamePlayScene = function(game, stage, config)
   self.draw = function()
   {
     var canv = stage.drawCanv;
-    canv.context.fillStyle = "#330000";
+    canv.context.fillStyle = "#883333";
     canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+
     self.grid.draw(canv);
 
     if(config.allow_dose)
@@ -675,6 +773,10 @@ var GamePlayScene = function(game, stage, config)
     if(config.ave_display_width > 0)
     {
       self.ave_disp.draw(canv);
+    }
+    if(config.split_display_width > 0)
+    {
+      self.split_disp.draw(canv);
     }
 
     if(config.allow_contaminate)
