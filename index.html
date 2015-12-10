@@ -331,7 +331,7 @@ window.addEventListener("load",begin,false);
     </div>
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;Bacteria. We all have tons (trillions!) of 'em in our bodies. They sometimes make us sick. And bacterial infections are getting harder to treat effectively. Let's examine why, and see if we can figure out a way to prevent or reverse this trend.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;To start, we'll create an incredibly simple <span class="keyword">model</span> of a colony of bacteria. For our purposes, we'll just create a grid, and define a bacteria as a position on that grid that follows a few simple rules:<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;To start, we'll create an incredibly simple <span class="keyword">model</span> of a colony of bacteria. For our purposes, we'll just create a grid, and define a bacterium as a position on that grid that follows a few simple rules:<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A bacterium will sometimes self-reproduce into an adjacent space.</span><br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- After a few seconds, a bacterium will die.</span><br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;Simple enough! Let's see what that looks like:<br />
@@ -364,7 +364,7 @@ window.addEventListener("load",begin,false);
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Any bacterium born will be the same shade as its parent.</span><br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- <i>Except</i> in random cases where a <i>small</i> mutation in shade occurs.</span><br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;So we have a new model- here's an opportunity to stop and think of what you might be expecting of the simulation given the new rules...<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;And now, the test:<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Alright let's test it out:<br />
     </div>
     <div class="margin margin_right">
       - Of course, in reality bacteria would require food, couldn't multiply -that- quickly, etc... Such are simplified models!<br /><br />
@@ -387,7 +387,8 @@ window.addEventListener("load",begin,false);
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;Given enough time, you should start to see a diverse spectrum of shaded bacteria form. Upon further examination, the diverse shades seem to stay grouped together into small, similarly shaded patches. Remember, this simulation is obeying only the rules we've listed for it; there's no rule stating that they should stay in patches!<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;The bacteria's tendency to group together with other bacteria of a similar shade is an example of an <span class="keyword">emergent behavior</span>. We can see that, though no bacteria has any explicit instruction to stay in a group, the rules that "parents generate like-colored bacteria", and that "parents generate bacteria in a nearby cell" have combined to result in this phenomenon.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;This time, rather than add more rules, let's change the bacteria's environment. Now, clicking will <i>kill</i> bacteria rather than create it. See if you can bias the average shade to be very light gray. As a hint- try to maintain a small population, killing only those bacteria that are <i>darker</i> than the <i>average</i> of the current population.<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Cool. Let's see some more emergent behavior. This time, rather than add more rules, let's change the bacteria's environment.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Now, clicking will <i>kill</i> bacteria rather than create it. Try following these instructions: Do your best to maintain a small population, killing only those bacteria that are <i>darker</i> than the <i>average</i> of the current population. Don't worry about being too picky!<br /><br />
     </div>
     <div class="margin margin_right">
       <br />
@@ -407,14 +408,14 @@ window.addEventListener("load",begin,false);
     </div>
   </div>
   <div class="description">
-    Click to kill bacteria. (One will automatically spawn if you've killed all of them.) Try to bias the population toward being mostly light gray.
+    Click to kill bacteria. (One will automatically spawn if you've killed all of them.) Try killing only those bacteria darker than the average population.
   </div>
 
   <div class="blurb">
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;You might notice that once you have a sizeable majority of a given shade, the conformity starts working for itself. By killing bacteria of one shade, you are not only removing the specific bacterium you have killed from the colony- you're eliminating their ability to produce more of a like shade.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;If you've kept at it long enough you might notice that the average shade of bacteria in the colony continues to lighten! By killing bacteria of one shade, you are not only removing the specific bacterium you have killed from the colony, and thus the average- you're eliminating their ability to produce more of a like shade.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;In this case, your "hawking over the colony, murdering dark bacteria" can be considered a <span class="keyword">hostile environment</span> for a given attribute (darkness). This is a basic form of <span class="keyword">selection</span>, resulting in <span class="keyword">evolution</span>. <span class="keyword">Evolution</span>, like the tendency to group with like colors, is an <span class="keyword">emergent behavior</span>. There is no rule in place saying how the population ought react toward a <span class="keyword">hostile environment</span>, yet all the rules contribute to the result.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;Ok. So manually killing to <i>select for</i> a specific shade of gray is a bit contrived (not to mention tedious). Let's say rather than shade, the attribute that we are concerned with is <i>antibiotic resistance</i>. Time for some new rules.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A bacterium's lightness represents its antibiotic resistance.</span><br />
@@ -453,7 +454,7 @@ window.addEventListener("load",begin,false);
       &nbsp;&nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you click to manually create more). But if your dosage is too small, you've only temporariliy reduced the colony. And worse, you've only left the strongest bactera alive to reproduce!<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria (an extremely, incredibly bad thing). Not only are too-weak doses of antibiotics a hostile environment for non-resistant bacteria, they are incredibly efficient at it as well (notice how easy it is to create a super-bacteria in this simulation compared to the previous).<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;If we see "super bacteria" as a problem we'd like to prevent, it seems a good answer is "take more antibiotics!". As long as all of them are killed, none survive to become super! Right?<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;It's important to note here that, while models can be a great method to come to an intuitive understanding of a system, we can't bring conclusions from them back into the thing they represent without acknowledging the differences between our models and reality.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;It's important to note here that, while models can be a great method to come to an intuitive understanding of a system, we can't bring conclusions drawn from the model back into the thing they represent without acknowledging the differences between our models and reality.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;That said, there are a couple factors that make this proposed solution insufficient.<br /><br />
     </div>
     <div class="margin margin_right">
