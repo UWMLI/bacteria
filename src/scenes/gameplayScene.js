@@ -611,6 +611,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.dose_slider;
   self.dose_button;
 
+  self.just_paused;
+
   self.external_biot_resist;
   self.sneeze_button;
   self.catch_button;
@@ -682,6 +684,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
     {
       self.split_disp = new SplitDisplay(c.canvas.width-config.split_display_width,0,config.split_display_width,c.canvas.height,self.grid);
     }
+
+    self.just_paused = 0;
 
     if(config.allow_reset)
     {
@@ -807,8 +811,25 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
     if(config.hover_to_play && !self.grid.hovering && config.display_pause)
     {
+      var w = canv.canvas.width;
       canv.context.fillStyle = "rgba(255,255,255,0.5)";
-      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+      canv.context.fillRect(0,0,w,canv.canvas.height);
+      canv.context.fillStyle = "#333333";
+      canv.context.fillRect(w-28,10,8,20);
+      canv.context.fillRect(w-18,10,8,20);
+      self.just_paused = 30;
+    }
+    else if(self.just_paused)
+    {
+      self.just_paused--;
+      var w = canv.canvas.width;
+      canv.context.fillStyle = "#333333";
+      canv.context.beginPath();
+      canv.context.moveTo(w-10, 20);
+      canv.context.lineTo(w-25, 30);
+      canv.context.lineTo(w-25, 10);
+      canv.context.closePath();
+      canv.context.fill();
     }
 
     /*
