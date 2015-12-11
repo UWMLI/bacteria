@@ -63,6 +63,7 @@ body
 {
   position:absolute;
   left:0px;
+  height:20px;
   display:block;
   pointer-events:none;
   user-select:none;
@@ -77,6 +78,7 @@ body
   background-color:white;
   border:1px solid black;
   visibility:hidden;
+  padding:10px;
 }
 .description
 {
@@ -140,7 +142,6 @@ function size_prefix(w,h,prefix)
   document.getElementById(prefix+"stage_container").style.height = (h+2)+"px";
   document.getElementById(prefix+"shadow").style.top = (h+2)+"px";
   document.getElementById(prefix+"shadow").style.width = w+"px";
-  document.getElementById(prefix+"shadow").style.height = 20+"px";
   //document.getElementById(prefix+"popup") //don't really need to do anything...
 }
 function begin()
