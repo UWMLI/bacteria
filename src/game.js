@@ -11,7 +11,8 @@ var Game = function(init)
   doMapInitDefaults(init,init,default_init);
 
   var stage = new Stage({width:init.width,height:init.height,container:init.container});
-  var scenes = [new NullScene(self, stage), new LoadingScene(self, stage), /*new TestScene(self, stage),*/ new GamePlayScene(self, stage, init.config)];
+  var popup_div = document.getElementById(init.popup);
+  var scenes = [new NullScene(self, stage), new LoadingScene(self, stage), /*new TestScene(self, stage),*/ new GamePlayScene(self, stage, init.config, popup_div)];
   var currentScene = 0;
 
   self.begin = function()

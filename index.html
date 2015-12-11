@@ -49,30 +49,34 @@ body
 .experiment
 {
   margin:0px auto;
-  overflow:hidden;
+  overflow:visible;
 }
 .stage_container
 {
   position:absolute;
   top:0px;
   left:0px;
-  overflow:hidden;
-  user-select:none;
-}
-.shadow_container
-{
-  position:absolute;
-  left:0px;
-  overflow:hidden;
-  pointer-events:none;
+  overflow:visible;
   user-select:none;
 }
 .shadow
 {
+  position:absolute;
+  left:0px;
   display:block;
-  overflow:hidden;
   pointer-events:none;
   user-select:none;
+}
+.popup
+{
+  position:absolute;
+  top:50px;
+  left:250px;
+  width:200px;
+  height:50px;
+  background-color:white;
+  border:1px solid black;
+  visibility:hidden;
 }
 .description
 {
@@ -134,10 +138,10 @@ function size_prefix(w,h,prefix)
   document.getElementById(prefix+"experiment").style.height = (h+22)+"px";
   document.getElementById(prefix+"stage_container").style.width  = (w+2)+"px";
   document.getElementById(prefix+"stage_container").style.height = (h+2)+"px";
-  document.getElementById(prefix+"shadow_container").style.width = w+"px";
-  document.getElementById(prefix+"shadow_container").style.top = (h+2)+"px";
+  document.getElementById(prefix+"shadow").style.top = (h+2)+"px";
   document.getElementById(prefix+"shadow").style.width = w+"px";
   document.getElementById(prefix+"shadow").style.height = 20+"px";
+  //document.getElementById(prefix+"popup") //don't really need to do anything...
 }
 function begin()
 {
@@ -152,7 +156,7 @@ function begin()
   w = 640;
   h = 320;
   size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
       grid_x:0,
@@ -194,7 +198,7 @@ function begin()
   w = 256;
   h = 256;
   size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
       grid_x:0,
@@ -236,7 +240,7 @@ function begin()
   w = 256;
   h = 256;
   size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
       grid_x:0,
@@ -278,7 +282,7 @@ function begin()
   w = 266;
   h = 256;
   size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
       grid_x:0,
@@ -320,7 +324,7 @@ function begin()
   w = 266;
   h = 256;
   size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
       grid_x:0,
@@ -362,7 +366,7 @@ function begin()
   w = 256;
   h = 256;
   size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
       grid_x:0,
@@ -404,7 +408,7 @@ function begin()
   w = 266;
   h = 256;
   size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
       grid_x:0,
@@ -446,7 +450,7 @@ function begin()
   w = 266;
   h = 256;
   size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
       grid_x:0,
@@ -519,9 +523,8 @@ window.addEventListener("load",begin,false);
 
   <div class="experiment" id="basic_experiment">
     <div class="stage_container" id="basic_stage_container"> </div>
-    <div class="shadow_container" id="basic_shadow_container">
-      <img class="shadow" id="basic_shadow" src="assets/shadow.png" />
-    </div>
+    <img class="shadow" id="basic_shadow" src="assets/shadow.png" />
+    <div class="popup" id="basic_popup"/>Wow! Watch those bacteria go!</div>
   </div>
   <div class="description">
     Click to add bacteria. Hit reset to clear the grid.
@@ -545,9 +548,8 @@ window.addEventListener("load",begin,false);
 
   <div class="experiment" id="mutate_experiment" style="position:relative;">
     <div class="stage_container" id="mutate_stage_container"> </div>
-    <div class="shadow_container" id="mutate_shadow_container">
-      <img class="shadow" id="mutate_shadow" src="assets/shadow.png" />
-    </div>
+    <img class="shadow" id="mutate_shadow" src="assets/shadow.png" />
+    <div class="popup" id="mutate_popup"/>Pretty colors! (er, shades?)</div>
   </div>
   <div class="description">
     Add some bacteria, then sit back, watch, and wait.
@@ -575,9 +577,8 @@ window.addEventListener("load",begin,false);
 
   <div class="experiment" id="genocide_experiment" style="position:relative;">
     <div class="stage_container" id="genocide_stage_container"> </div>
-    <div class="shadow_container" id="genocide_shadow_container">
-      <img class="shadow" id="genocide_shadow" src="assets/shadow.png" />
-    </div>
+    <img class="shadow" id="genocide_shadow" src="assets/shadow.png" />
+    <div class="popup" id="genocide_popup"/>What shade did you manage to average?</div>
   </div>
   <div class="description">
     Click to kill bacteria. (One will automatically spawn if you've killed all of them.) Try killing only those bacteria darker than the average population.
@@ -611,9 +612,8 @@ window.addEventListener("load",begin,false);
 
   <div class="experiment" id="antibiotic_experiment" style="position:relative;">
     <div class="stage_container" id="antibiotic_stage_container"> </div>
-    <div class="shadow_container" id="antibiotic_shadow_container">
-      <img class="shadow" id="antibiotic_shadow" src="assets/shadow.png" />
-    </div>
+    <img class="shadow" id="antibiotic_shadow" src="assets/shadow.png" />
+    <div class="popup" id="antibiotic_popup"/>That was efficient!</div>
   </div>
   <div class="description">
     Click on the grid to add bacteria. Move the slider to size your antibiotic dosage. Click "dose" to flood the grid with antibiotics, killing all bacteria weaker than the specified dose.
@@ -644,9 +644,8 @@ window.addEventListener("load",begin,false);
 
   <div class="experiment" id="good_experiment" style="position:relative;">
     <div class="stage_container" id="good_stage_container"> </div>
-    <div class="shadow_container" id="good_shadow_container">
-      <img class="shadow" id="good_shadow" src="assets/shadow.png" />
-    </div>
+    <img class="shadow" id="good_shadow" src="assets/shadow.png" />
+    <div class="popup" id="good_popup"/>I assume you've been unsuccessful...</div>
   </div>
   <div class="description">
     Try to dose with antibiotics in such a way that the bad bacteria dies, but the good lives.
@@ -669,9 +668,8 @@ window.addEventListener("load",begin,false);
 
   <div class="experiment" id="antibody_experiment" style="position:relative;">
     <div class="stage_container" id="antibody_stage_container"> </div>
-    <div class="shadow_container" id="antibody_shadow_container">
-      <img class="shadow" id="antibody_shadow" src="assets/shadow.png" />
-    </div>
+    <img class="shadow" id="antibody_shadow" src="assets/shadow.png" />
+    <div class="popup" id="antibody_popup"/>Good always triumphs over evil!</div>
   </div>
   <div class="description">
     Will good bacteria win? Or will bad? Place your bets!
@@ -694,9 +692,8 @@ window.addEventListener("load",begin,false);
 
   <div class="experiment" id="alltogether_experiment" style="position:relative;">
     <div class="stage_container" id="alltogether_stage_container"> </div>
-    <div class="shadow_container" id="alltogether_shadow_container">
-      <img class="shadow" id="alltogether_shadow" src="assets/shadow.png" />
-    </div>
+    <img class="shadow" id="alltogether_shadow" src="assets/shadow.png" />
+    <div class="popup" id="alltogether_popup"/>A single, patiently timed dosing is often enough to do the trick...</div>
   </div>
   <div class="description">
     Use careful, controlled dosing of antibiotics to rid the bad bacteria while leaving the good.
@@ -720,9 +717,8 @@ window.addEventListener("load",begin,false);
 
   <div class="experiment" id="experiment">
     <div class="stage_container" id="stage_container"> </div>
-    <div class="shadow_container" id="shadow_container">
-      <img class="shadow" id="shadow" src="assets/shadow.png" />
-    </div>
+    <img class="shadow" id="shadow" src="assets/shadow.png" />
+    <div class="popup" id="popup"/>Woop de dooooooo!!!!</div>
     <div id="debug_div" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
   </div>
   <div class="description">

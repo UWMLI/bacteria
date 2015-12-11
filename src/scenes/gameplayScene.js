@@ -13,7 +13,7 @@ var CLICK_FUNC_BADB = ENUM; ENUM++;
 var CLICK_FUNC_GOOD = ENUM; ENUM++;
 var CLICK_FUNC_BODY = ENUM; ENUM++;
 
-var GamePlayScene = function(game, stage, config)
+var GamePlayScene = function(game, stage, config, popup_div)
 {
   var self = this;
 
@@ -754,6 +754,8 @@ var GamePlayScene = function(game, stage, config)
       {
         self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
       }
+
+      if(self.grid.n_badb + self.grid.n_good + self.grid.n_body > self.grid.rows*self.grid.cols*0.6) popup_div.style.visibility = "visible";
     }
   };
 
