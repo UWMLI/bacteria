@@ -449,8 +449,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
           switch(on.type)
           {
             case NODE_TYPE_BADB:
-              if(config.age && on.age > 500) nn.setType(NODE_TYPE_NONE);
-              break;
             case NODE_TYPE_GOOD:
               if(config.age && on.age > 500) nn.setType(NODE_TYPE_NONE);
               break;
@@ -458,6 +456,70 @@ var GamePlayScene = function(game, stage, config, popup_div)
               if(config.age && on.age > 2000) nn.setType(NODE_TYPE_NONE);
               break;
             case NODE_TYPE_NONE:
+              if(!config.reproduce) break;
+
+              var n_badb = 0;
+              var n_good = 0;
+
+              var token_badb = undefined;
+              var token_good = undefined;
+              var token_node = undefined;
+
+              n = old_nodes[self.ifor(c-1,r)]; if(n.type == NODE_TYPE_BADB) { n_badb++; if(Math.random() < 1/n_badb) token_badb = n; } else if(n.type == NODE_TYPE_GOOD) { n_good++; if(Math.random() < 1/n_good) token_good = n; }
+              n = old_nodes[self.ifor(c,r-1)]; if(n.type == NODE_TYPE_BADB) { n_badb++; if(Math.random() < 1/n_badb) token_badb = n; } else if(n.type == NODE_TYPE_GOOD) { n_good++; if(Math.random() < 1/n_good) token_good = n; }
+              n = old_nodes[self.ifor(c+1,r)]; if(n.type == NODE_TYPE_BADB) { n_badb++; if(Math.random() < 1/n_badb) token_badb = n; } else if(n.type == NODE_TYPE_GOOD) { n_good++; if(Math.random() < 1/n_good) token_good = n; }
+              n = old_nodes[self.ifor(c,r+1)]; if(n.type == NODE_TYPE_BADB) { n_badb++; if(Math.random() < 1/n_badb) token_badb = n; } else if(n.type == NODE_TYPE_GOOD) { n_good++; if(Math.random() < 1/n_good) token_good = n; }
+
+              if(n_badb + n_good == 0) break;
+
+              var chance = 0.2;
+              var not_chance = 1-chance;
+              var badb_spawn_chance = 0;
+              var good_spawn_chance = 0;
+              var should_spawn_badb = false;
+              var should_spawn_good = false;
+              if(n_badb > 0)
+              {
+                badb_spawn_chance = 1-Math.pow(not_chance,n_badb*config.sim_speed);
+                should_spawn_badb = (Math.random() < badb_spawn_chance);
+              }
+              if(n_good > 0)
+              {
+                good_spawn_chance = 1-Math.pow(not_chance,n_good*config.sim_speed);
+                should_spawn_good = (Math.random() < good_spawn_chance);
+              }
+
+              if(should_spawn_badb && !should_spawn_good) token_node = token_badb;
+              if(should_spawn_good && !should_spawn_badb) token_node = token_good;
+              if(should_spawn_good && should_spawn_badb)
+              {
+                if(Math.random() < 0.5) token_node = token_badb;
+                else token_node = token_good;
+              }
+
+              if(token_node)
+              {
+                new_nodes[i].setType(token_node.type);
+                var biot_resist = token_node.biot_resist;
+                if(config.mutate)
+                {
+                  var rand = Math.random();
+                  if(config.bias_mutate)
+                  {
+                         if(rand < 0.08) biot_resist -= 0.1;
+                    else if(rand > 0.88) biot_resist += 0.1;
+                  }
+                  else
+                  {
+                         if(rand < 0.1) biot_resist -= 0.1;
+                    else if(rand > 0.9) biot_resist += 0.1;
+                  }
+                }
+                if(biot_resist < 0) biot_resist = 0;
+                if(biot_resist > 1) biot_resist = 1;
+                new_nodes[i].biot_resist = biot_resist;
+              }
+
               break;
           }
         }
@@ -477,69 +539,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
           switch(on.type)
           {
             case NODE_TYPE_BADB:
-              var should_repro = (config.reproduce && Math.random()/config.sim_speed < 0.02);
-              break;
             case NODE_TYPE_GOOD:
-              if(config.age && on.age > 500) nn.setType(NODE_TYPE_NONE);
-              break;
             case NODE_TYPE_BODY:
-              if(config.age && on.age > 2000) nn.setType(NODE_TYPE_NONE);
-              break;
             case NODE_TYPE_NONE:
               break;
           }
-
-              //yikes this is silly code...
-              var should_repro = false;
-              var only_bad_repro = false;
-              should_repro = config.reproduce && Math.random()/config.sim_speed < 0.02;
-              if(!should_repro && (config.badb_sim_speed-1 > 0))
-              {
-                should_repro = config.reproduce && Math.random()/(config.badb_sim_speed-1) < 0.02;
-                only_bad_repro = true;
-              }
-              //done with silly code
-
-              if(should_repro) //should gen
-              {
-                var n;
-                var biot_resist = 0.;
-                var r_neighb = Math.random();
-
-                     if(r_neighb > 3/4) n = old_nodes[self.ifor(c-1,r)];
-                else if(r_neighb > 2/4) n = old_nodes[self.ifor(c,r-1)];
-                else if(r_neighb > 1/4) n = old_nodes[self.ifor(c+1,r)];
-                else if(r_neighb > 0/4) n = old_nodes[self.ifor(c,r+1)];
-
-                if(n)
-                {
-                  if(n.type == NODE_TYPE_BADB || (!only_bad_repro && n.type == NODE_TYPE_GOOD))//(n.type == NODE_TYPE_GOOD && Math.random() < 0.5)) //slightly lower chance for good bact repro
-                  {
-                    biot_resist = n.biot_resist;
-                    new_nodes[i].setType(n.type);
-                    if(config.mutate && Math.random() < 0.2) //should mutate
-                    {
-                      if(config.bias_mutate)
-                      {
-                        if(Math.random() < 0.6) biot_resist -= 0.1;
-                        else biot_resist += 0.1;
-                      }
-                      else
-                      {
-                        if(Math.random() < 0.5) biot_resist -= 0.1;
-                        else biot_resist += 0.1;
-                      }
-                      if(biot_resist < 0) biot_resist = 0;
-                      if(biot_resist >= 1)
-                      {
-                        if(Math.random() < 0.2) biot_resist = 1; //should super mutate
-                        else biot_resist = 0.9;
-                      }
-                    }
-                    new_nodes[i].biot_resist = biot_resist;
-                  }
-                }
-              }
 
 
 
