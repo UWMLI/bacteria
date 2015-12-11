@@ -43,8 +43,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
     allow_body:true,
     init_body:true,
     reinit_body:true,
+    swab_size:1,
     click_function:CLICK_FUNC_NONE,
     hover_function:CLICK_FUNC_NONE,
+    show_hover:false,
     mutate:true,
     bias_mutate:true,
     reproduce:true,
@@ -420,9 +422,20 @@ var GamePlayScene = function(game, stage, config, popup_div)
         nodes[i].draw(canv);
 
       canv.context.strokeStyle = "#0000FF";
-      if(self.hovering_node) canv.context.strokeRect(self.hovering_node.x,self.hovering_node.y,self.hovering_node.w,self.hovering_node.h);
+      if(config.show_hover && self.hovering_node)
+      {
+        if(config.swab_size == 1)
+        {
+          canv.context.strokeRect(self.hovering_node.x,self.hovering_node.y,self.hovering_node.w,self.hovering_node.h);
+        }
+        else
+        {
+          canv.context.strokeRect(self.hovering_node.x-self.hovering_node.w,self.hovering_node.y,self.hovering_node.w*3,self.hovering_node.h);
+          canv.context.strokeRect(self.hovering_node.x,self.hovering_node.y-self.hovering_node.h,self.hovering_node.w,self.hovering_node.h*3);
+        }
+      }
       canv.context.strokeStyle = "#00FFFF";
-      if(self.dragging_node) canv.context.strokeRect(self.dragging_node.x,self.dragging_node.y,self.dragging_node.w,self.dragging_node.h);
+      //if(self.dragging_node) canv.context.strokeRect(self.dragging_node.x,self.dragging_node.y,self.dragging_node.w,self.dragging_node.h);
     }
 
     self.tick = function()
@@ -472,7 +485,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
               if(n_badb + n_good == 0) break;
 
-              var chance = 0.2;
+              var chance = 0.01;
               var not_chance = 1-chance;
               var badb_spawn_chance = 0;
               var good_spawn_chance = 0;
@@ -580,21 +593,48 @@ var GamePlayScene = function(game, stage, config, popup_div)
     {
       self.hovering = true;
       self.hovering_node = self.nodeAtCanv(evt.doX,evt.doY);
+      var n;
       switch(config.hover_function)
       {
         case CLICK_FUNC_KILL:
           self.hovering_node.setType(NODE_TYPE_NONE);
+          if(config.swab_size > 1)
+          {
+            n = self.nodeAt(self.hovering_node.row-1,self.hovering_node.col); n.setType(NODE_TYPE_NONE);
+            n = self.nodeAt(self.hovering_node.row+1,self.hovering_node.col); n.setType(NODE_TYPE_NONE);
+            n = self.nodeAt(self.hovering_node.row,self.hovering_node.col-1); n.setType(NODE_TYPE_NONE);
+            n = self.nodeAt(self.hovering_node.row,self.hovering_node.col+1); n.setType(NODE_TYPE_NONE);
+          }
           break;
         case CLICK_FUNC_BADB:
-          self.hovering_node.setType(NODE_TYPE_BADB);
-          self.hovering_node.biot_resist = config.default_badb_resist;
+          self.hovering_node.setType(NODE_TYPE_BADB); self.hovering_node.biot_resist = config.default_badb_resist;
+          if(config.swab_size > 1)
+          {
+            n = self.nodeAt(self.hovering_node.row-1,self.hovering_node.col); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
+            n = self.nodeAt(self.hovering_node.row+1,self.hovering_node.col); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
+            n = self.nodeAt(self.hovering_node.row,self.hovering_node.col-1); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
+            n = self.nodeAt(self.hovering_node.row,self.hovering_node.col+1); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
+          }
           break;
         case CLICK_FUNC_GOOD:
-          self.hovering_node.setType(NODE_TYPE_GOOD);
-          self.hovering_node.biot_resist = config.default_good_resist;
+          self.hovering_node.setType(NODE_TYPE_GOOD); self.hovering_node.biot_resist = config.default_good_resist;
+          if(config.swab_size > 1)
+          {
+            n = self.nodeAt(self.hovering_node.row-1,self.hovering_node.col); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
+            n = self.nodeAt(self.hovering_node.row+1,self.hovering_node.col); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
+            n = self.nodeAt(self.hovering_node.row,self.hovering_node.col-1); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
+            n = self.nodeAt(self.hovering_node.row,self.hovering_node.col+1); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
+          }
           break;
         case CLICK_FUNC_BODY:
           self.hovering_node.setType(NODE_TYPE_BODY);
+          if(config.swab_size > 1)
+          {
+            n = self.nodeAt(self.hovering_node.row-1,self.hovering_node.col); n.setType(NODE_TYPE_BODY);
+            n = self.nodeAt(self.hovering_node.row+1,self.hovering_node.col); n.setType(NODE_TYPE_BODY);
+            n = self.nodeAt(self.hovering_node.row,self.hovering_node.col-1); n.setType(NODE_TYPE_BODY);
+            n = self.nodeAt(self.hovering_node.row,self.hovering_node.col+1); n.setType(NODE_TYPE_BODY);
+          }
           break;
         case CLICK_FUNC_NONE:
         default:
@@ -619,17 +659,43 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         case CLICK_FUNC_KILL:
           self.dragging_node.setType(NODE_TYPE_NONE);
+          if(config.swab_size > 1)
+          {
+            n = self.nodeAt(self.dragging_node.row-1,self.dragging_node.col); n.setType(NODE_TYPE_NONE);
+            n = self.nodeAt(self.dragging_node.row+1,self.dragging_node.col); n.setType(NODE_TYPE_NONE);
+            n = self.nodeAt(self.dragging_node.row,self.dragging_node.col-1); n.setType(NODE_TYPE_NONE);
+            n = self.nodeAt(self.dragging_node.row,self.dragging_node.col+1); n.setType(NODE_TYPE_NONE);
+          }
           break;
         case CLICK_FUNC_BADB:
-          self.dragging_node.setType(NODE_TYPE_BADB);
-          self.dragging_node.biot_resist = config.default_badb_resist;
+          self.dragging_node.setType(NODE_TYPE_BADB); self.dragging_node.biot_resist = config.default_badb_resist;
+          if(config.swab_size > 1)
+          {
+            n = self.nodeAt(self.dragging_node.row-1,self.dragging_node.col); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
+            n = self.nodeAt(self.dragging_node.row+1,self.dragging_node.col); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
+            n = self.nodeAt(self.dragging_node.row,self.dragging_node.col-1); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
+            n = self.nodeAt(self.dragging_node.row,self.dragging_node.col+1); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
+          }
           break;
         case CLICK_FUNC_GOOD:
-          self.dragging_node.setType(NODE_TYPE_GOOD);
-          self.dragging_node.biot_resist = config.default_good_resist;
+          self.dragging_node.setType(NODE_TYPE_GOOD); self.dragging_node.biot_resist = config.default_good_resist;
+          if(config.swab_size > 1)
+          {
+            n = self.nodeAt(self.dragging_node.row-1,self.dragging_node.col); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
+            n = self.nodeAt(self.dragging_node.row+1,self.dragging_node.col); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
+            n = self.nodeAt(self.dragging_node.row,self.dragging_node.col-1); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
+            n = self.nodeAt(self.dragging_node.row,self.dragging_node.col+1); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
+          }
           break;
         case CLICK_FUNC_BODY:
           self.dragging_node.setType(NODE_TYPE_BODY);
+          if(config.swab_size > 1)
+          {
+            n = self.nodeAt(self.dragging_node.row-1,self.dragging_node.col); n.setType(NODE_TYPE_BODY);
+            n = self.nodeAt(self.dragging_node.row+1,self.dragging_node.col); n.setType(NODE_TYPE_BODY);
+            n = self.nodeAt(self.dragging_node.row,self.dragging_node.col-1); n.setType(NODE_TYPE_BODY);
+            n = self.nodeAt(self.dragging_node.row,self.dragging_node.col+1); n.setType(NODE_TYPE_BODY);
+          }
           break;
         case CLICK_FUNC_NONE:
         default:
