@@ -321,8 +321,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
       canv.context.fillStyle = self.gradient;
 
       var y = 0;
-           if(grid.n_badb < 1) y = 1;
-      else if(grid.n_good < 1) y = 0;
+           if(grid.n_badb < 1) y = 0;
+      else if(grid.n_good < 1) y = 1;
       else                     y = (grid.n_badb/(grid.n_badb+grid.n_good))*self.h+self.y;
 
       canv.context.fillStyle = "black";
@@ -439,15 +439,56 @@ var GamePlayScene = function(game, stage, config, popup_div)
       }
 
       //update in-node grid changes
-      var i = 0;
       for(var r = 0; r < self.rows; r++)
       {
         for(var c = 0; c < self.cols; c++)
         {
           var i = self.ifor(c,r);
-          switch(new_nodes[i] && new_nodes[i].type)
+          var on = old_nodes[i];
+          var nn = new_nodes[i];
+          switch(on.type)
           {
+            case NODE_TYPE_BADB:
+              if(config.age && on.age > 500) nn.setType(NODE_TYPE_NONE);
+              break;
+            case NODE_TYPE_GOOD:
+              if(config.age && on.age > 500) nn.setType(NODE_TYPE_NONE);
+              break;
+            case NODE_TYPE_BODY:
+              if(config.age && on.age > 2000) nn.setType(NODE_TYPE_NONE);
+              break;
             case NODE_TYPE_NONE:
+              break;
+          }
+        }
+      }
+
+      //update outer-node movements
+      for(var r = 0; r < self.rows; r++)
+      {
+        for(var c = 0; c < self.cols; c++)
+        {
+          var i = self.ifor(c,r);
+          var on = old_nodes[i];
+          var nn = new_nodes[i];
+
+          var reprod = 0;
+
+          switch(on.type)
+          {
+            case NODE_TYPE_BADB:
+              var should_repro = (config.reproduce && Math.random()/config.sim_speed < 0.02);
+              break;
+            case NODE_TYPE_GOOD:
+              if(config.age && on.age > 500) nn.setType(NODE_TYPE_NONE);
+              break;
+            case NODE_TYPE_BODY:
+              if(config.age && on.age > 2000) nn.setType(NODE_TYPE_NONE);
+              break;
+            case NODE_TYPE_NONE:
+              break;
+          }
+
               //yikes this is silly code...
               var should_repro = false;
               var only_bad_repro = false;
@@ -499,28 +540,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
                   }
                 }
               }
-              break;
-            case NODE_TYPE_BADB:
-              if(config.age && new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
-              break;
-            case NODE_TYPE_GOOD:
-              if(config.age && new_nodes[i].age > 500) new_nodes[i].setType(NODE_TYPE_NONE);
-              break;
-            case NODE_TYPE_BODY:
-              if(config.age && new_nodes[i].age > 2000) new_nodes[i].setType(NODE_TYPE_NONE);
-              break;
-          }
-        }
-      }
 
-      //tick outer-node movements
-      for(var r = 0; r < self.rows; r++)
-      {
-        for(var c = 0; c < self.cols; c++)
-        {
-          var i = self.ifor(c,r);
-          var on = old_nodes[i];
-          var reprod = 0;
+
+
           if(on.type == NODE_TYPE_BODY && !on.body_resist)
           {
             nn = new_nodes[self.ifor(c-1,r)]; if(nn.type == NODE_TYPE_BADB) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
