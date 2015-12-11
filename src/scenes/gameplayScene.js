@@ -44,6 +44,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     init_body:true,
     reinit_body:true,
     click_function:CLICK_FUNC_NONE,
+    hover_function:CLICK_FUNC_NONE,
     mutate:true,
     bias_mutate:true,
     reproduce:true,
@@ -553,6 +554,26 @@ var GamePlayScene = function(game, stage, config, popup_div)
     {
       self.hovering = true;
       self.hovering_node = self.nodeAtCanv(evt.doX,evt.doY);
+      switch(config.hover_function)
+      {
+        case CLICK_FUNC_KILL:
+          self.hovering_node.setType(NODE_TYPE_NONE);
+          break;
+        case CLICK_FUNC_BADB:
+          self.hovering_node.setType(NODE_TYPE_BADB);
+          self.hovering_node.biot_resist = config.default_badb_resist;
+          break;
+        case CLICK_FUNC_GOOD:
+          self.hovering_node.setType(NODE_TYPE_GOOD);
+          self.hovering_node.biot_resist = config.default_good_resist;
+          break;
+        case CLICK_FUNC_BODY:
+          self.hovering_node.setType(NODE_TYPE_BODY);
+          break;
+        case CLICK_FUNC_NONE:
+        default:
+          break;
+      }
     }
     self.unhover = function(evt)
     {
@@ -814,9 +835,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var w = canv.canvas.width;
       canv.context.fillStyle = "rgba(255,255,255,0.5)";
       canv.context.fillRect(0,0,w,canv.canvas.height);
+
       canv.context.fillStyle = "#333333";
+      canv.context.strokeStyle = "white";
       canv.context.fillRect(w-28,10,8,20);
+      canv.context.strokeRect(w-28,10,8,20);
       canv.context.fillRect(w-18,10,8,20);
+      canv.context.strokeRect(w-18,10,8,20);
       self.just_paused = 30;
     }
     else if(self.just_paused)
@@ -824,12 +849,14 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.just_paused--;
       var w = canv.canvas.width;
       canv.context.fillStyle = "#333333";
+      canv.context.strokeStyle = "white";
       canv.context.beginPath();
       canv.context.moveTo(w-10, 20);
       canv.context.lineTo(w-25, 30);
       canv.context.lineTo(w-25, 10);
       canv.context.closePath();
       canv.context.fill();
+      canv.context.stroke();
     }
 
     /*

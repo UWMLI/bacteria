@@ -185,6 +185,7 @@ function begin()
       init_body:true,
       reinit_body:true,
       click_function:CLICK_FUNC_NONE,
+      hover_function:CLICK_FUNC_NONE,
       mutate:true,
       bias_mutate:true,
       reproduce:true,
@@ -227,6 +228,7 @@ function begin()
       init_body:false,
       reinit_body:false,
       click_function:CLICK_FUNC_BADB,
+      hover_function:CLICK_FUNC_NONE,
       mutate:false,
       bias_mutate:false,
       reproduce:true,
@@ -269,6 +271,7 @@ function begin()
       init_body:false,
       reinit_body:false,
       click_function:CLICK_FUNC_BADB,
+      hover_function:CLICK_FUNC_NONE,
       mutate:true,
       bias_mutate:false,
       reproduce:true,
@@ -302,7 +305,7 @@ function begin()
       allow_contaminate:false,
       default_badb_resist:0.01,
       init_badb:true,
-      reinit_badb:true,
+      reinit_badb:false,
       default_good_resist:0.1,
       allow_good:false,
       init_good:false,
@@ -311,6 +314,7 @@ function begin()
       init_body:false,
       reinit_body:false,
       click_function:CLICK_FUNC_KILL,
+      hover_function:CLICK_FUNC_KILL,
       mutate:true,
       bias_mutate:false,
       reproduce:true,
@@ -343,7 +347,7 @@ function begin()
       allow_reset:true,
       allow_contaminate:false,
       default_badb_resist:0.1,
-      init_badb:false,
+      init_badb:true,
       reinit_badb:false,
       default_good_resist:0.1,
       allow_good:false,
@@ -352,7 +356,8 @@ function begin()
       allow_body:false,
       init_body:false,
       reinit_body:false,
-      click_function:CLICK_FUNC_BADB,
+      click_function:CLICK_FUNC_NONE,
+      hover_function:CLICK_FUNC_NONE,
       mutate:true,
       bias_mutate:true,
       reproduce:true,
@@ -395,6 +400,7 @@ function begin()
       init_body:false,
       reinit_body:false,
       click_function:CLICK_FUNC_NONE,
+      hover_function:CLICK_FUNC_NONE,
       mutate:true,
       bias_mutate:true,
       reproduce:true,
@@ -437,6 +443,7 @@ function begin()
       init_body:true,
       reinit_body:true,
       click_function:CLICK_FUNC_NONE,
+      hover_function:CLICK_FUNC_NONE,
       mutate:true,
       bias_mutate:true,
       reproduce:true,
@@ -479,6 +486,7 @@ function begin()
       init_body:true,
       reinit_body:true,
       click_function:CLICK_FUNC_NONE,
+      hover_function:CLICK_FUNC_NONE,
       mutate:true,
       bias_mutate:true,
       reproduce:true,
@@ -563,7 +571,7 @@ window.addEventListener("load",begin,false);
       &nbsp;&nbsp;&nbsp;&nbsp;Given enough time, you should start to see a diverse spectrum of shaded bacteria form. Upon further examination, the diverse shades seem to stay grouped together into small, similarly shaded patches. Remember, this simulation is obeying only the rules we've listed for it; there's no rule stating that they should stay in patches!<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;The bacteria's tendency to group together with other bacteria of a similar shade is an example of an <span class="keyword">emergent behavior</span>. We can see that, though no bacteria has any explicit instruction to stay in a group, the rules that "parents generate like-colored bacteria", and that "parents generate bacteria in a nearby cell" have combined to result in this phenomenon.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;Cool. Let's see some more emergent behavior. This time, rather than add more rules, let's change the bacteria's environment.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Now, clicking will <i>kill</i> bacteria rather than create it. Try following these instructions: Do your best to maintain a small population, killing only those bacteria that are <i>darker</i> than the <i>average</i> of the current population. Don't worry about being too picky!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Now, hover your mouse to <i>kill</i> bacteria rather than create it. Try following these instructions: Do your best to maintain a small population (only 4 to 5 bacteria!), killing only those bacteria that are <i>darker</i> than the <i>average</i> of the current population. Don't worry about being too picky!<br /><br />
     </div>
     <div class="margin margin_right">
       <br />
@@ -582,7 +590,7 @@ window.addEventListener("load",begin,false);
     <div class="popup" id="genocide_popup"/>What shade did you manage to average?</div>
   </div>
   <div class="description">
-    Click to kill bacteria. (One will automatically spawn if you've killed all of them.) Try killing only those bacteria darker than the average population.
+    Click to kill bacteria. Try killing only those bacteria darker than the average population. (Keep a small population of 5 or 6 bacteria to keep things manageable)
   </div>
 
   <div class="blurb">
@@ -624,7 +632,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you click to manually create more). But if your dosage is too small, you've only temporariliy reduced the colony. And worse, you've only left the strongest bactera alive to reproduce!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you reset...). But if your dosage is too small, you've only temporariliy reduced the colony. And worse, you've only left the strongest bactera alive to reproduce!<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria (an extremely, incredibly bad thing). Not only are too-weak doses of antibiotics a hostile environment for non-resistant bacteria, they are incredibly efficient at it as well (notice how easy it is to create a super-bacteria in this simulation compared to the previous).<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;If we see "super bacteria" as a problem we'd like to prevent in real life, it seems a good answer is "take more antibiotics!". As long as all of them are killed, none survive to become super! Right?<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;It's important to note here that, while models can be a great method to come to an intuitive understanding of a system, we must be careful to not bring conclusions drawn from the model back into the thing they represent, without first acknowledging the differences between our models and reality.<br /><br />
