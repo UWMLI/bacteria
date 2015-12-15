@@ -76,11 +76,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
     self.row = 0;
     self.col = 0;
 
+    self.parent_node = undefined;
+
     self.type = 0;
     self.biot_resist = 0.1;
     self.body_resist = 0.1;
     self.age = 0;
-    self.bounce_prog = 0;
+    self.anim_prog = 0;
 
     self.setPos = function(row,col,n_rows,n_cols,rect)
     {
@@ -97,7 +99,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     {
       self.type = t;
       self.age = 0;
-      self.bounce_prog = 1;
+      self.anim_prog = 1;
       if(t == NODE_TYPE_BADB) self.body_resist = 0.3;
       else if(t == NODE_TYPE_BODY) self.biot_resist = Math.random();
     }
@@ -116,28 +118,67 @@ var GamePlayScene = function(game, stage, config, popup_div)
     }
     self.cloneMutables = function(n)
     {
+      self.parent_node = n.parent_node;
       self.type = n.type;
       self.biot_resist = n.biot_resist;
       self.body_resist = n.body_resist;
       self.age = n.age;
-      self.bounce_prog = n.bounce_prog;
+      self.anim_prog = n.anim_prog;
     }
 
-    self.draw = function(canv)
+    self.draw = function(canv, stroke)
     {
       var x = self.x;
       var y = self.y;
       var w = self.w;
       var h = self.h;
 
-      if(self.bounce_prog > 0)
+      var resist_drawn = self.biot_resist;
+
+      if(self.type == NODE_TYPE_BADB || self.type == NODE_TYPE_GOOD)
       {
-        var b = Math.sin((1-self.bounce_prog)*Math.PI*2*3)*self.bounce_prog*self.w/5.;
-        x -= b/2;
-        y -= b/2;
-        w += b;
-        h += b;
+        if(self.anim_prog > 0)
+        {
+          var sub_prog = 0;
+          if(!self.parent_node && self.anim_prog > 0.8) self.anim_prog = 0.8;
+          if(self.anim_prog > 0.8) //parent moving to multiply
+          {
+            sub_prog = (1-self.anim_prog)/0.2;
+            sub_prog *= sub_prog;
+            resist_drawn = self.parent_node.biot_resist;
+            if(self.parent_node.row < self.row) //to the left
+            {
+              x = self.parent_node.x;
+              w = self.w + (sub_prog*self.w);
+            }
+            else if(self.parent_node.row > self.row) //to the right
+            {
+              w = self.w + (sub_prog*self.w);
+            }
+            else if(self.parent_node.col < self.col) //to the top
+            {
+              y = self.parent_node.y;
+              h = self.h + (sub_prog*self.h);
+            }
+            else if(self.parent_node.col > self.col) //to the bottom
+            {
+              h = self.h + (sub_prog*self.h);
+            }
+          }
+          else //bounce
+          {
+            sub_prog = (0.8-self.anim_prog)/0.8;
+
+            var b = Math.sin(sub_prog*Math.PI*2*3)*(1-sub_prog)*self.w/5.;
+            x -= b/2;
+            y -= b/2;
+            w += b;
+            h += b;
+          }
+        }
       }
+
+      canv.context.strokeStyle = "#ffffff";
 
       switch(self.type)
       {
@@ -145,61 +186,47 @@ var GamePlayScene = function(game, stage, config, popup_div)
           break;
         case NODE_TYPE_BADB:
           canv.context.fillStyle = "#AA4499";
-          canv.context.strokeStyle = "#ffffff";
-          var r = Math.floor(self.biot_resist*255);
-          canv.context.fillStyle = "rgba("+r+","+r+","+r+",1)";
-          canv.context.fillRect(x,y,w,h);
-          //canv.context.strokeRect(x,y,w,h);
+          if(stroke)
+          {
+            canv.context.strokeRect(x,y,w,h);
+          }
+          else
+          {
+            var r = Math.floor(resist_drawn*255);
+            canv.context.fillStyle = "rgba("+r+","+r+","+r+",1)";
+            canv.context.fillRect(x,y,w,h);
+          }
           break;
         case NODE_TYPE_GOOD:
           canv.context.fillStyle = "#AAFF99";
-          canv.context.strokeStyle = "#ffffff";
-          var r = Math.floor(self.biot_resist*(0.9*255));
-          canv.context.fillStyle = "rgba("+r+","+Math.floor((0.1*255)+r)+","+r+",1)";
-          canv.context.fillRect(x,y,w,h);
-          //canv.context.strokeRect(x,y,w,h);
+          if(stroke)
+          {
+            canv.context.strokeRect(x,y,w,h);
+          }
+          else
+          {
+            var r = Math.floor(resist_drawn*(0.9*255));
+            canv.context.fillStyle = "rgba("+r+","+Math.floor((0.1*255)+r)+","+r+",1)";
+            canv.context.fillRect(x,y,w,h);
+          }
           break;
         case NODE_TYPE_BODY:
           canv.context.fillStyle = "#882222";
-          canv.context.strokeStyle = "#ffffff";
-          canv.context.fillRect(x,y,w,h);
-          //canv.context.strokeRect(x,y,w,h);
-          break;
-      }
-    }
-
-    self.stroke = function(canv)
-    {
-      var x = self.x;
-      var y = self.y;
-      var w = self.w;
-      var h = self.h;
-
-      if(self.bounce_prog > 0)
-      {
-        var b = Math.sin((1-self.bounce_prog)*Math.PI*2*3)*self.bounce_prog*self.w/5.;
-        x -= b/2;
-        y -= b/2;
-        w += b;
-        h += b;
-      }
-
-      switch(self.type)
-      {
-        case NODE_TYPE_NONE:
-          break;
-        case NODE_TYPE_BADB:
-        case NODE_TYPE_GOOD:
-        case NODE_TYPE_BODY:
-          canv.context.strokeStyle = "#ffffff";
-          canv.context.strokeRect(x,y,w,h);
+          if(stroke)
+          {
+            canv.context.strokeRect(x,y,w,h);
+          }
+          else
+          {
+            canv.context.fillRect(x,y,w,h);
+          }
           break;
       }
     }
 
     self.tick = function()
     {
-      if(self.bounce_prog > 0) self.bounce_prog -= 0.01;
+      if(self.anim_prog > 0) self.anim_prog -= 0.01;
       self.age += config.sim_speed;
 
       if(self.type == NODE_TYPE_BODY)
@@ -425,10 +452,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var nodes = self.node_buffs[self.node_buff];
       canv.context.lineWidth = nodes[0].w/8;
       for(var i = 0; i < nodes.length; i++)
-        nodes[i].stroke(canv);
+        nodes[i].draw(canv,true);
       canv.context.lineWidth = 2;
       for(var i = 0; i < nodes.length; i++)
-        nodes[i].draw(canv);
+        nodes[i].draw(canv,false);
 
       canv.context.strokeStyle = "#0000FF";
       if(config.show_hover && self.hovering_node)
@@ -521,6 +548,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
               if(token_node)
               {
+                new_nodes[i].parent_node = token_node;
                 new_nodes[i].setType(token_node.type);
                 var biot_resist = token_node.biot_resist;
                 if(config.mutate_random_assign)
