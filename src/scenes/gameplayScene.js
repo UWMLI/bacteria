@@ -1,6 +1,10 @@
 var ENUM;
 
 ENUM = 0;
+var SPECIAL_NONE  = ENUM; ENUM++;
+var SPECIAL_INTRO = ENUM; ENUM++;
+
+ENUM = 0;
 var NODE_TYPE_NONE = ENUM; ENUM++;
 var NODE_TYPE_BADB = ENUM; ENUM++;
 var NODE_TYPE_GOOD = ENUM; ENUM++;
@@ -19,6 +23,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
   var default_config =
   {
+    special:SPECIAL_NONE,
     grid_x:0,
     grid_y:0,
     grid_w:-1,
@@ -47,7 +52,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
     click_function:CLICK_FUNC_NONE,
     hover_function:CLICK_FUNC_NONE,
     show_hover:false,
-    mutate:true,
+    mutate_random_assign:false,
+    mutate_rate:0.1,
+    mutate_distance:0.1,
     bias_mutate:true,
     reproduce:true,
     age:true,
@@ -125,7 +132,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(self.bounce_prog > 0)
       {
-        var b = Math.sin((1-self.bounce_prog)*Math.PI*2*3)*self.bounce_prog*3;
+        var b = Math.sin((1-self.bounce_prog)*Math.PI*2*3)*self.bounce_prog*self.w/5.;
         x -= b/2;
         y -= b/2;
         w += b;
@@ -170,7 +177,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(self.bounce_prog > 0)
       {
-        var b = Math.sin((1-self.bounce_prog)*Math.PI*2*3)*self.bounce_prog*3;
+        var b = Math.sin((1-self.bounce_prog)*Math.PI*2*3)*self.bounce_prog*self.w/5.;
         x -= b/2;
         y -= b/2;
         w += b;
@@ -416,8 +423,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
     {
 
       var nodes = self.node_buffs[self.node_buff];
+      canv.context.lineWidth = nodes[0].w/8;
       for(var i = 0; i < nodes.length; i++)
         nodes[i].stroke(canv);
+      canv.context.lineWidth = 2;
       for(var i = 0; i < nodes.length; i++)
         nodes[i].draw(canv);
 
@@ -514,18 +523,26 @@ var GamePlayScene = function(game, stage, config, popup_div)
               {
                 new_nodes[i].setType(token_node.type);
                 var biot_resist = token_node.biot_resist;
-                if(config.mutate)
+                if(config.mutate_random_assign)
+                {
+                  var rand = Math.random();
+                  if(rand < config.mutate_random_assign)
+                  {
+                    biot_resist = Math.random();
+                  }
+                }
+                else if(config.mutate_rate && config.mutate_distance)
                 {
                   var rand = Math.random();
                   if(config.bias_mutate)
                   {
-                         if(rand < 0.08) biot_resist -= 0.1;
-                    else if(rand > 0.88) biot_resist += 0.1;
+                         if(rand < config.mutate_rate*0.4)   biot_resist -= Math.random()*config.mutate_distance;
+                    else if(rand > 1-config.mutate_rate*0.6) biot_resist += Math.random()*config.mutate_distance;
                   }
                   else
                   {
-                         if(rand < 0.1) biot_resist -= 0.1;
-                    else if(rand > 0.9) biot_resist += 0.1;
+                         if(rand < config.mutate_rate*0.5)   biot_resist -= Math.random()*config.mutate_distance;
+                    else if(rand > 1-config.mutate_rate*0.5) biot_resist += Math.random()*config.mutate_distance;
                   }
                 }
                 if(biot_resist < 0) biot_resist = 0;
@@ -734,228 +751,303 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
   self.ready = function()
   {
-    var c = stage.drawCanv;
-    self.presser = new Presser({source:stage.dispCanv.canvas});
-    self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
-    self.dragger = new Dragger({source:stage.dispCanv.canvas});
-
-    if(config.grid_w == -1) config.grid_w = c.canvas.width;
-    if(config.grid_h == -1) config.grid_h = c.canvas.height;
-    self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows);
-    if(config.init_badb)
+    if(config.special == SPECIAL_NONE)
     {
-      self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
-      self.grid.nodeAt(9,10).biot_resist = 0.1;
-    }
-    if(config.init_good)
-    {
-      self.grid.nodeAt(self.grid.cols-9,10).setType(NODE_TYPE_GOOD);
-      self.grid.nodeAt(self.grid.cols-9,10).biot_resist = 0.1;
-    }
-    if(config.allow_body && config.init_body)
-    {
-      self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
-    }
-    self.hoverer.register(self.grid);
-    self.dragger.register(self.grid);
+      var c = stage.drawCanv;
+      self.presser = new Presser({source:stage.dispCanv.canvas});
+      self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
+      self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
-    self.external_biot_resist = 0.1;
-    if(config.allow_contaminate)
-    {
-      self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.ave_badb_biot_resist; })
-      self.presser.register(self.sneeze_button);
-      self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
-        self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
-        self.grid.nodeAt(9,10).biot_resist = self.external_biot_resist;
-      })
-      self.presser.register(self.catch_button);
-    }
-
-    if(config.allow_dose)
-    {
-      self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.dosing_prog = self.dosing_prog_rate; })
-      self.presser.register(self.dose_button);
-
-      self.dose_amt = 0.;
-      self.dosing_prog = 0;
-      self.dosing_prog_rate = 0.01;
-      self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
-      self.dragger.register(self.dose_slider);
-    }
-
-    if(config.allow_smile)
-    {
-      self.smiley = new Smiley(40+100+10,c.canvas.height-30,20,20);
-    }
-
-    if(config.ave_display_width > 0)
-    {
-      self.ave_disp = new AveDisplay(c.canvas.width-config.ave_display_width,0,config.ave_display_width,c.canvas.height,self.grid);
-    }
-
-    if(config.split_display_width > 0)
-    {
-      self.split_disp = new SplitDisplay(c.canvas.width-config.split_display_width,0,config.split_display_width,c.canvas.height,self.grid);
-    }
-
-    self.just_paused = 0;
-
-    if(config.allow_reset)
-    {
-      self.reset_button = new ButtonBox(10,10,20,20,
-      function()
+      if(config.grid_w == -1) config.grid_w = c.canvas.width;
+      if(config.grid_h == -1) config.grid_h = c.canvas.height;
+      self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows);
+      if(config.init_badb)
       {
-        self.grid.clear();
-        if(config.init_badb)
-        {
+        self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
+        self.grid.nodeAt(9,10).biot_resist = 0.1;
+      }
+      if(config.init_good)
+      {
+        self.grid.nodeAt(self.grid.cols-9,10).setType(NODE_TYPE_GOOD);
+        self.grid.nodeAt(self.grid.cols-9,10).biot_resist = 0.1;
+      }
+      if(config.allow_body && config.init_body)
+      {
+        self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+      }
+      self.hoverer.register(self.grid);
+      self.dragger.register(self.grid);
+
+      self.external_biot_resist = 0.1;
+      if(config.allow_contaminate)
+      {
+        self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.ave_badb_biot_resist; })
+        self.presser.register(self.sneeze_button);
+        self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
           self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
-          self.grid.nodeAt(9,10).biot_resist = 0.1;
-        }
-        if(config.init_good)
+          self.grid.nodeAt(9,10).biot_resist = self.external_biot_resist;
+        })
+        self.presser.register(self.catch_button);
+      }
+
+      if(config.allow_dose)
+      {
+        self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.dosing_prog = self.dosing_prog_rate; })
+        self.presser.register(self.dose_button);
+
+        self.dose_amt = 0.;
+        self.dosing_prog = 0;
+        self.dosing_prog_rate = 0.01;
+        self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
+        self.dragger.register(self.dose_slider);
+      }
+
+      if(config.allow_smile)
+      {
+        self.smiley = new Smiley(40+100+10,c.canvas.height-30,20,20);
+      }
+
+      if(config.ave_display_width > 0)
+      {
+        self.ave_disp = new AveDisplay(c.canvas.width-config.ave_display_width,0,config.ave_display_width,c.canvas.height,self.grid);
+      }
+
+      if(config.split_display_width > 0)
+      {
+        self.split_disp = new SplitDisplay(c.canvas.width-config.split_display_width,0,config.split_display_width,c.canvas.height,self.grid);
+      }
+
+      self.just_paused = 0;
+
+      if(config.allow_reset)
+      {
+        self.reset_button = new ButtonBox(10,10,20,20,
+        function()
         {
-          self.grid.nodeAt(self.grid.cols-9,10).setType(NODE_TYPE_GOOD);
-          self.grid.nodeAt(self.grid.cols-9,10).biot_resist = 0.1;
-        }
-        if(config.allow_body && config.init_body)
-        {
-          self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
-        }
-      })
-      self.presser.register(self.reset_button);
+          self.grid.clear();
+          if(config.init_badb)
+          {
+            self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
+            self.grid.nodeAt(9,10).biot_resist = 0.1;
+          }
+          if(config.init_good)
+          {
+            self.grid.nodeAt(self.grid.cols-9,10).setType(NODE_TYPE_GOOD);
+            self.grid.nodeAt(self.grid.cols-9,10).biot_resist = 0.1;
+          }
+          if(config.allow_body && config.init_body)
+          {
+            self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+          }
+        })
+        self.presser.register(self.reset_button);
+      }
+    }
+    else if(config.special == SPECIAL_INTRO)
+    {
+      var c = stage.drawCanv;
+      self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
+      self.dragger = new Dragger({source:stage.dispCanv.canvas});
+
+      if(config.grid_w == -1) config.grid_w = c.canvas.width;
+      if(config.grid_h == -1) config.grid_h = c.canvas.height;
+      self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows);
+      self.hoverer.register(self.grid);
+      self.dragger.register(self.grid);
+
+      self.just_paused = 0;
     }
   };
 
   self.tick = function()
   {
-    self.hoverer.flush();
-    if(!config.hover_to_play || self.grid.hovering)
+    if(config.special == SPECIAL_NONE)
     {
-      self.presser.flush();
-      self.dragger.flush();
-
-      if(config.allow_dose && self.dosing_prog)
+      self.hoverer.flush();
+      if(!config.hover_to_play || self.grid.hovering)
       {
-        self.grid.dose(self.dosing_prog);
+        self.presser.flush();
+        self.dragger.flush();
+
+        if(config.allow_dose && self.dosing_prog)
+        {
+          self.grid.dose(self.dosing_prog);
+          if(config.allow_smile)
+          {
+            self.smiley.happiness -= 0.01;
+          }
+          self.dosing_prog += self.dosing_prog_rate;
+          if(self.dosing_prog > self.dose_amt)
+            self.dosing_prog = 0;
+        }
         if(config.allow_smile)
         {
-          self.smiley.happiness -= 0.01;
+          self.smiley.happiness += 0.001;
+
+          if(self.smiley.happiness < 0) self.smiley.happiness = 0;
+          if(self.smiley.happiness > 1) self.smiley.happiness = 1;
         }
-        self.dosing_prog += self.dosing_prog_rate;
-        if(self.dosing_prog > self.dose_amt)
-          self.dosing_prog = 0;
-      }
-      if(config.allow_smile)
-      {
-        self.smiley.happiness += 0.001;
 
-        if(self.smiley.happiness < 0) self.smiley.happiness = 0;
-        if(self.smiley.happiness > 1) self.smiley.happiness = 1;
-      }
+        self.grid.tick();
+        if(config.allow_dose)
+        {
+          self.dose_slider.tick();
+        }
+        if(config.reinit_badb && self.grid.n_badb == 0)
+        {
+          self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
+          self.grid.nodeAt(9,10).biot_resist = config.default_badb_resist;
+        }
+        if(config.reinit_good && self.grid.n_good == 0)
+        {
+          self.grid.nodeAt(self.grid.cols-9,10).setType(NODE_TYPE_GOOD);
+          self.grid.nodeAt(self.grid.cols-9,10).biot_resist = config.default_good_resist;
+        }
+        if(config.allow_body && config.reinit_body && self.grid.n_body == 0)
+        {
+          self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
+        }
 
-      self.grid.tick();
-      if(config.allow_dose)
-      {
-        self.dose_slider.tick();
+        if(self.grid.n_badb + self.grid.n_good + self.grid.n_body > self.grid.rows*self.grid.cols*0.6) popup_div.style.visibility = "visible";
       }
-      if(config.reinit_badb && self.grid.n_badb == 0)
+    }
+    else if(config.special == SPECIAL_INTRO)
+    {
+      self.hoverer.flush();
+      if(!config.hover_to_play || self.grid.hovering)
       {
-        self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
-        self.grid.nodeAt(9,10).biot_resist = config.default_badb_resist;
+        self.dragger.flush();
+        self.grid.tick();
       }
-      if(config.reinit_good && self.grid.n_good == 0)
-      {
-        self.grid.nodeAt(self.grid.cols-9,10).setType(NODE_TYPE_GOOD);
-        self.grid.nodeAt(self.grid.cols-9,10).biot_resist = config.default_good_resist;
-      }
-      if(config.allow_body && config.reinit_body && self.grid.n_body == 0)
-      {
-        self.grid.nodeAt(Math.round(self.grid.cols/2),self.grid.rows-1-5).setType(NODE_TYPE_BODY);
-      }
-
-      if(self.grid.n_badb + self.grid.n_good + self.grid.n_body > self.grid.rows*self.grid.cols*0.6) popup_div.style.visibility = "visible";
     }
   };
 
   self.draw = function()
   {
-    var canv = stage.drawCanv;
-    canv.context.fillStyle = "#888833";
-    canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+    if(config.special == SPECIAL_NONE)
+    {
+      var canv = stage.drawCanv;
+      canv.context.fillStyle = "#888833";
+      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
 
-    self.grid.draw(canv);
+      self.grid.draw(canv);
 
-    if(config.allow_dose)
-    {
-      canv.context.strokeStyle = "#00FF00";
-      self.dose_button.draw(canv);
-      canv.context.strokeStyle = "#00FF00";
-      self.dose_slider.draw(canv);
-    }
-    if(config.allow_smile)
-    {
-      canv.context.strokeStyle = "#00FF00";
-      self.smiley.draw(canv);
-    }
-    if(config.ave_display_width > 0)
-    {
-      self.ave_disp.draw(canv);
-    }
-    if(config.split_display_width > 0)
-    {
-      self.split_disp.draw(canv);
-    }
+      if(config.allow_dose)
+      {
+        canv.context.strokeStyle = "#00FF00";
+        self.dose_button.draw(canv);
+        canv.context.strokeStyle = "#00FF00";
+        self.dose_slider.draw(canv);
+      }
+      if(config.allow_smile)
+      {
+        canv.context.strokeStyle = "#00FF00";
+        self.smiley.draw(canv);
+      }
+      if(config.ave_display_width > 0)
+      {
+        self.ave_disp.draw(canv);
+      }
+      if(config.split_display_width > 0)
+      {
+        self.split_disp.draw(canv);
+      }
 
-    if(config.allow_contaminate)
-    {
-      self.sneeze_button.draw(canv);
-      self.catch_button.draw(canv);
-    }
+      if(config.allow_contaminate)
+      {
+        self.sneeze_button.draw(canv);
+        self.catch_button.draw(canv);
+      }
 
-    if(config.allow_dose && self.dosing_prog)
-    {
-      canv.context.strokeStyle = "#00FF00";
-      canv.context.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
-    }
+      if(config.allow_dose && self.dosing_prog)
+      {
+        canv.context.strokeStyle = "#00FF00";
+        canv.context.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
+      }
 
-    if(config.allow_reset)
-    {
-      self.reset_button.draw(canv);
-    }
+      if(config.allow_reset)
+      {
+        self.reset_button.draw(canv);
+      }
 
-    if(config.hover_to_play && !self.grid.hovering && config.display_pause)
-    {
-      var w = canv.canvas.width;
-      canv.context.fillStyle = "rgba(255,255,255,0.5)";
-      canv.context.fillRect(0,0,w,canv.canvas.height);
+      if(config.hover_to_play && !self.grid.hovering && config.display_pause)
+      {
+        var w = canv.canvas.width;
+        canv.context.fillStyle = "rgba(255,255,255,0.5)";
+        canv.context.fillRect(0,0,w,canv.canvas.height);
 
-      canv.context.fillStyle = "#333333";
-      canv.context.strokeStyle = "white";
-      canv.context.fillRect(w-28,10,8,20);
-      canv.context.strokeRect(w-28,10,8,20);
-      canv.context.fillRect(w-18,10,8,20);
-      canv.context.strokeRect(w-18,10,8,20);
-      self.just_paused = 30;
-    }
-    else if(self.just_paused)
-    {
-      self.just_paused--;
-      var w = canv.canvas.width;
-      canv.context.fillStyle = "#333333";
-      canv.context.strokeStyle = "white";
-      canv.context.beginPath();
-      canv.context.moveTo(w-10, 20);
-      canv.context.lineTo(w-25, 30);
-      canv.context.lineTo(w-25, 10);
-      canv.context.closePath();
-      canv.context.fill();
-      canv.context.stroke();
-    }
+        canv.context.fillStyle = "#333333";
+        canv.context.strokeStyle = "white";
+        canv.context.fillRect(w-28,10,8,20);
+        canv.context.strokeRect(w-28,10,8,20);
+        canv.context.fillRect(w-18,10,8,20);
+        canv.context.strokeRect(w-18,10,8,20);
+        self.just_paused = 30;
+      }
+      else if(self.just_paused)
+      {
+        self.just_paused--;
+        var w = canv.canvas.width;
+        canv.context.fillStyle = "#333333";
+        canv.context.strokeStyle = "white";
+        canv.context.beginPath();
+        canv.context.moveTo(w-10, 20);
+        canv.context.lineTo(w-25, 30);
+        canv.context.lineTo(w-25, 10);
+        canv.context.closePath();
+        canv.context.fill();
+        canv.context.stroke();
+      }
 
-    /*
-    //for more visible debugging overlay
-    canv.context.fillStyle = "#FFFFFF";
-    canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height/2);
-    */
+      /*
+      //for more visible debugging overlay
+      canv.context.fillStyle = "#FFFFFF";
+      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height/2);
+      */
+    }
+    else if(config.special == SPECIAL_INTRO)
+    {
+      var canv = stage.drawCanv;
+      canv.context.fillStyle = "#888833";
+      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+
+      self.grid.draw(canv);
+
+      if(config.hover_to_play && !self.grid.hovering && config.display_pause)
+      {
+        var w = canv.canvas.width;
+        canv.context.fillStyle = "rgba(255,255,255,0.5)";
+        canv.context.fillRect(0,0,w,canv.canvas.height);
+
+        canv.context.fillStyle = "#333333";
+        canv.context.strokeStyle = "white";
+        canv.context.fillRect(w-28,10,8,20);
+        canv.context.strokeRect(w-28,10,8,20);
+        canv.context.fillRect(w-18,10,8,20);
+        canv.context.strokeRect(w-18,10,8,20);
+        self.just_paused = 30;
+      }
+      else if(self.just_paused)
+      {
+        self.just_paused--;
+        var w = canv.canvas.width;
+        canv.context.fillStyle = "#333333";
+        canv.context.strokeStyle = "white";
+        canv.context.beginPath();
+        canv.context.moveTo(w-10, 20);
+        canv.context.lineTo(w-25, 30);
+        canv.context.lineTo(w-25, 10);
+        canv.context.closePath();
+        canv.context.fill();
+        canv.context.stroke();
+      }
+
+      /*
+      //for more visible debugging overlay
+      canv.context.fillStyle = "#FFFFFF";
+      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height/2);
+      */
+    }
   };
 
   self.cleanup = function()
