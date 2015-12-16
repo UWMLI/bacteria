@@ -171,6 +171,7 @@ function begin()
       grid_h:-1,
       grid_cols:50,
       grid_rows:25,
+      colored:false,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -219,6 +220,7 @@ function begin()
       grid_h:-1,
       grid_cols:10,
       grid_rows:10,
+      colored:false,
       sim_speed:0,
       badb_sim_speed:0,
       hover_to_play:true,
@@ -267,6 +269,7 @@ function begin()
       grid_h:-1,
       grid_cols:10,
       grid_rows:10,
+      colored:false,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -315,6 +318,7 @@ function begin()
       grid_h:-1,
       grid_cols:10,
       grid_rows:10,
+      colored:false,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -363,6 +367,7 @@ function begin()
       grid_h:-1,
       grid_cols:10,
       grid_rows:10,
+      colored:true,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -411,6 +416,7 @@ function begin()
       grid_h:-1,
       grid_cols:10,
       grid_rows:10,
+      colored:true,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -445,6 +451,155 @@ function begin()
   });
   g.begin();
 
+  prefix = "murder_";
+  w = 256;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
+    config:
+    {
+      special:SPECIAL_NONE,
+      grid_x:0,
+      grid_y:0,
+      grid_w:-1,
+      grid_h:-1,
+      grid_cols:10,
+      grid_rows:10,
+      colored:true,
+      sim_speed:1,
+      badb_sim_speed:1,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:false,
+      allow_smile:false,
+      allow_reset:true,
+      allow_contaminate:false,
+      default_badb_resist:0.,
+      init_badb:true,
+      reinit_badb:false,
+      default_good_resist:0.,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
+      allow_body:false,
+      init_body:false,
+      reinit_body:false,
+      swab_size:1,
+      click_function:CLICK_FUNC_KILL,
+      hover_function:CLICK_FUNC_KILL,
+      show_hover:true,
+      mutate_random_assign:false,
+      mutate_rate:1,
+      mutate_distance:0.2,
+      bias_mutate:false,
+      reproduce:true,
+      age:true,
+      ave_display_width:0,
+      split_display_width:0,
+    }
+  });
+  g.begin();
+
+  prefix = "resistance_";
+  w = 256;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
+    config:
+    {
+      special:SPECIAL_NONE,
+      grid_x:0,
+      grid_y:0,
+      grid_w:-1,
+      grid_h:-1,
+      grid_cols:10,
+      grid_rows:10,
+      colored:false,
+      sim_speed:1,
+      badb_sim_speed:1,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:false,
+      allow_smile:false,
+      allow_reset:true,
+      allow_contaminate:false,
+      default_badb_resist:0.,
+      init_badb:true,
+      reinit_badb:false,
+      default_good_resist:0.,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
+      allow_body:false,
+      init_body:false,
+      reinit_body:false,
+      swab_size:1,
+      click_function:CLICK_FUNC_KILL,
+      hover_function:CLICK_FUNC_KILL,
+      show_hover:true,
+      mutate_random_assign:false,
+      mutate_rate:1,
+      mutate_distance:0.2,
+      bias_mutate:false,
+      reproduce:true,
+      age:true,
+      ave_display_width:0,
+      split_display_width:0,
+    }
+  });
+  g.begin();
+
+  prefix = "killbutton_";
+  w = 256;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
+    config:
+    {
+      special:SPECIAL_NONE,
+      grid_x:0,
+      grid_y:0,
+      grid_w:-1,
+      grid_h:-1,
+      grid_cols:10,
+      grid_rows:10,
+      colored:false,
+      sim_speed:1,
+      badb_sim_speed:1,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:true,
+      allow_smile:false,
+      allow_reset:true,
+      allow_contaminate:false,
+      default_badb_resist:0.,
+      init_badb:true,
+      reinit_badb:false,
+      default_good_resist:0.,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
+      allow_body:false,
+      init_body:false,
+      reinit_body:false,
+      swab_size:1,
+      click_function:CLICK_FUNC_NONE,
+      hover_function:CLICK_FUNC_NONE,
+      show_hover:false,
+      mutate_random_assign:false,
+      mutate_rate:1,
+      mutate_distance:0.2,
+      bias_mutate:false,
+      reproduce:true,
+      age:true,
+      ave_display_width:0,
+      split_display_width:0,
+    }
+  });
+  g.begin();
+
+
+
   prefix = "basic_";
   w = 256;
   h = 256;
@@ -459,6 +614,7 @@ function begin()
       grid_h:-1,
       grid_cols:20,
       grid_rows:20,
+      colored:false,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -507,6 +663,7 @@ function begin()
       grid_h:-1,
       grid_cols:20,
       grid_rows:20,
+      colored:false,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -555,6 +712,7 @@ function begin()
       grid_h:-1,
       grid_cols:20,
       grid_rows:20,
+      colored:false,
       sim_speed:0.5,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -603,6 +761,7 @@ function begin()
       grid_h:-1,
       grid_cols:20,
       grid_rows:20,
+      colored:false,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -651,6 +810,7 @@ function begin()
       grid_h:-1,
       grid_cols:20,
       grid_rows:20,
+      colored:false,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -699,6 +859,7 @@ function begin()
       grid_h:-1,
       grid_cols:20,
       grid_rows:20,
+      colored:false,
       sim_speed:1,
       badb_sim_speed:1,
       hover_to_play:true,
@@ -747,6 +908,7 @@ function begin()
       grid_h:-1,
       grid_cols:20,
       grid_rows:20,
+      colored:false,
       sim_speed:1,
       badb_sim_speed:2,
       hover_to_play:true,
@@ -896,14 +1058,14 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;A thriving colony! Let's keep this ball rolling and add some other properties of life. Like diversity! People don't all look the same, and neither do bacteria!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;A thriving colony! Let's keep this ball rolling and add some other properties of life. Like diversity! People don't all look the same, behave the same, or have the same abilities- and neither do bacteria! We can consider these differences "<span class="keyword">attributes</span>". Let's let bacteria differ in their color attribute.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
   </div>
 
   <div class="description">
-    Colors! Er, grayscale?
+    Color!
   </div>
   <div class="experiment">
     <div class="rules rules_left">
@@ -962,12 +1124,121 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;The differences between random babies and <i>slightly</i> random babies is small. The most noticeable thing is probably how sloooooowly the latter takes to really show a change. But you can also see small groupings of similar attributes that gradually blend between each other. Now we're getting somewhere.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So now that we have a reasonable model for how attributes propagate through a population, let's try an experiment. What would happen if there were something trying to <span class="keyword">kill</span> bacteria with a certain attribute. What if that <i>thing</i> was <i>you</i>, and the <i>attribute</i> you wanted to remove was <i>"being something other than my favorite color"</i>.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
   </div>
+
+  <div class="description">
+    Hover to kill any bacteria that isn't your favorite color.<br />
+    Try not to be too picky- act quickly rather than carefully.<br />
+    (If you kill them all, hit restart)
+  </div>
+  <div class="experiment">
+    <div class="rules rules_left">
+      <br />
+      <br />
+      <br />
+      Model: (Same as before)<br />
+      - Bacteria are squares<br />
+      - Bacteria sometimes multiply<br />
+      - Bacteria eventually die<br />
+      - Bacteria are given a color at birth similar to their parents<br />
+    </div>
+    <div class="experiment_content"  id="murder_experiment_content">
+      <div class="stage_container" id="murder_stage_container"> </div>
+      <img class="shadow" id="murder_shadow" src="assets/shadow.png" />
+      <div class="popup" id="murder_popup"/>Wow! Watch those bacteria go!</div>
+    </div>
+    <div class="rules rules_right">
+    </div>
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;If you kept at it long enough, you might notice that the only bacteria left are the ones that are your favorite color! The bacteria are still reproducing faster than you can kill them, but the only ones you're letting reproduce are those that will produce more favorite-colored bacteria!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's try that again, but this time with a different attribute. The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the darker the bacteria is, the less resistant it is to antibiotics. The lighter it is, the more resistant (we'll remove the color attribute to make things simpler). See if you can kill only those bacteria <i>weak to antibiotics</i> (darker in color).<br /><br />
+    </div>
+    <div class="margin margin_right">
+    </div>
+  </div>
+
+  <div class="description">
+    Again, hover to kill. Try to kill only the bacteria weak against antibiotics (darker bacteria).
+  </div>
+  <div class="experiment">
+    <div class="rules rules_left">
+      <br />
+      <br />
+      <br />
+      Model:<br />
+      - Bacteria are squares<br />
+      - Bacteria sometimes multiply<br />
+      - Bacteria eventually die<br />
+      - Bacteria are given an antibiotic resistance at birth similar to their parents<br />
+    </div>
+    <div class="experiment_content"  id="resistance_experiment_content">
+      <div class="stage_container" id="resistance_stage_container"> </div>
+      <img class="shadow" id="resistance_shadow" src="assets/shadow.png" />
+      <div class="popup" id="resistance_popup"/>Wow! Watch those bacteria go!</div>
+    </div>
+    <div class="rules rules_right">
+    </div>
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;The longer you keep at it, the less you have to do. By killing a darker bacteria, you're removing it from the average, but you're also removing all of it's potential similarly-colored children! The bacteria is only creating new bacteria that you don't want to kill!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. That was cool, but also, really tedious. Let's just add a "kill all dark bacteria" button.<br /><br />
+    </div>
+    <div class="margin margin_right">
+    </div>
+  </div>
+
+  <div class="description">
+    Use the slider to select the threshhold (how light of bacteria should it kill). Press the button to kill.
+  </div>
+  <div class="experiment">
+    <div class="rules rules_left">
+      <br />
+      <br />
+      <br />
+      Model: (Same as before)<br />
+      - Bacteria are squares<br />
+      - Bacteria sometimes multiply<br />
+      - Bacteria eventually die<br />
+      - Bacteria are given a color at birth similar to their parents<br />
+    </div>
+    <div class="experiment_content"  id="killbutton_experiment_content">
+      <div class="stage_container" id="killbutton_stage_container"> </div>
+      <img class="shadow" id="killbutton_shadow" src="assets/shadow.png" />
+      <div class="popup" id="killbutton_popup"/>Wow! Watch those bacteria go!</div>
+    </div>
+    <div class="rules rules_right">
+    </div>
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;Well that was much easier! Hit reset and try applying different threshholds at different times. Pay attention to how the bacteria responds.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So let's take a step back into reality. In these examples, we've been playing with the attribute of "color", but all o<br /><br />
+    </div>
+    <div class="margin margin_right">
+    </div>
+  </div>
+
+
+
+
+<div style="visibility:hidden;">
+
 
   <div class="blurb">
     <div class="margin margin_left">
@@ -1191,6 +1462,8 @@ window.addEventListener("load",begin,false);
   <div class="description">
     This is a test description.
   </div>
+
+</div> <!-- visibility -->
 
 </div>
 
