@@ -1193,15 +1193,15 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;The longer you keep at it, the less you have to do. By killing a darker bacteria, you're removing it from the average, but you're also removing all of it's potential similarly-colored children! The bacteria is only creating new bacteria that you don't want to kill!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. That was cool, but also, really tedious. Let's just add a "kill all dark bacteria" button.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Same kind of thing happens, right? The longer you apply a <span class="hostile environment">to</span> an attribute, the more the population naturally biases against that attribute. (The cool bit is that this behavior happens without adding or changing any rules- it's a product of the simple set of rules we already have in the model!)<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Anyways, all this manual work to kill weak bacteria is exhausting. Let's simplify it and just add a button that does the work for us. Now you can choose a threshhold of bacteria, below which will be killed. Then, just press the button to do your dirty work!<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
   </div>
 
   <div class="description">
-    Use the slider to select the threshhold (how light of bacteria should it kill). Press the button to kill.
+    Use the slider to select the threshhold (all bacteria darker than this threshhold will be killed). Press the button to kill.
   </div>
   <div class="experiment">
     <div class="rules rules_left">
@@ -1212,7 +1212,7 @@ window.addEventListener("load",begin,false);
       - Bacteria are squares<br />
       - Bacteria sometimes multiply<br />
       - Bacteria eventually die<br />
-      - Bacteria are given a color at birth similar to their parents<br />
+      - Bacteria are given an antibiotic resistance at birth similar to their parents<br />
     </div>
     <div class="experiment_content"  id="killbutton_experiment_content">
       <div class="stage_container" id="killbutton_stage_container"> </div>
@@ -1228,7 +1228,8 @@ window.addEventListener("load",begin,false);
     </div>
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;Well that was much easier! Hit reset and try applying different threshholds at different times. Pay attention to how the bacteria responds.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So let's take a step back into reality. In these examples, we've been playing with the attribute of "color", but all o<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Some really interesting stuff... but what is <span class="keyword">antibiotic resistance</span> anyways? What are <span class="keyword">antibiotics</span>?<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Simply put, <span class="keyword">antibiotics</span> are just substances that kill bacteria (your doctor might give you some when you're sick). <span class="keyword">Antibiotic resistance</span> is the ability with which bacteria might survive antibiotics.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
