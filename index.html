@@ -48,7 +48,13 @@ body
   padding:10px;
   min-height:10px;
   float:left;
-  font:12px;
+}
+.rule
+{
+  font-style:italic;
+}
+.new
+{
   font-weight:bold;
 }
 .experiment_content /* outer_width:256+2(border) */
@@ -94,10 +100,6 @@ body
 .keyword
 {
   font-style:italic;
-}
-.rule
-{
-  font-weight:bold;
 }
 .expired
 {
@@ -391,7 +393,7 @@ function begin()
       hover_function:CLICK_FUNC_NONE,
       show_hover:false,
       mutate_random_assign:true,
-      mutate_rate:0,
+      mutate_rate:1,
       mutate_distance:0,
       bias_mutate:false,
       reproduce:true,
@@ -499,6 +501,56 @@ function begin()
     }
   });
   g.begin();
+
+  prefix = "murderrandom_";
+  w = 256;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
+    config:
+    {
+      special:SPECIAL_NONE,
+      grid_x:0,
+      grid_y:0,
+      grid_w:-1,
+      grid_h:-1,
+      grid_cols:10,
+      grid_rows:10,
+      colored:true,
+      sim_speed:1,
+      badb_sim_speed:1,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:false,
+      allow_smile:false,
+      allow_reset:true,
+      allow_contaminate:false,
+      default_badb_resist:0.,
+      init_badb:true,
+      reinit_badb:false,
+      default_good_resist:0.,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
+      allow_body:false,
+      init_body:false,
+      reinit_body:false,
+      swab_size:1,
+      click_function:CLICK_FUNC_KILL,
+      hover_function:CLICK_FUNC_KILL,
+      show_hover:true,
+      mutate_random_assign:true,
+      mutate_rate:1,
+      mutate_distance:0,
+      bias_mutate:false,
+      reproduce:true,
+      age:true,
+      ave_display_width:0,
+      split_display_width:0,
+    }
+  });
+  g.begin();
+
 
   prefix = "resistance_";
   w = 256;
@@ -976,8 +1028,8 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      Model:<br />
-      - Bacteria are squares<br />
+      In this Model:<br />
+      <span class="rule new">- Bacteria are squares</span><br />
     </div>
     <div class="experiment_content" id="nothing_experiment_content">
       <div class="stage_container" id="nothing_stage_container"> </div>
@@ -992,7 +1044,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok no they're not. Those are small black squares. But those small black squares represent a <span class="keyword">model</span> of bacteria (though not a very good one...). Let's improve on this model: bacteria don't just sit around- they multiply!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok no they're not. Those are small red squares. But those small red squares represent a <span class="keyword">model</span> of bacteria (though not a very good one...). Let's improve on this model: bacteria don't just sit around- they multiply!<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1008,9 +1060,9 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      Model:<br />
-      - Bacteria are squares<br />
-      - Bacteria sometimes multiply<br />
+      In this Model:<br />
+      <span class="rule">- Bacteria are squares</span><br />
+      <span class="rule new">- Bacteria sometimes multiply</span><br />
     </div>
     <div class="experiment_content" id="multiply_experiment_content">
       <div class="stage_container" id="multiply_stage_container"> </div>
@@ -1040,10 +1092,10 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      Model:<br />
-      - Bacteria are squares<br />
-      - Bacteria sometimes multiply<br />
-      - Bacteria eventually die<br />
+      In this Model:<br />
+      <span class="rule">- Bacteria are squares</span><br />
+      <span class="rule">- Bacteria sometimes multiply</span><br />
+      <span class="rule new">- Bacteria eventually die</span><br />
     </div>
     <div class="experiment_content"  id="death_experiment_content">
       <div class="stage_container" id="death_stage_container"> </div>
@@ -1072,11 +1124,11 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      Model:<br />
-      - Bacteria are squares<br />
-      - Bacteria sometimes multiply<br />
-      - Bacteria eventually die<br />
-      - Bacteria are randomly assigned a color at birth<br />
+      In this Model:<br />
+      <span class="rule">- Bacteria are squares</span><br />
+      <span class="rule">- Bacteria sometimes multiply</span><br />
+      <span class="rule">- Bacteria eventually die</span><br />
+      <span class="rule new">- Bacteria are randomly assigned a color at birth</span><br />
     </div>
     <div class="experiment_content"  id="diversity_experiment_content">
       <div class="stage_container" id="diversity_stage_container"> </div>
@@ -1105,11 +1157,11 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      Model:<br />
-      - Bacteria are squares<br />
-      - Bacteria sometimes multiply<br />
-      - Bacteria eventually die<br />
-      - Bacteria are given a color at birth similar to their parents<br />
+      In this Model:<br />
+      <span class="rule">- Bacteria are squares</span><br />
+      <span class="rule">- Bacteria sometimes multiply</span><br />
+      <span class="rule">- Bacteria eventually die</span><br />
+      <span class="rule new">- Bacteria are given a color at birth similar to their parents</span><br />
     </div>
     <div class="experiment_content"  id="controlleddiversity_experiment_content">
       <div class="stage_container" id="controlleddiversity_stage_container"> </div>
@@ -1124,14 +1176,14 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So now that we have a reasonable model for how attributes propagate through a population, let's try an experiment. What would happen if there were something trying to <span class="keyword">kill</span> bacteria with a certain attribute. What if that <i>thing</i> was <i>you</i>, and the <i>attribute</i> you wanted to remove was <i>"being something other than my favorite color"</i>.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So now that we have a reasonable model for how attributes propagate through a population, let's try an experiment. What would happen if there were something trying to <span class="keyword">kill</span> bacteria with a certain attribute. What if that <i>thing</i> was <i>you</i>, and the <i>attribute</i> you wanted to remove was <i>the color green</i>.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
   </div>
 
   <div class="description">
-    Hover to kill any bacteria that isn't your favorite color.<br />
+    Hover to kill any green bacteria.<br />
     Try not to be too picky- act quickly rather than carefully.<br />
     (If you kill them all, hit restart)
   </div>
@@ -1140,11 +1192,11 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      Model: (Same as before)<br />
-      - Bacteria are squares<br />
-      - Bacteria sometimes multiply<br />
-      - Bacteria eventually die<br />
-      - Bacteria are given a color at birth similar to their parents<br />
+      In this Model: <b>(Same as before)</b><br />
+      <span class="rule">- Bacteria are squares</span><br />
+      <span class="rule">- Bacteria sometimes multiply</span><br />
+      <span class="rule">- Bacteria eventually die</span><br />
+      <span class="rule">- Bacteria are given a color at birth similar to their parents</span><br />
     </div>
     <div class="experiment_content"  id="murder_experiment_content">
       <div class="stage_container" id="murder_stage_container"> </div>
@@ -1159,26 +1211,62 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;If you kept at it long enough, you might notice that the only bacteria left are the ones that are your favorite color! The bacteria are still reproducing faster than you can kill them, but the only ones you're letting reproduce are those that will produce more favorite-colored bacteria!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's try that again, but this time with a different attribute. The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the darker the bacteria is, the less resistant it is to antibiotics. The lighter it is, the more resistant (we'll remove the color attribute to make things simpler). See if you can kill only those bacteria <i>weak to antibiotics</i> (darker in color).<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;If you kept at it long enough, the population should have quickly been rid of any greens. Once it becomes dominated by blues and reds, there seems to be much less work required to maintain that state.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Let's change the rules back to random attribute assignment at birth (rather than attributes inherited from parents), and try this experiment again.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
   </div>
 
   <div class="description">
-    Again, hover to kill. Try to kill only the bacteria weak against antibiotics (darker bacteria).
+    Again, hover to kill any green bacteria.<br />
+    Try not to be too picky- act quickly rather than carefully.<br />
+    (If you kill them all, hit restart)
   </div>
   <div class="experiment">
     <div class="rules rules_left">
       <br />
       <br />
       <br />
-      Model:<br />
-      - Bacteria are squares<br />
-      - Bacteria sometimes multiply<br />
-      - Bacteria eventually die<br />
-      - Bacteria are given an antibiotic resistance at birth similar to their parents<br />
+      In this Model:<br />
+      <span class="rule">- Bacteria are squares</span><br />
+      <span class="rule">- Bacteria sometimes multiply</span><br />
+      <span class="rule">- Bacteria eventually die</span><br />
+      <span class="rule new">- Bacteria are randomly assigned a color at birth</span><br />
+    </div>
+    <div class="experiment_content"  id="murderrandom_experiment_content">
+      <div class="stage_container" id="murderrandom_stage_container"> </div>
+      <img class="shadow" id="murderrandom_shadow" src="assets/shadow.png" />
+      <div class="popup" id="murderrandom_popup"/>Wow! Watch those bacteria go!</div>
+    </div>
+    <div class="rules rules_right">
+    </div>
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;The bacteria simply reproduce faster than you can kill them! This wasn't as big a problem in the previous example; every green you killed had the added effect of removing any of its likely-green offspring! With the rules of the previous simulation, <span class="keyword">selecting</span> for or against an attribute has a long term effect.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's try that again, but this time with a different attribute (we'll go back to the "attributes are inherited from parents" model). The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant (we'll remove the color attribute to make things clearer). See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
+    </div>
+    <div class="margin margin_right">
+    </div>
+  </div>
+
+  <div class="description">
+    Again, hover to kill. Try to kill only the bacteria weak against antibiotics (lighter bacteria).
+  </div>
+  <div class="experiment">
+    <div class="rules rules_left">
+      <br />
+      <br />
+      <br />
+      In this Model:<br />
+      <span class="rule">- Bacteria are squares</span><br />
+      <span class="rule">- Bacteria sometimes multiply</span><br />
+      <span class="rule">- Bacteria eventually die</span><br />
+      <span class="rule new">- Bacteria are given an antibiotic resistance at birth similar to their parents</span><br />
     </div>
     <div class="experiment_content"  id="resistance_experiment_content">
       <div class="stage_container" id="resistance_stage_container"> </div>
@@ -1208,11 +1296,11 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      Model: (Same as before)<br />
-      - Bacteria are squares<br />
-      - Bacteria sometimes multiply<br />
-      - Bacteria eventually die<br />
-      - Bacteria are given an antibiotic resistance at birth similar to their parents<br />
+      In this Model: (Same as before)<br />
+      <span class="rule">- Bacteria are squares</span><br />
+      <span class="rule">- Bacteria sometimes multiply</span><br />
+      <span class="rule">- Bacteria eventually die</span><br />
+      <span class="rule">- Bacteria are given an antibiotic resistance at birth similar to their parents</span><br />
     </div>
     <div class="experiment_content"  id="killbutton_experiment_content">
       <div class="stage_container" id="killbutton_stage_container"> </div>

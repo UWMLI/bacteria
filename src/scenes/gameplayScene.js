@@ -583,47 +583,51 @@ var GamePlayScene = function(game, stage, config, popup_div)
                 var gc = token_node.g;
                 var bc = token_node.b;
                 var rand;
-                if(config.mutate_random_assign)
+                if(config.mutate_rate)
                 {
-                  rand = Math.random();
-                  if(rand < config.mutate_random_assign)
+                  if(config.mutate_random_assign && Math.random() < config.mutate_rate)
                   {
-                    biot_resist = Math.random();
+                    rand = Math.random();
+                    if(rand < config.mutate_random_assign)
+                    {
+                      biot_resist = Math.random();
+                      if(config.colored)
+                      {
+                        rc = Math.random();
+                        gc = Math.random();
+                        bc = Math.random();
+                      }
+                    }
+                  }
+                  else if(config.mutate_distance)
+                  {
                     if(config.colored)
                     {
-                      rc = Math.random();
-                      gc = Math.random();
-                      bc = Math.random();
+                      rand = Math.random();
+                           if(rand < config.mutate_rate*0.5)   rc -= Math.random()*config.mutate_distance;
+                      else if(rand > 1-config.mutate_rate*0.5) rc += Math.random()*config.mutate_distance;
+                      rand = Math.random();
+                           if(rand < config.mutate_rate*0.5)   gc -= Math.random()*config.mutate_distance;
+                      else if(rand > 1-config.mutate_rate*0.5) gc += Math.random()*config.mutate_distance;
+                      rand = Math.random();
+                           if(rand < config.mutate_rate*0.5)   bc -= Math.random()*config.mutate_distance;
+                      else if(rand > 1-config.mutate_rate*0.5) bc += Math.random()*config.mutate_distance;
+                    }
+                    if(config.bias_mutate)
+                    {
+                      rand = Math.random();
+                           if(rand < config.mutate_rate*0.4)   biot_resist -= Math.random()*config.mutate_distance;
+                      else if(rand > 1-config.mutate_rate*0.6) biot_resist += Math.random()*config.mutate_distance;
+                    }
+                    else
+                    {
+                      rand = Math.random();
+                           if(rand < config.mutate_rate*0.5)   biot_resist -= Math.random()*config.mutate_distance;
+                      else if(rand > 1-config.mutate_rate*0.5) biot_resist += Math.random()*config.mutate_distance;
                     }
                   }
                 }
-                else if(config.mutate_rate && config.mutate_distance)
-                {
-                  if(config.colored)
-                  {
-                    rand = Math.random();
-                         if(rand < config.mutate_rate*0.5)   rc -= Math.random()*config.mutate_distance;
-                    else if(rand > 1-config.mutate_rate*0.5) rc += Math.random()*config.mutate_distance;
-                    rand = Math.random();
-                         if(rand < config.mutate_rate*0.5)   gc -= Math.random()*config.mutate_distance;
-                    else if(rand > 1-config.mutate_rate*0.5) gc += Math.random()*config.mutate_distance;
-                    rand = Math.random();
-                         if(rand < config.mutate_rate*0.5)   bc -= Math.random()*config.mutate_distance;
-                    else if(rand > 1-config.mutate_rate*0.5) bc += Math.random()*config.mutate_distance;
-                  }
-                  if(config.bias_mutate)
-                  {
-                    rand = Math.random();
-                         if(rand < config.mutate_rate*0.4)   biot_resist -= Math.random()*config.mutate_distance;
-                    else if(rand > 1-config.mutate_rate*0.6) biot_resist += Math.random()*config.mutate_distance;
-                  }
-                  else
-                  {
-                    rand = Math.random();
-                         if(rand < config.mutate_rate*0.5)   biot_resist -= Math.random()*config.mutate_distance;
-                    else if(rand > 1-config.mutate_rate*0.5) biot_resist += Math.random()*config.mutate_distance;
-                  }
-                }
+
                 if(config.colored)
                 {
                   if(rc < 0) rc = 0; else if(rc > 1) rc = 1;
