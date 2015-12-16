@@ -610,7 +610,7 @@ function begin()
   g.begin();
 
   prefix = "killbutton_";
-  w = 256;
+  w = 266;
   h = 256;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
@@ -652,7 +652,7 @@ function begin()
       bias_mutate:false,
       reproduce:true,
       age:true,
-      ave_display_width:0,
+      ave_display_width:10,
       split_display_width:0,
       tricolor_display_width:0,
     }

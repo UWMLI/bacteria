@@ -1080,7 +1080,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         self.dose_slider.draw(canv);
 
         //fill slider with color exterminating
-        var r = Math.floor(self.dose_amt*255);
+        var r = Math.floor((1-self.dose_amt)*255);
         canv.context.fillStyle = "rgba("+r+","+r+","+r+",1)";
         var switch_x = self.dose_slider.slit_x+(((self.dose_slider.val-self.dose_slider.min_val)/(self.dose_slider.max_val-self.dose_slider.min_val))*self.dose_slider.slit_w);
         canv.context.fillRect(switch_x-(self.dose_slider.w/20)+0.5,self.dose_slider.y+0.5,(self.dose_slider.w/10),self.dose_slider.h);
