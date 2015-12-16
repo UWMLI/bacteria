@@ -204,6 +204,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -253,6 +254,7 @@ function begin()
       age:false,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -302,6 +304,7 @@ function begin()
       age:false,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -351,6 +354,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -400,6 +404,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -449,6 +454,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -498,12 +504,13 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:10,
     }
   });
   g.begin();
 
   prefix = "murderrandom_";
-  w = 256;
+  w = 266;
   h = 256;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
@@ -512,7 +519,7 @@ function begin()
       special:SPECIAL_NONE,
       grid_x:0,
       grid_y:0,
-      grid_w:-1,
+      grid_w:256,
       grid_h:-1,
       grid_cols:10,
       grid_rows:10,
@@ -547,13 +554,13 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:10,
     }
   });
   g.begin();
 
-
   prefix = "resistance_";
-  w = 256;
+  w = 266;
   h = 256;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
@@ -562,7 +569,7 @@ function begin()
       special:SPECIAL_NONE,
       grid_x:0,
       grid_y:0,
-      grid_w:-1,
+      grid_w:256,
       grid_h:-1,
       grid_cols:10,
       grid_rows:10,
@@ -595,8 +602,9 @@ function begin()
       bias_mutate:false,
       reproduce:true,
       age:true,
-      ave_display_width:0,
+      ave_display_width:10,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -646,6 +654,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -697,6 +706,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -746,6 +756,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -795,6 +806,7 @@ function begin()
       age:true,
       ave_display_width:10,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -844,6 +856,7 @@ function begin()
       age:true,
       ave_display_width:10,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -893,6 +906,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:0,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -942,6 +956,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:10,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -991,6 +1006,7 @@ function begin()
       age:true,
       ave_display_width:0,
       split_display_width:10,
+      tricolor_display_width:0,
     }
   });
   g.begin();
@@ -1117,7 +1133,7 @@ window.addEventListener("load",begin,false);
   </div>
 
   <div class="description">
-    Color!
+    Biodiversity!
   </div>
   <div class="experiment">
     <div class="rules rules_left">
@@ -1248,7 +1264,7 @@ window.addEventListener("load",begin,false);
     </div>
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;The bacteria simply reproduce faster than you can kill them! This wasn't as big a problem in the previous example; every green you killed had the added effect of removing any of its likely-green offspring! With the rules of the previous simulation, <span class="keyword">selecting</span> for or against an attribute has a long term effect.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's try that again, but this time with a different attribute (we'll go back to the "attributes are inherited from parents" model). The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant (we'll remove the color attribute to make things clearer). See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's try that again, but this time with a different attribute (we'll go back to the "attributes are inherited from parents" model). The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant (we'll remove the colorful attribute to make things clearer). See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
     </div>
     <div class="margin margin_right">
     </div>

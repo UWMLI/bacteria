@@ -61,6 +61,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     age:true,
     ave_display_width:0,
     split_display_width:0,
+    tricolor_display_width:0,
   };
 
   if(!config) config = default_config;
@@ -211,8 +212,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
             }
             else
             {
-              var r = Math.floor(resist_drawn*255);
-              canv.context.fillStyle = "rgba("+r+","+r+","+r+",1)";
+              var r = Math.floor((1-resist_drawn)*128);
+              canv.context.fillStyle = "rgba("+(128+r)+","+r+","+r+",1)";
               canv.context.fillRect(x,y,w,h);
             }
           }
@@ -232,8 +233,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
             }
             else
             {
-              var r = Math.floor(resist_drawn*(0.9*255));
-              canv.context.fillStyle = "rgba("+r+","+Math.floor((0.1*255)+r)+","+r+",1)";
+              var r = Math.floor((1-resist_drawn)*128);
+              canv.context.fillStyle = "rgba("+r+","+(128+r)+","+r+",1)";
               canv.context.fillRect(x,y,w,h);
             }
           }
@@ -350,8 +351,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(!self.gradient)
       {
         self.gradient = canv.context.createLinearGradient(0, self.y+self.h, 0, self.y);
-        self.gradient.addColorStop(0, "black");
-        self.gradient.addColorStop(1, "white");
+        self.gradient.addColorStop(0, "#FF8888");
+        self.gradient.addColorStop(1, "#880000");
       }
 
       canv.context.fillStyle = self.gradient;
@@ -387,7 +388,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var y = 0;
            if(grid.n_badb < 1) y = 0;
       else if(grid.n_good < 1) y = 1;
-      else                     y = (grid.n_badb/(grid.n_badb+grid.n_good))*self.h+self.y;
+      else                     y = (grid.n_badb/(grid.n_badb+grid.n_good));
+
+      y = y*self.h+self.y;
 
       canv.context.fillStyle = "black";
       canv.context.fillRect(self.x,self.y,self.w,y-self.y);
@@ -403,6 +406,39 @@ var GamePlayScene = function(game, stage, config, popup_div)
       canv.context.closePath();
       canv.context.stroke();
       canv.context.fill();
+    }
+  }
+
+  var TricolorDisplay = function(x,y,w,h,grid)
+  {
+    var self = this;
+
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+
+    self.draw = function(canv)
+    {
+      canv.context.fillStyle = self.gradient;
+
+      if(grid.n_r + grid.n_g + grid.n_b == 0)
+      {
+        canv.context.fillStyle = "black";
+        canv.context.fillRect(self.x,self.y,self.w,self.h);
+      }
+
+      var nt = grid.n_r+grid.n_g+grid.n_b;
+      var rh = (grid.n_r/nt)*self.h;
+      var gh = (grid.n_g/nt)*self.h;
+      var bh = (grid.n_b/nt)*self.h;
+
+      canv.context.fillStyle = "red";
+      canv.context.fillRect(self.x,self.y,self.w,rh);
+      canv.context.fillStyle = "green";
+      canv.context.fillRect(self.x,self.y+rh,self.w,gh);
+      canv.context.fillStyle = "blue";
+      canv.context.fillRect(self.x,self.y+rh+gh,self.w,bh);
     }
   }
 
@@ -426,6 +462,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
     self.n_badb = 0; self.ave_badb_biot_resist = 0;
     self.n_good = 0; self.ave_badb_biot_resist = 0;
     self.n_body = 0; self.ave_badb_biot_resist = 0;
+    self.n_r = 0;
+    self.n_g = 0;
+    self.n_b = 0;
 
     self.ifor = function(col,row) { col = (col+self.cols)%self.cols; row = (row+self.rows)%self.rows; return row*self.cols+col; };
 
@@ -684,12 +723,16 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.n_badb = 0; self.ave_badb_biot_resist = 0;
       self.n_good = 0; self.ave_badb_biot_resist = 0;
       self.n_body = 0; self.ave_badb_biot_resist = 0;
+      self.n_r = 0;
+      self.n_g = 0;
+      self.n_b = 0;
       for(var i = 0; i < new_nodes.length; i++)
       {
-        new_nodes[i].tick();
-             if(new_nodes[i].type == NODE_TYPE_BADB) { self.n_badb++; self.ave_badb_biot_resist += new_nodes[i].biot_resist; }
-        else if(new_nodes[i].type == NODE_TYPE_GOOD) { self.n_good++; self.ave_good_biot_resist += new_nodes[i].biot_resist; }
-        else if(new_nodes[i].type == NODE_TYPE_BODY) { self.n_body++; self.ave_body_biot_resist += new_nodes[i].biot_resist; }
+        var n = new_nodes[i];
+        n.tick();
+             if(n.type == NODE_TYPE_BADB) { if(config.colored) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_badb++; self.ave_badb_biot_resist += n.biot_resist; }
+        else if(n.type == NODE_TYPE_GOOD) { if(config.colored) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_good++; self.ave_good_biot_resist += n.biot_resist; }
+        else if(n.type == NODE_TYPE_BODY) { self.n_body++; self.ave_body_biot_resist += n.biot_resist; }
       }
       if(self.n_badb > 0) self.ave_badb_biot_resist /= self.n_badb;
       if(self.n_good > 0) self.ave_good_biot_resist /= self.n_good;
@@ -909,6 +952,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
         self.split_disp = new SplitDisplay(c.canvas.width-config.split_display_width,0,config.split_display_width,c.canvas.height,self.grid);
       }
 
+      if(config.tricolor_display_width > 0)
+      {
+        self.tricolor_disp = new TricolorDisplay(c.canvas.width-config.tricolor_display_width,0,config.tricolor_display_width,c.canvas.height,self.grid);
+      }
+
       self.just_paused = 0;
 
       if(config.allow_reset)
@@ -1000,7 +1048,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
           self.grid.nodeAt(Math.floor(self.grid.cols/2),Math.floor(self.grid.rows/3*2)).setType(NODE_TYPE_BODY);
         }
 
-        if(self.grid.n_badb + self.grid.n_good + self.grid.n_body > self.grid.rows*self.grid.cols*0.6) popup_div.style.visibility = "visible";
+        //if(self.grid.n_badb + self.grid.n_good + self.grid.n_body > self.grid.rows*self.grid.cols*0.6) popup_div.style.visibility = "visible";
       }
     }
     else if(config.special == SPECIAL_INTRO)
@@ -1019,7 +1067,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     if(config.special == SPECIAL_NONE)
     {
       var canv = stage.drawCanv;
-      canv.context.fillStyle = "#888833";
+      canv.context.fillStyle = "#888888";
       canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
 
       self.grid.draw(canv);
@@ -1049,6 +1097,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(config.split_display_width > 0)
       {
         self.split_disp.draw(canv);
+      }
+      if(config.tricolor_display_width > 0)
+      {
+        self.tricolor_disp.draw(canv);
       }
 
       if(config.allow_contaminate)
