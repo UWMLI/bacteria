@@ -644,6 +644,59 @@ function begin()
   games[prefix] = g;
   g.begin();
 
+  prefix = "damage_";
+  w = 266;
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
+    config:
+    {
+      special:SPECIAL_NONE,
+      grid_x:0,
+      grid_y:0,
+      grid_w:256,
+      grid_h:-1,
+      grid_cols:10,
+      grid_rows:10,
+      colored:false,
+      sim_speed:1,
+      badb_sim_speed:1,
+      hover_to_play:true,
+      display_pause:true,
+      allow_dose:false,
+      allow_smile:false,
+      allow_reset:true,
+      prompt_reset_on_empty:true,
+      allow_contaminate:false,
+      default_badb_resist:0.,
+      init_badb:true,
+      reinit_badb:false,
+      default_good_resist:0.,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
+      allow_body:false,
+      init_body:false,
+      reinit_body:false,
+      swab_size:1,
+      click_function:CLICK_FUNC_NONE,
+      hover_function:CLICK_FUNC_DAMG,
+      show_hover:true,
+      mutate_random_assign:false,
+      mutate_rate:1,
+      mutate_distance:0.2,
+      bias_mutate:false,
+      reproduce:true,
+      age:true,
+      ave_display_width:10,
+      split_display_width:0,
+      tricolor_display_width:0,
+    }
+  });
+  games[prefix] = g;
+  g.begin();
+
+
   prefix = "killbutton_";
   w = 266;
   h = 256;
@@ -1221,7 +1274,7 @@ window.addEventListener("load",begin,false);
   </div>
 
   <div class="description">
-    Click, watch, and wait.
+    Sloooow biodiversity
   </div>
   <div class="experiment">
     <div class="rules rules_left">
@@ -1293,7 +1346,6 @@ window.addEventListener("load",begin,false);
 
   <div class="description">
     Again, hover to kill any green-ish bacteria.<br />
-    Try not to be too picky- act quickly rather than carefully.<br />
     (If you kill them all, hit restart)
   </div>
   <div class="experiment">
@@ -1321,8 +1373,9 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;With a very small change in our model, that momentum achieved in the previous example is now unattainable- any clearing of green bacteria is fleeting. With the rules of the previous simulation, <span class="keyword">selecting</span> for or against an attribute has a long term effect- killing any green bacteria also removed its also-likely-green offspring!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's try the experiment again, but this time with a different attribute (going back to the "attributes are inherited from parents" model). The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant (we'll remove the colorful attribute to make things clearer). See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;With a very small change in our model, it's pretty much no longer possible to affect any real change in the population. Before, we had the help that any green cleared also removed any likely-green offspring from being created!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Inheriting attributes from parents is important- let's go back to that model. We'll try the experiment again, but this time with a different attribute.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant. See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1356,8 +1409,47 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Same kind of thing happens, right? The longer you apply a <span class="keyword">hostile environment</span> to an attribute, the more the population naturally biases against that attribute. (The cool bit is that this behavior happens without adding or changing any rules- it's a product of the simple set of rules we already have in the model!)<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Anyways, all this manual work to kill weak bacteria is exhausting. Let's simplify it and just add a button that does the work for us. Now you can choose a threshhold of bacteria, below which will be killed. Then, just press the button to do your dirty work!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ah! We're again able to shift the attributes in a population. After all, all we did was switch out which attribute was being <span class="keyword">selected for</span> (...for which was being selected? you get the idea). Anyways- we never really went into what the attribute of <span class="keyword">antibiotic resistance</span> is:<br /> <br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotics</span> are substances that kill bacteria. <span class="keyword">Antibiotic resistance</span> is just the bacteria's ability to survive those substances.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;So, until now we've played around with what happens when there is a <span class="keyword">hostile environment</span> toward a specific attribute. But we haven't justified why there would ever really <i>exist</i> such an environment.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;This time, rather than tell you to take on the role of being biased against an attribute, let's set you toward trying to kill bacteria in general. But we'll also add another rule to our model.<br /><br />
+    </div>
+    <div class="margin margin_right">
+    </div>
+  </div>
+
+  <div class="description">
+    Hover to kill as many bacteria as you can.<br />
+    (Just kinda swirl your mouse around, killing whatever you can)<br />
+  </div>
+  <div class="experiment">
+    <div class="rules rules_left">
+      <br />
+      <br />
+      <br />
+      In this Model:<br />
+      <span class="rule">- Bacteria are squares</span><br />
+      <span class="rule">- Bacteria sometimes multiply</span><br />
+      <span class="rule">- Bacteria eventually die</span><br />
+      <span class="rule">- Bacteria are given an antibiotic resistance at birth similar to their parents</span><br />
+      <span class="rule new">- Bacteria with greater antibiotic resistance are harder to kill</span><br />
+    </div>
+    <div class="experiment_content"  id="damage_experiment_content">
+      <div class="stage_container" id="damage_stage_container"> </div>
+      <img class="shadow" id="damage_shadow" src="assets/shadow.png" />
+      <div class="reset" id="damage_reset"/>Reset</div>
+      <div class="popup" id="damage_popup"/>Wow! Watch those bacteria go!</div>
+    </div>
+    <div class="rules rules_right">
+    </div>
+  </div>
+
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok! So again, the same kind of thing happens! Even with no force that's intentionally trying to draw out some attribute, the rules we've decided upon result in the movement of a population.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;All this manual work to kill bacteria is exhausting. Let's simplify it and just add a button that does the work for us. Now you can choose how much antibiotic will be applied, then press a button to apply it to every bacteria in our model.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1371,11 +1463,12 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      In this Model: (Same as before)<br />
+      In this Model: <b>(Same as before)</b><br />
       <span class="rule">- Bacteria are squares</span><br />
       <span class="rule">- Bacteria sometimes multiply</span><br />
       <span class="rule">- Bacteria eventually die</span><br />
       <span class="rule">- Bacteria are given an antibiotic resistance at birth similar to their parents</span><br />
+      <span class="rule">- Bacteria with greater antibiotic resistance are harder to kill</span><br />
     </div>
     <div class="experiment_content"  id="killbutton_experiment_content">
       <div class="stage_container" id="killbutton_stage_container"> </div>
@@ -1392,8 +1485,6 @@ window.addEventListener("load",begin,false);
     </div>
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;Well that was much easier! Hit reset and try applying different threshholds at different times. Pay attention to how the bacteria responds.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Some really interesting stuff... but what is <span class="keyword">antibiotic resistance</span> anyways? What are <span class="keyword">antibiotics</span>?<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Simply put, <span class="keyword">antibiotics</span> are just substances that kill bacteria (your doctor might give you some when you're sick). <span class="keyword">Antibiotic resistance</span> is the ability with which bacteria might survive antibiotics.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
