@@ -8,7 +8,7 @@ body,div
   margin:0px;
   padding:0px;
   font-family:Helvetica Neue;
-  font-size:20px;
+  font-size:18px;
 }
 body
 {
@@ -50,6 +50,7 @@ body
   padding:10px;
   min-height:10px;
   float:left;
+  font-size:16px;
 }
 .rule
 {
@@ -158,8 +159,8 @@ function size_prefix(w,h,prefix)
   document.getElementById(prefix+"experiment_content").style.width  = (w+2)+"px";
   document.getElementById(prefix+"experiment_content").style.height = (h+52)+"px";
   document.getElementById(prefix+"stage_container").style.width  = (w+2)+"px";
-  document.getElementById(prefix+"stage_container").style.height = (h+2)+"px";
-  document.getElementById(prefix+"shadow").style.top = (h+2)+"px";
+  document.getElementById(prefix+"stage_container").style.height = (h+1)+"px";
+  document.getElementById(prefix+"shadow").style.top = (h+1)+"px";
   document.getElementById(prefix+"shadow").style.width = w+"px";
   document.getElementById(prefix+"reset").style.top = (h+20)+"px";
   document.getElementById(prefix+"reset").style.left = Math.round(w/2-50)+"px";
@@ -482,7 +483,7 @@ function begin()
   g.begin();
 
   prefix = "murder_";
-  w = 256;
+  w = 266;
   h = 256;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
@@ -491,7 +492,7 @@ function begin()
       special:SPECIAL_NONE,
       grid_x:0,
       grid_y:0,
-      grid_w:-1,
+      grid_w:256,
       grid_h:-1,
       grid_cols:10,
       grid_rows:10,
