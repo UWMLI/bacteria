@@ -21,6 +21,11 @@ var Game = function(init)
     tick();
   };
 
+  self.reset = function()
+  {
+    scenes[currentScene].reset();
+  }
+
   var tick = function()
   {
     requestAnimFrame(tick,stage.dispCanv.canvas);

@@ -902,8 +902,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.sneeze_button;
   self.catch_button;
 
-  self.reset_button;
-
   self.ready = function()
   {
     if(config.special == SPECIAL_NONE)
@@ -916,20 +914,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(config.grid_w == -1) config.grid_w = c.canvas.width;
       if(config.grid_h == -1) config.grid_h = c.canvas.height;
       self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows);
-      if(config.init_badb)
-      {
-        self.grid.nodeAt(Math.floor(self.grid.cols/3),Math.floor(self.grid.rows/3)).setType(NODE_TYPE_BADB);
-        self.grid.nodeAt(Math.floor(self.grid.cols/3),Math.floor(self.grid.rows/3)).biot_resist = config.default_badb_resist;
-      }
-      if(config.init_good)
-      {
-        self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3)).setType(NODE_TYPE_GOOD);
-        self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3)).biot_resist = config.default_good_resist;
-      }
-      if(config.allow_body && config.init_body)
-      {
-        self.grid.nodeAt(Math.floor(self.grid.cols/2),Math.floor(self.grid.rows/3*2)).setType(NODE_TYPE_BODY);
-      }
+      self.reset();
       self.hoverer.register(self.grid);
       self.dragger.register(self.grid);
 
@@ -978,30 +963,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
       }
 
       self.just_paused = 0;
-
-      if(config.allow_reset)
-      {
-        self.reset_button = new ButtonBox(10,10,20,20,
-        function()
-        {
-          self.grid.clear();
-          if(config.init_badb)
-          {
-            self.grid.nodeAt(Math.floor(self.grid.cols/3),Math.floor(self.grid.rows/3)).setType(NODE_TYPE_BADB);
-            self.grid.nodeAt(Math.floor(self.grid.cols/3),Math.floor(self.grid.rows/3)).biot_resist = config.default_badb_resist;
-          }
-          if(config.init_good)
-          {
-            self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3)).setType(NODE_TYPE_GOOD);
-            self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3)).biot_resist = config.default_good_resist;
-          }
-          if(config.allow_body && config.init_body)
-          {
-            self.grid.nodeAt(Math.floor(self.grid.cols/2),Math.floor(self.grid.rows/3*2)).setType(NODE_TYPE_BODY);
-          }
-        })
-        self.presser.register(self.reset_button);
-      }
     }
     else if(config.special == SPECIAL_INTRO)
     {
@@ -1018,6 +979,43 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.just_paused = 0;
     }
   };
+
+  self.reset = function()
+  {
+    if(config.allow_reset)
+    {
+      self.grid.clear();
+      if(config.init_badb)
+      {
+        var n = self.grid.nodeAt(Math.floor(self.grid.cols/3),Math.floor(self.grid.rows/3));
+        n.setType(NODE_TYPE_BADB);
+        n.biot_resist = config.default_badb_resist;
+        n.r = 0;
+        n.g = 0;
+        n.b = 0;
+        n.parent_node = undefined;
+      }
+      if(config.init_good)
+      {
+        var n = self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3));
+        n.setType(NODE_TYPE_GOOD);
+        n.biot_resist = config.default_good_resist;
+        n.r = 0;
+        n.g = 0;
+        n.b = 0;
+        n.parent_node = undefined;
+      }
+      if(config.allow_body && config.init_body)
+      {
+        var n = self.grid.nodeAt(Math.floor(self.grid.cols/2),Math.floor(self.grid.rows/3*2))
+        n.setType(NODE_TYPE_BODY);
+        n.r = 0;
+        n.g = 0;
+        n.b = 0;
+        n.parent_node = undefined;
+      }
+    }
+  }
 
   self.tick = function()
   {
@@ -1133,11 +1131,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         canv.context.strokeStyle = "#00FF00";
         canv.context.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
-      }
-
-      if(config.allow_reset)
-      {
-        self.reset_button.draw(canv);
       }
 
       if(config.hover_to_play && !self.grid.hovering && config.display_pause)

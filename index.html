@@ -7,6 +7,8 @@ body,div
   overflow:auto;
   margin:0px;
   padding:0px;
+  font-family:Helvetica Neue;
+  font-size:20px;
 }
 body
 {
@@ -78,6 +80,16 @@ body
   pointer-events:none;
   user-select:none;
 }
+.reset
+{
+  position:absolute;
+  height:30px;
+  width:100px;
+  text-align:center;
+  line-height:28px;
+  user-select:none;
+  border:1px solid black;
+}
 .popup
 {
   position:absolute;
@@ -139,15 +151,19 @@ body
 var d;
 var g;
 var g_basic;
+var games = {};
 
 function size_prefix(w,h,prefix)
 {
   document.getElementById(prefix+"experiment_content").style.width  = (w+2)+"px";
-  document.getElementById(prefix+"experiment_content").style.height = (h+22)+"px";
+  document.getElementById(prefix+"experiment_content").style.height = (h+52)+"px";
   document.getElementById(prefix+"stage_container").style.width  = (w+2)+"px";
   document.getElementById(prefix+"stage_container").style.height = (h+2)+"px";
   document.getElementById(prefix+"shadow").style.top = (h+2)+"px";
   document.getElementById(prefix+"shadow").style.width = w+"px";
+  document.getElementById(prefix+"reset").style.top = (h+20)+"px";
+  document.getElementById(prefix+"reset").style.left = Math.round(w/2-50)+"px";
+  document.getElementById(prefix+"reset").addEventListener("click", function() { games[prefix].reset(); });
   //document.getElementById(prefix+"popup") //don't really need to do anything...
 }
 function begin()
@@ -207,6 +223,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "nothing_";
@@ -257,6 +274,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "multiply_";
@@ -307,6 +325,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "death_";
@@ -357,6 +376,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "diversity_";
@@ -407,6 +427,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "controlleddiversity_";
@@ -457,6 +478,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "murder_";
@@ -507,6 +529,7 @@ function begin()
       tricolor_display_width:10,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "murderrandom_";
@@ -557,6 +580,7 @@ function begin()
       tricolor_display_width:10,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "resistance_";
@@ -607,6 +631,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "killbutton_";
@@ -657,6 +682,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
 
@@ -709,6 +735,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "mutate_";
@@ -759,6 +786,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "genocide_";
@@ -809,6 +837,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "antibiotic_";
@@ -859,6 +888,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "good_";
@@ -909,6 +939,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "antibody_";
@@ -959,6 +990,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
   prefix = "alltogether_";
@@ -1009,6 +1041,7 @@ function begin()
       tricolor_display_width:0,
     }
   });
+  games[prefix] = g;
   g.begin();
 
 }
@@ -1050,6 +1083,7 @@ window.addEventListener("load",begin,false);
     <div class="experiment_content" id="nothing_experiment_content">
       <div class="stage_container" id="nothing_stage_container"> </div>
       <img class="shadow" id="nothing_shadow" src="assets/shadow.png" />
+      <div class="reset" id="nothing_reset"/>Reset</div>
       <div class="popup" id="nothing_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
@@ -1083,6 +1117,7 @@ window.addEventListener("load",begin,false);
     <div class="experiment_content" id="multiply_experiment_content">
       <div class="stage_container" id="multiply_stage_container"> </div>
       <img class="shadow" id="multiply_shadow" src="assets/shadow.png" />
+      <div class="reset" id="multiply_reset"/>Reset</div>
       <div class="popup" id="multiply_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
@@ -1116,6 +1151,7 @@ window.addEventListener("load",begin,false);
     <div class="experiment_content"  id="death_experiment_content">
       <div class="stage_container" id="death_stage_container"> </div>
       <img class="shadow" id="death_shadow" src="assets/shadow.png" />
+      <div class="reset" id="death_reset"/>Reset</div>
       <div class="popup" id="death_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
@@ -1149,6 +1185,7 @@ window.addEventListener("load",begin,false);
     <div class="experiment_content"  id="diversity_experiment_content">
       <div class="stage_container" id="diversity_stage_container"> </div>
       <img class="shadow" id="diversity_shadow" src="assets/shadow.png" />
+      <div class="reset" id="diversity_reset"/>Reset</div>
       <div class="popup" id="diversity_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
@@ -1182,6 +1219,7 @@ window.addEventListener("load",begin,false);
     <div class="experiment_content"  id="controlleddiversity_experiment_content">
       <div class="stage_container" id="controlleddiversity_stage_container"> </div>
       <img class="shadow" id="controlleddiversity_shadow" src="assets/shadow.png" />
+      <div class="reset" id="controlleddiversity_reset"/>Reset</div>
       <div class="popup" id="controlleddiversity_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
@@ -1217,6 +1255,7 @@ window.addEventListener("load",begin,false);
     <div class="experiment_content"  id="murder_experiment_content">
       <div class="stage_container" id="murder_stage_container"> </div>
       <img class="shadow" id="murder_shadow" src="assets/shadow.png" />
+      <div class="reset" id="murder_reset"/>Reset</div>
       <div class="popup" id="murder_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
@@ -1253,6 +1292,7 @@ window.addEventListener("load",begin,false);
     <div class="experiment_content"  id="murderrandom_experiment_content">
       <div class="stage_container" id="murderrandom_stage_container"> </div>
       <img class="shadow" id="murderrandom_shadow" src="assets/shadow.png" />
+      <div class="reset" id="murderrandom_reset"/>Reset</div>
       <div class="popup" id="murderrandom_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
@@ -1287,6 +1327,7 @@ window.addEventListener("load",begin,false);
     <div class="experiment_content"  id="resistance_experiment_content">
       <div class="stage_container" id="resistance_stage_container"> </div>
       <img class="shadow" id="resistance_shadow" src="assets/shadow.png" />
+      <div class="reset" id="resistance_reset"/>Reset</div>
       <div class="popup" id="resistance_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
@@ -1321,6 +1362,7 @@ window.addEventListener("load",begin,false);
     <div class="experiment_content"  id="killbutton_experiment_content">
       <div class="stage_container" id="killbutton_stage_container"> </div>
       <img class="shadow" id="killbutton_shadow" src="assets/shadow.png" />
+      <div class="reset" id="killbutton_reset"/>Reset</div>
       <div class="popup" id="killbutton_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
@@ -1367,6 +1409,7 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content" id="basic_experiment_content">
     <div class="stage_container" id="basic_stage_container"> </div>
     <img class="shadow" id="basic_shadow" src="assets/shadow.png" />
+    <div class="reset" id="basic_reset"/>Reset</div>
     <div class="popup" id="basic_popup"/>Wow! Watch those bacteria go!</div>
   </div>
   <div class="description">
@@ -1392,6 +1435,7 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content" id="mutate_experiment_content">
     <div class="stage_container" id="mutate_stage_container"> </div>
     <img class="shadow" id="mutate_shadow" src="assets/shadow.png" />
+    <div class="reset" id="mutate_reset"/>Reset</div>
     <div class="popup" id="mutate_popup"/>Pretty colors! (er, shades?)</div>
   </div>
   <div class="description">
@@ -1421,6 +1465,7 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content" id="genocide_experiment_content">
     <div class="stage_container" id="genocide_stage_container"> </div>
     <img class="shadow" id="genocide_shadow" src="assets/shadow.png" />
+    <div class="reset" id="genocide_reset"/>Reset</div>
     <div class="popup" id="genocide_popup"/>What shade did you manage to average?</div>
   </div>
   <div class="description">
@@ -1456,6 +1501,7 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content" id="antibiotic_experiment_content">
     <div class="stage_container" id="antibiotic_stage_container"> </div>
     <img class="shadow" id="antibiotic_shadow" src="assets/shadow.png" />
+    <div class="reset" id="antibiotic_reset"/>Reset</div>
     <div class="popup" id="antibiotic_popup"/>That was efficient!</div>
   </div>
   <div class="description">
@@ -1488,6 +1534,7 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content" id="good_experiment_content">
     <div class="stage_container" id="good_stage_container"> </div>
     <img class="shadow" id="good_shadow" src="assets/shadow.png" />
+    <div class="reset" id="good_reset"/>Reset</div>
     <div class="popup" id="good_popup"/>I assume you've been unsuccessful...</div>
   </div>
   <div class="description">
@@ -1512,6 +1559,7 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content" id="antibody_experiment_content">
     <div class="stage_container" id="antibody_stage_container"> </div>
     <img class="shadow" id="antibody_shadow" src="assets/shadow.png" />
+    <div class="reset" id="antibody_reset"/>Reset</div>
     <div class="popup" id="antibody_popup"/>Good always triumphs over evil!</div>
   </div>
   <div class="description">
@@ -1536,6 +1584,7 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content" id="alltogether_experiment_content">
     <div class="stage_container" id="alltogether_stage_container"> </div>
     <img class="shadow" id="alltogether_shadow" src="assets/shadow.png" />
+    <div class="reset" id="alltogether_reset"/>Reset</div>
     <div class="popup" id="alltogether_popup"/>A single, patiently timed dosing is often enough to do the trick...</div>
   </div>
   <div class="description">
@@ -1561,6 +1610,7 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content" id="experiment_content">
     <div class="stage_container" id="stage_container"> </div>
     <img class="shadow" id="shadow" src="assets/shadow.png" />
+    <div class="reset" id="reset"/>Reset</div>
     <div class="popup" id="popup"/>Woop de dooooooo!!!!</div>
     <div id="debug_div" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
   </div>
