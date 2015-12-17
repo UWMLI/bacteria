@@ -89,7 +89,7 @@ body
   text-align:center;
   line-height:28px;
   user-select:none;
-  border:1px solid black;
+  border:1px solid #EEEEEE;
 }
 .popup
 {
@@ -1095,7 +1095,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok no they're not. Those are small red squares. But those small red squares represent a <span class="keyword">model</span> of bacteria (though not a very good one...). Let's improve on this model: bacteria don't just sit around- they multiply!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok no they're not. Those are small red squares. But we can use those small red squares to <span class="keyword">model</span> bacteria! Currently, "bacteria are squares" is not a very interesting nor representative model. Let's improve upon it: bacteria don't just sit around- they multiply!<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1129,7 +1129,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Cool. A bit more lively, but ultimately still pretty boring- Once the bacteria fill up the grid, everything stops! Bacteria are much more interesting than that! They go through a <span class="keyword">life cycle</span>, just like every other living thing. They are born, they live, maybe reproduce, and eventually die.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Cool. A bit more lively, but ultimately still pretty boring- Once the bacteria fill up the grid, everything stops! That's not right... Bacteria go through a <span class="keyword">life cycle</span>, just like every other living thing. They are born, they live, maybe reproduce, and eventually die.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1163,7 +1163,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;A thriving colony! Let's keep this ball rolling and add some other properties of life. Like diversity! People don't all look the same- and neither do bacteria! We can consider these differences "<span class="keyword">attributes</span>". In our model, let's let bacteria differ in their color attribute.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Now we're getting somewhere. Let's keep this ball rolling and add some other properties of life. Like diversity! Living things have properties that make them unique. We can consider these differences "<span class="keyword">attributes</span>". In our model, let's let bacteria differ in their color attribute.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1197,7 +1197,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;But that's not how diversity works- babies don't just appear with totally random attributes... We all look (at least a little bit) like our biological parents. Let's update our model to better represent this.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;But that's not really how diversity works- offspring don't just receive totally random attributes... For example: we all look (at least a little bit) like our biological parents. Let's update our model to better represent this.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1238,7 +1238,7 @@ window.addEventListener("load",begin,false);
   </div>
 
   <div class="description">
-    Hover to kill any green bacteria.<br />
+    Hover to kill any green-ish bacteria.<br />
     Try not to be too picky- act quickly rather than carefully.<br />
     (If you kill them all, hit restart)
   </div>
@@ -1267,7 +1267,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;If you kept at it long enough, the population should have quickly been rid of any greens. Once it becomes dominated by blues and reds, there seems to be much less work required to maintain that state.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Maybe unsurprisingly, the population of green bacteria diminishes. But if you keep it up long enough to develop a dominant population of reds and blues, it seems to maintain a kind of "non green" momentum, with little extra extermination work required from you.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;Let's change the rules back to random attribute assignment at birth (rather than attributes inherited from parents), and try this experiment again.<br /><br />
     </div>
     <div class="margin margin_right">
@@ -1275,7 +1275,7 @@ window.addEventListener("load",begin,false);
   </div>
 
   <div class="description">
-    Again, hover to kill any green bacteria.<br />
+    Again, hover to kill any green-ish bacteria.<br />
     Try not to be too picky- act quickly rather than carefully.<br />
     (If you kill them all, hit restart)
   </div>
@@ -1304,8 +1304,8 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;The bacteria simply reproduce faster than you can kill them! This wasn't as big a problem in the previous example; every green you killed had the added effect of removing any of its likely-green offspring! With the rules of the previous simulation, <span class="keyword">selecting</span> for or against an attribute has a long term effect.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's try that again, but this time with a different attribute (we'll go back to the "attributes are inherited from parents" model). The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant (we'll remove the colorful attribute to make things clearer). See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;With a very small change in our model, that momentum achieved in the previous example is now unattainable- any clearing of green bacteria is fleeting. With the rules of the previous simulation, <span class="keyword">selecting</span> for or against an attribute has a long term effect- killing any green bacteria also removed its also-likely-green offspring!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Let's try the experiment again, but this time with a different attribute (going back to the "attributes are inherited from parents" model). The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant (we'll remove the colorful attribute to make things clearer). See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
