@@ -17,6 +17,8 @@ var CLICK_FUNC_BADB = ENUM; ENUM++;
 var CLICK_FUNC_GOOD = ENUM; ENUM++;
 var CLICK_FUNC_BODY = ENUM; ENUM++;
 
+var DARK_COLOR = "#333333";
+
 var GamePlayScene = function(game, stage, config, popup_div)
 {
   var self = this;
@@ -145,6 +147,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var h = self.h;
 
       var resist_drawn = self.biot_resist;
+      var r_drawn = self.r;
+      var g_drawn = self.g;
+      var b_drawn = self.b;
 
       if(self.type == NODE_TYPE_BADB || self.type == NODE_TYPE_GOOD)
       {
@@ -157,6 +162,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
             sub_prog = (1-self.anim_prog)/0.2;
             sub_prog *= sub_prog;
             resist_drawn = self.parent_node.biot_resist;
+            r_drawn = self.parent_node.r;
+            g_drawn = self.parent_node.g;
+            b_drawn = self.parent_node.b;
             if(self.parent_node.col < self.col) //multiply to the right
             {
               x = self.parent_node.x;
@@ -191,7 +199,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         }
       }
 
-      canv.context.strokeStyle = "#ffffff";
+      canv.context.strokeStyle = DARK_COLOR;
 
       switch(self.type)
       {
@@ -207,7 +215,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
           {
             if(config.colored)
             {
-              canv.context.fillStyle = "rgba("+Math.floor(self.r*255)+","+Math.floor(self.g*255)+","+Math.floor(self.b*255)+",1)";
+              canv.context.fillStyle = "rgba("+Math.floor(r_drawn*255)+","+Math.floor(g_drawn*255)+","+Math.floor(b_drawn*255)+",1)";
               canv.context.fillRect(x,y,w,h);
             }
             else
@@ -228,7 +236,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
           {
             if(config.colored)
             {
-              canv.context.fillStyle = "rgba("+(self.r*255)+","+(self.g*255)+","+(self.b*255)+",1)";
+              canv.context.fillStyle = "rgba("+(r_drawn*255)+","+(g_drawn*255)+","+(b_drawn*255)+",1)";
               canv.context.fillRect(x,y,w,h);
             }
             else
@@ -361,7 +369,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var y = (1-grid.ave_badb_biot_resist)*self.h+self.y;
 
       canv.context.fillStyle = "white";
-      canv.context.strokeStyle = "black";
+      canv.context.strokeStyle = DARK_COLOR;
       canv.context.beginPath();
       canv.context.moveTo(self.x-2, y);
       canv.context.lineTo(self.x-8, y-4);
@@ -392,13 +400,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       y = y*self.h+self.y;
 
-      canv.context.fillStyle = "black";
+      canv.context.fillStyle = DARK_COLOR;
       canv.context.fillRect(self.x,self.y,self.w,y-self.y);
       canv.context.fillStyle = "green";
       canv.context.fillRect(self.x,y,self.w,self.h-(y-self.y));
 
       canv.context.fillStyle = "white";
-      canv.context.strokeStyle = "black";
+      canv.context.strokeStyle = DARK_COLOR;
       canv.context.beginPath();
       canv.context.moveTo(self.x-2, y);
       canv.context.lineTo(self.x-8, y-4);
@@ -424,7 +432,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(grid.n_r + grid.n_g + grid.n_b == 0)
       {
-        canv.context.fillStyle = "black";
+        canv.context.fillStyle = DARK_COLOR;
         canv.context.fillRect(self.x,self.y,self.w,self.h);
       }
 
@@ -750,6 +758,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         case CLICK_FUNC_KILL:
           self.hovering_node.setType(NODE_TYPE_NONE);
+          self.hovering_node.parent_node = undefined;
           if(config.swab_size > 1)
           {
             n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_NONE);
@@ -759,7 +768,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
           }
           break;
         case CLICK_FUNC_BADB:
-          self.hovering_node.setType(NODE_TYPE_BADB); self.hovering_node.biot_resist = config.default_badb_resist;
+          self.hovering_node.setType(NODE_TYPE_BADB);
+          self.hovering_node.biot_resist = config.default_badb_resist;
+          self.hovering_node.parent_node = undefined;
           if(config.swab_size > 1)
           {
             n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
@@ -769,7 +780,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
           }
           break;
         case CLICK_FUNC_GOOD:
-          self.hovering_node.setType(NODE_TYPE_GOOD); self.hovering_node.biot_resist = config.default_good_resist;
+          self.hovering_node.setType(NODE_TYPE_GOOD);
+          self.hovering_node.biot_resist = config.default_good_resist;
+          self.hovering_node.parent_node = undefined;
           if(config.swab_size > 1)
           {
             n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
@@ -780,6 +793,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
           break;
         case CLICK_FUNC_BODY:
           self.hovering_node.setType(NODE_TYPE_BODY);
+          self.hovering_node.parent_node = undefined;
           if(config.swab_size > 1)
           {
             n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_BODY);
@@ -811,6 +825,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         case CLICK_FUNC_KILL:
           self.dragging_node.setType(NODE_TYPE_NONE);
+          self.dragging_node.parent_node = undefined;
           if(config.swab_size > 1)
           {
             n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_NONE);
@@ -820,7 +835,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
           }
           break;
         case CLICK_FUNC_BADB:
-          self.dragging_node.setType(NODE_TYPE_BADB); self.dragging_node.biot_resist = config.default_badb_resist;
+          self.dragging_node.setType(NODE_TYPE_BADB);
+          self.dragging_node.biot_resist = config.default_badb_resist;
+          self.dragging_node.parent_node = undefined;
           if(config.swab_size > 1)
           {
             n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_BADB); n.biot_resist = config.default_badb_resist;
@@ -830,7 +847,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
           }
           break;
         case CLICK_FUNC_GOOD:
-          self.dragging_node.setType(NODE_TYPE_GOOD); self.dragging_node.biot_resist = config.default_good_resist;
+          self.dragging_node.setType(NODE_TYPE_GOOD);
+          self.dragging_node.biot_resist = config.default_good_resist;
+          self.dragging_node.parent_node = undefined;
           if(config.swab_size > 1)
           {
             n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_GOOD); n.biot_resist = config.default_good_resist;
@@ -841,6 +860,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
           break;
         case CLICK_FUNC_BODY:
           self.dragging_node.setType(NODE_TYPE_BODY);
+          self.dragging_node.parent_node = undefined;
           if(config.swab_size > 1)
           {
             n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_BODY);
@@ -1067,8 +1087,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
     if(config.special == SPECIAL_NONE)
     {
       var canv = stage.drawCanv;
-      canv.context.fillStyle = "#888888";
-      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+      //canv.context.fillStyle = "#888888";
+      //canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
 
       self.grid.draw(canv);
 
@@ -1126,8 +1146,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.fillStyle = "rgba(255,255,255,0.5)";
         canv.context.fillRect(0,0,w,canv.canvas.height);
 
-        canv.context.fillStyle = "#333333";
-        canv.context.strokeStyle = "white";
+        canv.context.fillStyle = "white";
+        canv.context.strokeStyle = DARK_COLOR;
         canv.context.fillRect(w-28,10,8,20);
         canv.context.strokeRect(w-28,10,8,20);
         canv.context.fillRect(w-18,10,8,20);
@@ -1138,8 +1158,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         self.just_paused--;
         var w = canv.canvas.width;
-        canv.context.fillStyle = "#333333";
-        canv.context.strokeStyle = "white";
+        canv.context.fillStyle = "white";
+        canv.context.strokeStyle = DARK_COLOR;
         canv.context.beginPath();
         canv.context.moveTo(w-10, 20);
         canv.context.lineTo(w-25, 30);
@@ -1169,8 +1189,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.fillStyle = "rgba(255,255,255,0.5)";
         canv.context.fillRect(0,0,w,canv.canvas.height);
 
-        canv.context.fillStyle = "#333333";
-        canv.context.strokeStyle = "white";
+        canv.context.fillStyle = "white";
+        canv.context.strokeStyle = DARK_COLOR;
         canv.context.fillRect(w-28,10,8,20);
         canv.context.strokeRect(w-28,10,8,20);
         canv.context.fillRect(w-18,10,8,20);
@@ -1181,8 +1201,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         self.just_paused--;
         var w = canv.canvas.width;
-        canv.context.fillStyle = "#333333";
-        canv.context.strokeStyle = "white";
+        canv.context.fillStyle = "white";
+        canv.context.strokeStyle = DARK_COLOR;
         canv.context.beginPath();
         canv.context.moveTo(w-10, 20);
         canv.context.lineTo(w-25, 30);
