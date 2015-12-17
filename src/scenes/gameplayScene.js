@@ -40,6 +40,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     allow_dose:true,
     allow_smile:true,
     allow_reset:true,
+    prompt_reset_on_empty:false,
     allow_contaminate:true,
     default_badb_resist:0.1,
     init_badb:true,
@@ -994,7 +995,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
         n.g = 0;
         n.b = 0;
         n.parent_node = undefined;
+        self.grid.n_badb = 1;
       }
+      else self.grid.n_badb = 0;
+
       if(config.init_good)
       {
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3));
@@ -1004,7 +1008,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
         n.g = 0;
         n.b = 0;
         n.parent_node = undefined;
+        self.grid.n_good = 1;
       }
+      else self.grid.n_good = 0;
+
       if(config.allow_body && config.init_body)
       {
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/2),Math.floor(self.grid.rows/3*2))
@@ -1013,7 +1020,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
         n.g = 0;
         n.b = 0;
         n.parent_node = undefined;
+        self.grid.n_body = 1;
       }
+      else self.grid.n_body = 0;
     }
   }
 
@@ -1160,6 +1169,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.closePath();
         canv.context.fill();
         canv.context.stroke();
+      }
+
+      if(config.prompt_reset_on_empty && (self.grid.n_badb + self.grid.n_good + self.grid.n_body) == 0)
+      {
+        canv.context.fillStyle = DARK_COLOR;
+        canv.context.font = "20px Helvetica Neue";
+        canv.context.fillText("(click reset) "+String.fromCharCode(8595),Math.round(canv.canvas.width/2-60),Math.round(canv.canvas.height-50));
       }
 
       /*
