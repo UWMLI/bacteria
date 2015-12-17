@@ -84,9 +84,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
     self.parent_node = undefined;
 
-    self.r = 0;
-    self.g = 0;
-    self.b = 0;
+    self.r = 0.5;
+    self.g = 0.5;
+    self.b = 0.5;
 
     self.type = 0;
     self.biot_resist = 0.1;
@@ -1033,9 +1033,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/3),Math.floor(self.grid.rows/3));
         n.setType(NODE_TYPE_BADB);
         n.biot_resist = config.default_badb_resist;
-        n.r = 0;
-        n.g = 0;
-        n.b = 0;
+        n.r = 0.5;
+        n.g = 0.5;
+        n.b = 0.5;
         n.parent_node = undefined;
         self.grid.n_badb = 1;
       }
@@ -1046,9 +1046,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3));
         n.setType(NODE_TYPE_GOOD);
         n.biot_resist = config.default_good_resist;
-        n.r = 0;
-        n.g = 0;
-        n.b = 0;
+        n.r = 0.5;
+        n.g = 0.5;
+        n.b = 0.5;
         n.parent_node = undefined;
         self.grid.n_good = 1;
       }
@@ -1058,9 +1058,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/2),Math.floor(self.grid.rows/3*2))
         n.setType(NODE_TYPE_BODY);
-        n.r = 0;
-        n.g = 0;
-        n.b = 0;
+        n.r = 0.5;
+        n.g = 0.5;
+        n.b = 0.5;
         n.parent_node = undefined;
         self.grid.n_body = 1;
       }
