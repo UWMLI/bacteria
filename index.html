@@ -172,63 +172,11 @@ function begin()
   var prefix = "";
   var w = 640;
   var h = 320;
-  document.getElementById("debug_div").style.width  = w+"px";
-  document.getElementById("debug_div").style.height = h+"px";
-  d = new Debugger({source:document.getElementById("debug_div")});
+  //document.getElementById("debug_div").style.width  = w+"px";
+  //document.getElementById("debug_div").style.height = h+"px";
+  //d = new Debugger({source:document.getElementById("debug_div")});
 
-  prefix = "";
-  w = 640;
-  h = 320;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:-1,
-      grid_h:-1,
-      grid_cols:50,
-      grid_rows:25,
-      colored:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:true,
-      allow_smile:true,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:true,
-      default_badb_resist:0.1,
-      init_badb:true,
-      reinit_badb:true,
-      default_good_resist:0.1,
-      allow_good:true,
-      init_good:true,
-      reinit_good:true,
-      allow_body:true,
-      init_body:true,
-      reinit_body:true,
-      swab_size:1,
-      click_function:CLICK_FUNC_NONE,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      mutate_random_assign:false,
-      mutate_rate:0.1,
-      mutate_distance:0.1,
-      bias_mutate:true,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "nothing_";
+  prefix = "squares_";
   w = 256;
   h = 256;
   size_prefix(w,h,prefix);
@@ -384,7 +332,7 @@ function begin()
   games[prefix] = g;
   g.begin();
 
-  prefix = "diversity_";
+  prefix = "randomdiversity_";
   w = 256;
   h = 256;
   size_prefix(w,h,prefix);
@@ -436,7 +384,7 @@ function begin()
   games[prefix] = g;
   g.begin();
 
-  prefix = "controlleddiversity_";
+  prefix = "progressivediversity_";
   w = 256;
   h = 256;
   size_prefix(w,h,prefix);
@@ -488,7 +436,7 @@ function begin()
   games[prefix] = g;
   g.begin();
 
-  prefix = "murder_";
+  prefix = "murderprogressive_";
   w = 266;
   h = 256;
   size_prefix(w,h,prefix);
@@ -592,7 +540,7 @@ function begin()
   games[prefix] = g;
   g.begin();
 
-  prefix = "resistance_";
+  prefix = "murderresistance_";
   w = 266;
   h = 256;
   size_prefix(w,h,prefix);
@@ -644,7 +592,7 @@ function begin()
   games[prefix] = g;
   g.begin();
 
-  prefix = "damage_";
+  prefix = "damageresistance_";
   w = 266;
   h = 256;
   size_prefix(w,h,prefix);
@@ -695,7 +643,6 @@ function begin()
   });
   games[prefix] = g;
   g.begin();
-
 
   prefix = "killbutton_";
   w = 266;
@@ -749,372 +696,6 @@ function begin()
   games[prefix] = g;
   g.begin();
 
-
-
-  prefix = "basic_";
-  w = 256;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:-1,
-      grid_h:-1,
-      grid_cols:20,
-      grid_rows:20,
-      colored:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.1,
-      init_badb:false,
-      reinit_badb:false,
-      default_good_resist:0.1,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_BADB,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      mutate_random_assign:false,
-      mutate_rate:0,
-      mutate_distance:0,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "mutate_";
-  w = 256;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:-1,
-      grid_h:-1,
-      grid_cols:20,
-      grid_rows:20,
-      colored:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.1,
-      init_badb:false,
-      reinit_badb:false,
-      default_good_resist:0.1,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_BADB,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      mutate_random_assign:false,
-      mutate_rate:0.1,
-      mutate_distance:0.1,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "genocide_";
-  w = 266;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:256,
-      grid_h:-1,
-      grid_cols:20,
-      grid_rows:20,
-      colored:false,
-      sim_speed:0.5,
-      badb_sim_speed:1,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.01,
-      init_badb:true,
-      reinit_badb:false,
-      default_good_resist:0.1,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:5,
-      click_function:CLICK_FUNC_KILL,
-      hover_function:CLICK_FUNC_KILL,
-      show_hover:true,
-      mutate_random_assign:false,
-      mutate_rate:0.1,
-      mutate_distance:0.1,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:10,
-      split_display_width:0,
-      tricolor_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "antibiotic_";
-  w = 266;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:256,
-      grid_h:-1,
-      grid_cols:20,
-      grid_rows:20,
-      colored:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:true,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.1,
-      init_badb:true,
-      reinit_badb:false,
-      default_good_resist:0.1,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_NONE,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      mutate_random_assign:false,
-      mutate_rate:0.1,
-      mutate_distance:0.1,
-      bias_mutate:true,
-      reproduce:true,
-      age:true,
-      ave_display_width:10,
-      split_display_width:0,
-      tricolor_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "good_";
-  w = 256;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:-1,
-      grid_h:-1,
-      grid_cols:20,
-      grid_rows:20,
-      colored:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:true,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.1,
-      init_badb:true,
-      reinit_badb:false,
-      default_good_resist:0.1,
-      allow_good:true,
-      init_good:true,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_NONE,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      mutate_random_assign:false,
-      mutate_rate:0.1,
-      mutate_distance:0.1,
-      bias_mutate:true,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "antibody_";
-  w = 266;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:256,
-      grid_h:-1,
-      grid_cols:20,
-      grid_rows:20,
-      colored:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.1,
-      init_badb:true,
-      reinit_badb:false,
-      default_good_resist:0.1,
-      allow_good:true,
-      init_good:true,
-      reinit_good:false,
-      allow_body:true,
-      init_body:true,
-      reinit_body:true,
-      swab_size:1,
-      click_function:CLICK_FUNC_NONE,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      mutate_random_assign:false,
-      mutate_rate:0.1,
-      mutate_distance:0.1,
-      bias_mutate:true,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:10,
-      tricolor_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "alltogether_";
-  w = 266;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:256,
-      grid_h:-1,
-      grid_cols:20,
-      grid_rows:20,
-      colored:false,
-      sim_speed:1,
-      badb_sim_speed:2,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:true,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.1,
-      init_badb:true,
-      reinit_badb:false,
-      default_good_resist:0.1,
-      allow_good:true,
-      init_good:true,
-      reinit_good:false,
-      allow_body:true,
-      init_body:true,
-      reinit_body:true,
-      swab_size:1,
-      click_function:CLICK_FUNC_NONE,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      mutate_random_assign:false,
-      mutate_rate:0.1,
-      mutate_distance:0.1,
-      bias_mutate:true,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:10,
-      tricolor_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
 }
 window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
 window.addEventListener("load",begin,false);
@@ -1151,11 +732,11 @@ window.addEventListener("load",begin,false);
       In this Model:<br />
       <span class="rule new">- Bacteria are squares</span><br />
     </div>
-    <div class="experiment_content" id="nothing_experiment_content">
-      <div class="stage_container" id="nothing_stage_container"> </div>
-      <img class="shadow" id="nothing_shadow" src="assets/shadow.png" />
-      <div class="reset" id="nothing_reset"/>Reset</div>
-      <div class="popup" id="nothing_popup"/>Wow! Watch those bacteria go!</div>
+    <div class="experiment_content" id="squares_experiment_content">
+      <div class="stage_container" id="squares_stage_container"> </div>
+      <img class="shadow" id="squares_shadow" src="assets/shadow.png" />
+      <div class="reset" id="squares_reset"/>Reset</div>
+      <div class="popup" id="squares_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
     </div>
@@ -1253,11 +834,11 @@ window.addEventListener("load",begin,false);
       <span class="rule">- Bacteria eventually die</span><br />
       <span class="rule new">- Bacteria have diverse colors</span><br />
     </div>
-    <div class="experiment_content"  id="diversity_experiment_content">
-      <div class="stage_container" id="diversity_stage_container"> </div>
-      <img class="shadow" id="diversity_shadow" src="assets/shadow.png" />
-      <div class="reset" id="diversity_reset"/>Reset</div>
-      <div class="popup" id="diversity_popup"/>Wow! Watch those bacteria go!</div>
+    <div class="experiment_content"  id="randomdiversity_experiment_content">
+      <div class="stage_container" id="randomdiversity_stage_container"> </div>
+      <img class="shadow" id="randomdiversity_shadow" src="assets/shadow.png" />
+      <div class="reset" id="randomdiversity_reset"/>Reset</div>
+      <div class="popup" id="randomdiversity_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
     </div>
@@ -1287,11 +868,11 @@ window.addEventListener("load",begin,false);
       <span class="rule">- Bacteria eventually die</span><br />
       <span class="rule new">- Bacteria are given a color at birth similar to their parents</span><br />
     </div>
-    <div class="experiment_content"  id="controlleddiversity_experiment_content">
-      <div class="stage_container" id="controlleddiversity_stage_container"> </div>
-      <img class="shadow" id="controlleddiversity_shadow" src="assets/shadow.png" />
-      <div class="reset" id="controlleddiversity_reset"/>Reset</div>
-      <div class="popup" id="controlleddiversity_popup"/>Wow! Watch those bacteria go!</div>
+    <div class="experiment_content"  id="progressivediversity_experiment_content">
+      <div class="stage_container" id="progressivediversity_stage_container"> </div>
+      <img class="shadow" id="progressivediversity_shadow" src="assets/shadow.png" />
+      <div class="reset" id="progressivediversity_reset"/>Reset</div>
+      <div class="popup" id="progressivediversity_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
     </div>
@@ -1323,11 +904,11 @@ window.addEventListener("load",begin,false);
       <span class="rule">- Bacteria eventually die</span><br />
       <span class="rule">- Bacteria are given a color at birth similar to their parents</span><br />
     </div>
-    <div class="experiment_content"  id="murder_experiment_content">
-      <div class="stage_container" id="murder_stage_container"> </div>
-      <img class="shadow" id="murder_shadow" src="assets/shadow.png" />
-      <div class="reset" id="murder_reset"/>Reset</div>
-      <div class="popup" id="murder_popup"/>Wow! Watch those bacteria go!</div>
+    <div class="experiment_content"  id="murderprogressive_experiment_content">
+      <div class="stage_container" id="murderprogressive_stage_container"> </div>
+      <img class="shadow" id="murderprogressive_shadow" src="assets/shadow.png" />
+      <div class="reset" id="murderprogressive_reset"/>Reset</div>
+      <div class="popup" id="murderprogressive_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
     </div>
@@ -1337,8 +918,8 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Maybe unsurprisingly, the population of green bacteria diminishes. But if you keep it up long enough to develop a dominant population of reds and blues, it seems to maintain a kind of "non green" momentum, with little extra extermination work required from you.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Let's change the rules back to random attribute assignment at birth (rather than attributes inherited from parents), and try this experiment again.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Maybe unsurprisingly, the population of green bacteria diminishes. But if you keep it up long enough to develop a dominant population of reds and blues, it also seems to maintain a kind of "non green" momentum, with little extra extermination work required from you.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Let's change the rules back to "random attribute assignment at birth" and try this experiment again, to take note of any differences.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1373,9 +954,9 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;With a very small change in our model, it's no longer possible to affect any real change in the population. With our previous model, we had the help that any green cleared also removed any likely-green offspring from being created!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Inheriting attributes from parents is a subtle change with important consequences- let's go back to that model. We'll try the experiment again, but this time with a different attribute ("color" isn't a very realistic attribute for bacteria anyways).<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant. See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Though you're still killing just as many greens, it's not really possible to affect any real change in the population. With our previous model, we had the help that any green cleared also removed any likely-green offspring from being created!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Inheriting attributes from parents is a subtle change with important consequences- let's go back to that model. We'll try the experiment once again, but this time with a different attribute ("color" isn't a very realistic attribute for bacteria anyways).<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;The attribute we'll be <span class="keyword">selecting for</span> this time is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant. See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1395,11 +976,11 @@ window.addEventListener("load",begin,false);
       <span class="rule">- Bacteria eventually die</span><br />
       <span class="rule new">- Bacteria are given an antibiotic resistance at birth similar to their parents</span><br />
     </div>
-    <div class="experiment_content"  id="resistance_experiment_content">
-      <div class="stage_container" id="resistance_stage_container"> </div>
-      <img class="shadow" id="resistance_shadow" src="assets/shadow.png" />
-      <div class="reset" id="resistance_reset"/>Reset</div>
-      <div class="popup" id="resistance_popup"/>Wow! Watch those bacteria go!</div>
+    <div class="experiment_content"  id="murderresistance_experiment_content">
+      <div class="stage_container" id="murderresistance_stage_container"> </div>
+      <img class="shadow" id="murderresistance_shadow" src="assets/shadow.png" />
+      <div class="reset" id="murderresistance_reset"/>Reset</div>
+      <div class="popup" id="murderresistance_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
     </div>
@@ -1409,7 +990,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;We're again able to shift the attributes in a population. After all, all we did was switch out which attribute was being <span class="keyword">selected for</span> (...the attribute for which we were selecting? you get the idea). Anyways- we never really went into what the attribute of <span class="keyword">antibiotic resistance</span> is:<br /> <br />
+      &nbsp;&nbsp;&nbsp;&nbsp;We're again able to shift the attributes in a population. After all, the only thing we did was switch out which attribute was being <span class="keyword">selected for</span> (...the attribute for which we were selecting? you get the idea). Anyways- we never really went into what the attribute of <span class="keyword">antibiotic resistance</span> is:<br /> <br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotics</span> are substances that kill bacteria. <span class="keyword">Antibiotic resistance</span> is just the bacteria's ability to survive those substances.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;Let's try the experiment again, but this time we'll let the function of that attribute do the work. Rather than make an explicit effort to single out bacteria with a certain attribute, you should just try to kill bacteria indescriminately.<br /><br />
     </div>
@@ -1433,11 +1014,11 @@ window.addEventListener("load",begin,false);
       <span class="rule">- Bacteria are given an antibiotic resistance at birth similar to their parents</span><br />
       <span class="rule new">- Bacteria with greater antibiotic resistance are harder to kill</span><br />
     </div>
-    <div class="experiment_content"  id="damage_experiment_content">
-      <div class="stage_container" id="damage_stage_container"> </div>
-      <img class="shadow" id="damage_shadow" src="assets/shadow.png" />
-      <div class="reset" id="damage_reset"/>Reset</div>
-      <div class="popup" id="damage_popup"/>Wow! Watch those bacteria go!</div>
+    <div class="experiment_content"  id="damageresistance_experiment_content">
+      <div class="stage_container" id="damageresistance_stage_container"> </div>
+      <img class="shadow" id="damageresistance_shadow" src="assets/shadow.png" />
+      <div class="reset" id="damageresistance_reset"/>Reset</div>
+      <div class="popup" id="damageresistance_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
     </div>
@@ -1447,8 +1028,8 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok! So again, the same kind of thing happens! The bacteria's survivability against a global threat shifted the entire population toward being resistant to that threat!.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;All this manual work to kill bacteria is exhausting. Let's simplify it and just add a button that does the work for us, to really let this behavior show. Now you can choose how much antibiotic will be applied, then press a button to apply it to every bacteria in our model.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok! So again, the same kind of thing happens! The bacteria's survivability shifted the entire population toward being resistant to that threat, even though there was no intent in your applied selective force!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;All this manual work to kill bacteria is exhausting. Let's simplify it and just add a button that does the work for us so we can really let this behavior show. Now you can choose how much antibiotic will be applied, then press a button to apply it to every bacteria in our model.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1488,245 +1069,6 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_right">
     </div>
   </div>
-
-
-
-
-<div style="visibility:hidden;">
-
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Bacteria. We all have tons (trillions!) of 'em in our bodies. They sometimes make us sick. And bacterial infections are getting harder to treat effectively. Let's examine why, and see if we can figure out a way to prevent or reverse this trend.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;To do this, we'll create an incredibly simple <span class="keyword">model</span> of a colony of bacteria. For our purposes, we'll just create a grid, and define a bacterium as a position on that grid that follows a few simple rules:<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A bacterium will sometimes self-reproduce into an adjacent space.</span><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- After a few seconds, a bacterium will die.</span><br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Simple enough! Let's see what that looks like:<br />
-    </div>
-    <div class="margin margin_right">
-      <br />
-      <br />
-      <br />
-      <br />
-      - Creating a simplified model will allow us to poke at the things we find interesting about a system without worrying about specifics.
-    </div>
-  </div>
-
-  <div class="experiment_content" id="basic_experiment_content">
-    <div class="stage_container" id="basic_stage_container"> </div>
-    <img class="shadow" id="basic_shadow" src="assets/shadow.png" />
-    <div class="reset" id="basic_reset"/>Reset</div>
-    <div class="popup" id="basic_popup"/>Wow! Watch those bacteria go!</div>
-  </div>
-  <div class="description">
-    Click to add bacteria. Hit reset to clear the grid.
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;As you can see, a single click quickly results in a thriving colony of bacteria! Our model consists of only two rules, and already we have a basic simulation of how colonies of bacteria grow. But, while this simulation looks fun and lively, it doesn't yet get at the interesting things we'd like to examine. So, let's add more rules!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A bacterium can be one of many different shades of gray.</span><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Any bacterium born will be the same shade as its parent.</span><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- <i>Except</i> in random cases where a <i>small</i> mutation in shade occurs.</span><br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;So we have a new model- here's an opportunity to stop and think of what you might be expecting of the simulation given the new rules...<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Alright let's test it out:<br />
-    </div>
-    <div class="margin margin_right">
-      - Of course, in reality bacteria would require food, couldn't multiply -that- quickly, etc... Such are simplified models!<br /><br />
-    </div>
-  </div>
-
-  <div class="experiment_content" id="mutate_experiment_content">
-    <div class="stage_container" id="mutate_stage_container"> </div>
-    <img class="shadow" id="mutate_shadow" src="assets/shadow.png" />
-    <div class="reset" id="mutate_reset"/>Reset</div>
-    <div class="popup" id="mutate_popup"/>Pretty colors! (er, shades?)</div>
-  </div>
-  <div class="description">
-    Add some bacteria, then sit back, watch, and wait.
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Given enough time, you should start to see a diverse spectrum of shaded bacteria form. Upon further examination, the diverse shades seem to stay grouped together into small, similarly shaded patches. Remember, this simulation is obeying only the rules we've listed for it; there's no rule stating that they should stay in patches!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;The bacteria's tendency to group together with other bacteria of a similar shade is an example of an <span class="keyword">emergent behavior</span>. We can see that, though no bacteria has any explicit instruction to stay in a group, the rules that "parents generate like-colored bacteria", and that "parents generate bacteria in a nearby cell" have combined to result in this phenomenon.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Cool. Let's see some more emergent behavior. This time, rather than add more rules, let's change the bacteria's environment.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Now, hover your mouse over bacteria to <i>kill</i> it, rather than create it. Spend a minute killing only those bacteria that are <i>darker</i> than the <i>average</i> of the current population. Don't worry about being too picky!<br /><br />
-    </div>
-    <div class="margin margin_right">
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      - An emergent property is one that is a result of the combination of simpler rules, rather than being a property explicitly listed as a rule itself.
-    </div>
-  </div>
-
-  <div class="experiment_content" id="genocide_experiment_content">
-    <div class="stage_container" id="genocide_stage_container"> </div>
-    <img class="shadow" id="genocide_shadow" src="assets/shadow.png" />
-    <div class="reset" id="genocide_reset"/>Reset</div>
-    <div class="popup" id="genocide_popup"/>What shade did you manage to average?</div>
-  </div>
-  <div class="description">
-    Hover to kill bacteria. Try killing only those bacteria darker than the average population.
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;If you've kept at it long enough you might notice that the average shade of bacteria in the colony continues to lighten! By killing bacteria of one shade, you are not only removing the specific bacterium you have killed from the colony, and thus the average- you're eliminating their ability to produce more of a like shade.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;In this case, your "hawking over the colony, murdering dark bacteria" can be considered a <span class="keyword">hostile environment</span> for a given attribute (darkness). This is a basic form of <span class="keyword">selection</span>, resulting in <span class="keyword">evolution</span>. <span class="keyword">Evolution</span>, like the tendency to group with like colors, is an <span class="keyword">emergent behavior</span>. There is no rule in place saying how the population ought react toward a <span class="keyword">hostile environment</span>, yet all the rules contribute to the result.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So manually killing to <i>select for</i> a specific shade of gray is a bit contrived (not to mention tedious). Let's say rather than shade, the attribute that we are concerned with is <i>antibiotic resistance</i>. Time for some new rules.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A bacterium's lightness represents its antibiotic resistance.</span><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- A dose of antibiotics will kill a bacterium if the dose is stronger than its resistance </span><br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;We're again changing the environment. This time, you'll be able to apply a dose of antibiotics to all the bacteria on the grid with a click of a button.
-    </div>
-    <div class="margin margin_right">
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      - In this example, the colony of bacteria evolved to be lighter in shade, adapting to an environment that is hostile towards those not as light.
-      <br />
-      <br />
-      - Antibiotics kill bacteria. The ability with which a bacterium can survive the presence of antibiotics is its antibiotic resistance.
-    </div>
-  </div>
-
-  <div class="experiment_content" id="antibiotic_experiment_content">
-    <div class="stage_container" id="antibiotic_stage_container"> </div>
-    <img class="shadow" id="antibiotic_shadow" src="assets/shadow.png" />
-    <div class="reset" id="antibiotic_reset"/>Reset</div>
-    <div class="popup" id="antibiotic_popup"/>That was efficient!</div>
-  </div>
-  <div class="description">
-    Click on the grid to add bacteria. Move the slider to size your antibiotic dosage. Click "dose" to flood the grid with antibiotics, killing all bacteria weaker than the specified dose.
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Some interesting behavior emerges depending on when, and how much you dose. If you dose enough to kill the entire population- game over. The bacteria colony has ended, and isn't coming back (until you reset...). But if your dosage is too small, you've only temporariliy reduced the colony. And worse, you've only left the strongest bactera alive to reproduce!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;This is an extremely effective way to create incredibly strong bacteria (an extremely, incredibly bad thing). Not only are too-weak doses of antibiotics a hostile environment for non-resistant bacteria, they are incredibly efficient at it as well (notice how easy it is to create a super-bacteria in this simulation compared to the previous).<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;If we see "super bacteria" as a problem we'd like to prevent in real life, it seems a good answer is "take more antibiotics!". As long as all of them are killed, none survive to become super! Right?<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;It's important to note here that, while models can be a great method to come to an intuitive understanding of a system, we must be careful to not bring conclusions drawn from the model back into the thing they represent, without first acknowledging the differences between our models and reality.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;That said, there are a couple factors that make this proposed solution ("take more antibiotics!") insufficient.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;First, most of the bacteria in our body is <i>good</i> for us! Even necessary! It is difficult for <span class="keyword">antibiotics</span> to distinguish between the two, and so "loading up on antibiotics" every time we're sick might just make us sicker. Time for some more rules.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Bacteria can be either good, or bad.</span><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Good bacteria is green.</span><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Good bacteria will produce more good, bad will produce bad.</span><br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Other than that, good bacteria behaves equivalently to bad. Try using antibiotics to eliminate the bad bacteria, but leave the good.<br /><br />
-    </div>
-    <div class="margin margin_right">
-      <br />
-      <br />
-      <br />
-      - Unfortunately, this closely parallels what happens when people stop taking the full amount of their doctor prescribed antibiotics!
-    </div>
-  </div>
-
-  <div class="experiment_content" id="good_experiment_content">
-    <div class="stage_container" id="good_stage_container"> </div>
-    <img class="shadow" id="good_shadow" src="assets/shadow.png" />
-    <div class="reset" id="good_reset"/>Reset</div>
-    <div class="popup" id="good_popup"/>I assume you've been unsuccessful...</div>
-  </div>
-  <div class="description">
-    Try to dose with antibiotics in such a way that the bad bacteria dies, but the good lives.
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;There isn't much nuance to this simulation- it's simply incredibly difficult (if not impossible) to realiably take out only bad bacteria, while leaving the good. But antibiotics <i>are</i> useful in real life!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Fortunately, antibiotics aren't the only defense we have against bacterial infection. Our body naturally produces <span class="keyword">antibodies</span> with no external prodding!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Antibodies are red.</span><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="rule">- Antibodies will sometimes multiply to attack nearby bad bacteria.</span><br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Well, that's simple. Let's see how that effects the populations:<br /><br />
-    </div>
-    <div class="margin margin_right">
-      <br />
-    </div>
-  </div>
-
-  <div class="experiment_content" id="antibody_experiment_content">
-    <div class="stage_container" id="antibody_stage_container"> </div>
-    <img class="shadow" id="antibody_shadow" src="assets/shadow.png" />
-    <div class="reset" id="antibody_reset"/>Reset</div>
-    <div class="popup" id="antibody_popup"/>Good always triumphs over evil!</div>
-  </div>
-  <div class="description">
-    Will good bacteria win? Or will bad? Place your bets!
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Spoilers- the good side wins. The antibodies act as a <span class="keyword">hostile environment</span> for the bad bacteria. Since they don't attack the good bacteria, the good will naturally be left to reproduce more freely.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Because of this, it is more often than not totally unnecessary to take any kind of external antibiotic! But woah. Now we've gone from "take all the antibiotics!" to "never take antibiotics!" and something still sounds off... doctors still prescribe antibiotics- why?<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;There are many different kinds of bacteria. Many of them have properties that render them difficult for our bodies to combat on their own (such as the rate and means through which they replicate, the difficulty for our antibodies to effectively kill them, etc...). In these cases, antibiotics can offer quick assitance.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Let's introduce bad bacteria that grows too quickly for antibodies alone to fight it. Again, try to use the antibiotics to kill the bad while leaving the good. This time, with help from some natural antibodies.<br />
-    </div>
-    <div class="margin margin_right">
-      <br />
-      - But wait, if antibodies are a hostile environment toward bad bacteria, why doesn't bacteria evolve to be resistant to them? Answer: Wow that's complicated. Long story short- they do! But antibodies have been evolving alongside the bacteria as well! This quickly gets too complicated to be worth adding to our simulation, so for now, we'll act as though neither evolve in their ability to effect each other.
-    </div>
-  </div>
-
-  <div class="experiment_content" id="alltogether_experiment_content">
-    <div class="stage_container" id="alltogether_stage_container"> </div>
-    <img class="shadow" id="alltogether_shadow" src="assets/shadow.png" />
-    <div class="reset" id="alltogether_reset"/>Reset</div>
-    <div class="popup" id="alltogether_popup"/>A single, patiently timed dosing is often enough to do the trick...</div>
-  </div>
-  <div class="description">
-    Use careful, controlled dosing of antibiotics to rid the bad bacteria while leaving the good.
-  </div>
-
-
-  - Antibiotic will never kill *all* of the bacteria<br />
-  - People are contagious while taking the antibiotic (and further, are contagious with only the resistant bacteria)<br />
-  - Antibiotics are harmful to humans in large, frequent doses.<br />
-  - People are unreliable, don't take their medicine.<br />
-
-
-  &nbsp;&nbsp;&nbsp;&nbsp;<br /><br /><br />Test Essay...<br /><br />
-  &nbsp;&nbsp;&nbsp;&nbsp;Our bodies are filled with all sorts of bacteria. In fact, according to Dr. Carolyn Bohach (University of Idaho), our body houses <i>ten times</i> more bacteria cells than it does human ones (enough to fill a large soup can)! Fortunately for us, a majority of these living organisms within us are beneficial (or even necessary!) to our everyday bodily processes (helping digest our food and maintain balance throughout our digestive tract). <br />
-  &nbsp;&nbsp;&nbsp;&nbsp;However, when our body gets exposed to <i>bad bacteria</i>, it might result in us getting sick, or a wound failing to heal cleanly. In most cases, our body has enough resources to fight off the infection itself- all we need to do is give it time. But if the infection is severe enough, our bodies might need external help from <i>antibiotics</i>.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;And here's where things get tricky. Bacteria are incredibly complex, and have a variety of subtle mechanisms that dictate how they respond to antibiotics (many of these mechanisms are not yet fully understood by scientists!). For the most part, prolonged exposure to certain substances deemed "antibiotic" will kill any bacteria into which it comes in contact. But it isn't that simple.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;There are approximately 10^14 bacteria organisms in your body- that's hundreds of trillions! And each bacteria interacts <i>ever so slightly</i> differently to the antibiotic than the next. These small, subtle differences are results of mutations- or errors- in the reproductive process. Every time a new bacteria is created, there is a small chance that it will differ from its parent in random, unpredictable ways.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;The key thing to note here are the terms <i>unpredictable</i> and <i>random</i>. Sometimes, a mutation will lead to the bacteria dying off immediately after its creation. Other times it will result in the bacteria being a different or unique shape. And other times still it might slightly change the way it interacts with, say, antibiotics. The bacteria has no control over which of these mutations happen, if any; each mutation is the result of random chance.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;This becomes very interesting when these mutations result in some bacteria becoming able to survive long exposures to antibiotics much more successfully than others. If some bad bacteria has the ability to withstand antibiotics, that's bad news for the person infected!<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;So, how do these "super bacteria", able to survive large doses of antibiotics, come to be? Unfortunately, it's in large part due to our universal use of antibiotics! If left on their own, it would be unlikely that large colonies of bacteria would all have mutations resulting in them becoming highly resistent. But when 
-
-  <div class="experiment_content" id="experiment_content">
-    <div class="stage_container" id="stage_container"> </div>
-    <img class="shadow" id="shadow" src="assets/shadow.png" />
-    <div class="reset" id="reset"/>Reset</div>
-    <div class="popup" id="popup"/>Woop de dooooooo!!!!</div>
-    <div id="debug_div" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
-  </div>
-  <div class="description">
-    This is a test description.
-  </div>
-
-</div> <!-- visibility -->
 
 </div>
 
