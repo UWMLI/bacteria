@@ -1165,7 +1165,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok no they're not. Those are small red squares. But we can use those small red squares to <span class="keyword">model</span> bacteria! Currently, "bacteria are squares" is not a very interesting nor representative model. Let's improve upon it: bacteria don't just sit around- they multiply!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok no they're not. Those are small red squares. But we can use those small red squares to <span class="keyword">model</span> bacteria! Because "bacteria are squares" is not a very interesting nor a representative model, let's improve upon it.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1251,7 +1251,7 @@ window.addEventListener("load",begin,false);
       <span class="rule">- Bacteria are squares</span><br />
       <span class="rule">- Bacteria sometimes multiply</span><br />
       <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule new">- Bacteria are randomly assigned a color at birth</span><br />
+      <span class="rule new">- Bacteria have diverse colors</span><br />
     </div>
     <div class="experiment_content"  id="diversity_experiment_content">
       <div class="stage_container" id="diversity_stage_container"> </div>
@@ -1267,7 +1267,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;But that's not really how diversity works- offspring don't just receive totally random attributes... For example: we all look (at least a little bit) like our biological parents. Let's update our model to better represent this.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;In constructing a model, we have to be careful that we're not oversimplifying small but important details. We've added diversity, but "random attribute assignment" isn't a very accurate representation of how attributes propagate through a population. Instead, bacteria inherit attributes from their parents.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1301,7 +1301,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So now that we have a reasonable model for how attributes propagate through a population, let's try an experiment. What would happen if there were something trying to <span class="keyword">kill</span> bacteria with a certain attribute. What if that <i>thing</i> was <i>you</i>, and the <i>attribute</i> you wanted to remove was <i>the color green</i>.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So now that we have a reasonable model for attribute propagation, let's try an experiment. What would happen if there were something trying to <span class="keyword">kill</span> bacteria with a certain attribute. What if that <i>thing</i> was <i>you</i>, and the <i>attribute</i> you wanted to remove was <i>the color green</i>.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1373,8 +1373,8 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;With a very small change in our model, it's pretty much no longer possible to affect any real change in the population. Before, we had the help that any green cleared also removed any likely-green offspring from being created!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Inheriting attributes from parents is important- let's go back to that model. We'll try the experiment again, but this time with a different attribute.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;With a very small change in our model, it's no longer possible to affect any real change in the population. With our previous model, we had the help that any green cleared also removed any likely-green offspring from being created!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Inheriting attributes from parents is a subtle change with important consequences- let's go back to that model. We'll try the experiment again, but this time with a different attribute ("color" isn't a very realistic attribute for bacteria anyways).<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;The attribute we'll be <span class="keyword">selecting for</span> is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant. See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
     </div>
     <div class="margin margin_right">
@@ -1409,10 +1409,9 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ah! We're again able to shift the attributes in a population. After all, all we did was switch out which attribute was being <span class="keyword">selected for</span> (...for which was being selected? you get the idea). Anyways- we never really went into what the attribute of <span class="keyword">antibiotic resistance</span> is:<br /> <br />
+      &nbsp;&nbsp;&nbsp;&nbsp;We're again able to shift the attributes in a population. After all, all we did was switch out which attribute was being <span class="keyword">selected for</span> (...the attribute for which we were selecting? you get the idea). Anyways- we never really went into what the attribute of <span class="keyword">antibiotic resistance</span> is:<br /> <br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotics</span> are substances that kill bacteria. <span class="keyword">Antibiotic resistance</span> is just the bacteria's ability to survive those substances.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;So, until now we've played around with what happens when there is a <span class="keyword">hostile environment</span> toward a specific attribute. But we haven't justified why there would ever really <i>exist</i> such an environment.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;This time, rather than tell you to take on the role of being biased against an attribute, let's set you toward trying to kill bacteria in general. But we'll also add another rule to our model.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Let's try the experiment again, but this time we'll let the function of that attribute do the work. Rather than make an explicit effort to single out bacteria with a certain attribute, you should just try to kill bacteria indescriminately.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1448,8 +1447,8 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok! So again, the same kind of thing happens! Even with no force that's intentionally trying to draw out some attribute, the rules we've decided upon result in the movement of a population.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;All this manual work to kill bacteria is exhausting. Let's simplify it and just add a button that does the work for us. Now you can choose how much antibiotic will be applied, then press a button to apply it to every bacteria in our model.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok! So again, the same kind of thing happens! The bacteria's survivability against a global threat shifted the entire population toward being resistant to that threat!.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;All this manual work to kill bacteria is exhausting. Let's simplify it and just add a button that does the work for us, to really let this behavior show. Now you can choose how much antibiotic will be applied, then press a button to apply it to every bacteria in our model.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
