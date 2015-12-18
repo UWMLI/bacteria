@@ -457,7 +457,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     }
   }
 
-  var Grid = function(x,y,w,h,cols,rows)
+  var Grid = function(x,y,w,h,cols,rows,scene)
   {
     var self = this;
 
@@ -530,7 +530,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
     self.draw = function(canv)
     {
-
       var nodes = self.node_buffs[self.node_buff];
       canv.context.lineWidth = nodes[0].w/8;
       for(var i = 0; i < nodes.length; i++)
@@ -540,7 +539,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         nodes[i].draw(canv,false);
 
       canv.context.strokeStyle = "#0000FF";
-      if(config.show_hover && self.hovering_node)
+      if(config.show_hover && self.hovering_node && scene.prerequisite_met)
       {
         if(config.swab_size == 1)
         {
@@ -573,7 +572,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(self.hovering_node) self.hovering_node = self.nodeAt(self.hovering_node.col,self.hovering_node.row);
       if(self.dragging_node) self.dragging_node = self.nodeAt(self.dragging_node.col,self.dragging_node.row);
 
-      if(self.hovering_node)
+      if(self.hovering_node && scene.prerequisite_met)
       {
         var n;
         switch(config.hover_function)
@@ -645,7 +644,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         }
       }
 
-      if(self.dragging_node)
+      if(self.dragging_node && scene.prerequisite_met)
       {
         switch(config.click_function)
         {
@@ -929,6 +928,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.dragger;
 
   self.grid;
+  self.prerequisite_met;
   self.smiley;
   self.ave_disp;
   self.split_disp;
@@ -940,6 +940,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.dose_button;
 
   self.just_paused;
+  self.just_initializing;
 
   self.external_biot_resist;
   self.sneeze_button;
@@ -956,7 +957,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(config.grid_w == -1) config.grid_w = c.canvas.width;
       if(config.grid_h == -1) config.grid_h = c.canvas.height;
-      self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows);
+      self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows, self);
       self.reset();
       self.hoverer.register(self.grid);
       self.dragger.register(self.grid);
@@ -975,7 +976,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(config.allow_dose)
       {
-        self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ self.dosing_prog = self.dosing_prog_rate; })
+        self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
         self.presser.register(self.dose_button);
 
         self.dose_amt = 0.;
@@ -1006,20 +1007,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       }
 
       self.just_paused = 0;
-    }
-    else if(config.special == SPECIAL_INTRO)
-    {
-      var c = stage.drawCanv;
-      self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
-      self.dragger = new Dragger({source:stage.dispCanv.canvas});
-
-      if(config.grid_w == -1) config.grid_w = c.canvas.width;
-      if(config.grid_h == -1) config.grid_h = c.canvas.height;
-      self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows);
-      self.hoverer.register(self.grid);
-      self.dragger.register(self.grid);
-
-      self.just_paused = 0;
+      self.just_initializing = 0;
     }
   };
 
@@ -1027,6 +1015,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
   {
     if(config.allow_reset)
     {
+      self.prerequisite_met = false;
       self.grid.clear();
       if(config.init_badb)
       {
@@ -1072,6 +1061,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
   {
     if(config.special == SPECIAL_NONE)
     {
+      var n_nodes = self.grid.n_badb + self.grid.n_good + self.grid.n_body ;
+      if(config.prerequisite_fill_for_interaction == 0 || n_nodes == 0 || n_nodes >= config.prerequisite_fill_for_interaction*self.grid.rows*self.grid.cols)
+        self.prerequisite_met = true;
+      if(!self.prerequisite_met) self.just_initializing = 30;
+
       self.hoverer.flush();
       if(!config.hover_to_play || self.grid.hovering)
       {
@@ -1118,15 +1112,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
         }
 
         //if(self.grid.n_badb + self.grid.n_good + self.grid.n_body > self.grid.rows*self.grid.cols*0.6) popup_div.style.visibility = "visible";
-      }
-    }
-    else if(config.special == SPECIAL_INTRO)
-    {
-      self.hoverer.flush();
-      if(!config.hover_to_play || self.grid.hovering)
-      {
-        self.dragger.flush();
-        self.grid.tick();
       }
     }
   };
@@ -1198,19 +1183,35 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.strokeRect(w-18,10,8,20);
         self.just_paused = 30;
       }
-      else if(self.just_paused)
+      else
       {
-        self.just_paused--;
-        var w = canv.canvas.width;
-        canv.context.fillStyle = "white";
-        canv.context.strokeStyle = DARK_COLOR;
-        canv.context.beginPath();
-        canv.context.moveTo(w-10, 20);
-        canv.context.lineTo(w-25, 30);
-        canv.context.lineTo(w-25, 10);
-        canv.context.closePath();
-        canv.context.fill();
-        canv.context.stroke();
+        if(self.just_paused)
+        {
+          self.just_paused--;
+          var w = canv.canvas.width;
+          canv.context.fillStyle = "white";
+          canv.context.strokeStyle = DARK_COLOR;
+          canv.context.beginPath();
+          canv.context.moveTo(w-10, 20);
+          canv.context.lineTo(w-25, 30);
+          canv.context.lineTo(w-25, 10);
+          canv.context.closePath();
+          canv.context.fill();
+          canv.context.stroke();
+        }
+        if(self.prerequisite_met && self.just_initializing)
+        {
+          self.just_initializing--;
+          canv.context.fillStyle = DARK_COLOR;
+          canv.context.font = "12px Helvetica Neue";
+          canv.context.fillText("kill enabled",Math.round(canv.canvas.width/2-100),Math.round(canv.canvas.height-50));
+        }
+        else if(config.prompt_prerequisite_unmet && !self.prerequisite_met)
+        {
+          canv.context.fillStyle = DARK_COLOR;
+          canv.context.font = "12px Helvetica Neue";
+          canv.context.fillText("Waiting for population to grow...",Math.round(canv.canvas.width/2-100),Math.round(canv.canvas.height-50));
+        }
       }
 
       if(config.prompt_reset_on_empty && (self.grid.n_badb + self.grid.n_good + self.grid.n_body) == 0)
@@ -1218,49 +1219,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.fillStyle = DARK_COLOR;
         canv.context.font = "20px Helvetica Neue";
         canv.context.fillText("(click reset) "+String.fromCharCode(8595),Math.round(canv.canvas.width/2-60),Math.round(canv.canvas.height-50));
-      }
-
-      /*
-      //for more visible debugging overlay
-      canv.context.fillStyle = "#FFFFFF";
-      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height/2);
-      */
-    }
-    else if(config.special == SPECIAL_INTRO)
-    {
-      var canv = stage.drawCanv;
-      canv.context.fillStyle = "#888833";
-      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
-
-      self.grid.draw(canv);
-
-      if(config.hover_to_play && !self.grid.hovering && config.display_pause)
-      {
-        var w = canv.canvas.width;
-        canv.context.fillStyle = "rgba(255,255,255,0.5)";
-        canv.context.fillRect(0,0,w,canv.canvas.height);
-
-        canv.context.fillStyle = "white";
-        canv.context.strokeStyle = DARK_COLOR;
-        canv.context.fillRect(w-28,10,8,20);
-        canv.context.strokeRect(w-28,10,8,20);
-        canv.context.fillRect(w-18,10,8,20);
-        canv.context.strokeRect(w-18,10,8,20);
-        self.just_paused = 30;
-      }
-      else if(self.just_paused)
-      {
-        self.just_paused--;
-        var w = canv.canvas.width;
-        canv.context.fillStyle = "white";
-        canv.context.strokeStyle = DARK_COLOR;
-        canv.context.beginPath();
-        canv.context.moveTo(w-10, 20);
-        canv.context.lineTo(w-25, 30);
-        canv.context.lineTo(w-25, 10);
-        canv.context.closePath();
-        canv.context.fill();
-        canv.context.stroke();
       }
 
       /*
