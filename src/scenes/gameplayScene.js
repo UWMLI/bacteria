@@ -538,6 +538,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
     self.hsl = { h:0, s:1, l:0.6 };
     self.rgb = { r:0, g:0, b:0 };
 
+    self.start_green = 0;
+    self.end_green = 0;
+
     self.draw = function(canv)
     {
       var i = 0;
@@ -547,13 +550,18 @@ var GamePlayScene = function(game, stage, config, popup_div)
         for(var c = 0; c < grid.cols; c++)
         {
           if(grid.nodeAt(c,r).type == NODE_TYPE_BADB)
+          {
             self.pts[i] = grid.nodeAt(c,r).h;
             i++;
+          }
         }
       }
       n_pts = i;
       while(self.pts[i] != 999) { self.pts[i] = 999; i++; }
       self.pts.sort(sortNumber);
+
+      self.start_green = 0;
+      self.end_green = 0;
 
       if(n_pts == 0)
         canv.context.fillStyle = DARK_COLOR;
@@ -569,6 +577,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
         for(var i = 0; i < n_pts; i++)
         {
           self.hsl.h = self.pts[i];
+          if(!self.start_green && self.hsl.h > 90) self.start_green = i/n_pts;
+          if(self.start_green && self.hsl.h < 150) self.end_green = i/n_pts;
           HSL2RGB(self.hsl,self.rgb);
           self.gradient.addColorStop(i/(n_pts-1), RGB2Hex(self.rgb));
         }
@@ -576,6 +586,31 @@ var GamePlayScene = function(game, stage, config, popup_div)
       }
 
       canv.context.fillRect(self.x,self.y,self.w,self.h);
+
+      if(self.end_green-self.start_green > 0.001)
+      {
+        y = self.y+(1-self.start_green)*self.h;
+        canv.context.fillStyle = "white";
+        canv.context.strokeStyle = DARK_COLOR;
+        canv.context.beginPath();
+        canv.context.moveTo(self.x+self.w+2, y);
+        canv.context.lineTo(self.x+self.w+8, y-4);
+        canv.context.lineTo(self.x+self.w+8, y+4);
+        canv.context.closePath();
+        canv.context.stroke();
+        canv.context.fill();
+
+        y = self.y+(1-self.end_green)*self.h;
+        canv.context.fillStyle = "white";
+        canv.context.strokeStyle = DARK_COLOR;
+        canv.context.beginPath();
+        canv.context.moveTo(self.x+self.w+2, y);
+        canv.context.lineTo(self.x+self.w+8, y-4);
+        canv.context.lineTo(self.x+self.w+8, y+4);
+        canv.context.closePath();
+        canv.context.stroke();
+        canv.context.fill();
+      }
     }
   }
 
