@@ -166,3 +166,13 @@ var HSL2RGB = function(hsl, rgb)
   rgb.b = HSL2RGBHelperConvertTMPValToFinal(tmp_1, tmp_2, rgb.b);
 }
 
+var RGB2Hex = function(rgb)
+{
+  return "#"+dec2Hex(Math.floor(rgb.r*255))+dec2Hex(Math.floor(rgb.g*255))+dec2Hex(Math.floor(rgb.b*255));
+}
+
+var dec2Hex = function(n)
+{
+  return n.toString(16);
+}
+

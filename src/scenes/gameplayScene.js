@@ -67,6 +67,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     ave_display_width:0,
     split_display_width:0,
     tricolor_display_width:0,
+    hsl_display_width:0,
   };
 
   if(!config) config = default_config;
@@ -417,8 +418,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
     self.draw = function(canv)
     {
-      canv.context.fillStyle = self.gradient;
-
       var y = 0;
            if(grid.n_badb < 1) y = 0;
       else if(grid.n_good < 1) y = 1;
@@ -454,8 +453,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
     self.draw = function(canv)
     {
-      canv.context.fillStyle = self.gradient;
-
       if(grid.n_r + grid.n_g + grid.n_b == 0)
       {
         canv.context.fillStyle = DARK_COLOR;
@@ -521,6 +518,64 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.stroke();
         canv.context.fill();
       }
+    }
+  }
+
+  var HSLDisplay = function(x,y,w,h,grid)
+  {
+    var self = this;
+
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+
+    self.gradient;
+    self.pts = [];
+    for(var i = 0; i < grid.cols*grid.rows+1; i++) self.pts[i] = 999;
+    function sortNumber(a,b) { return a - b; }
+
+    self.hsl = { h:0, s:1, l:0.6 };
+    self.rgb = { r:0, g:0, b:0 };
+
+    self.draw = function(canv)
+    {
+      var i = 0;
+      var n_pts = 0;
+      for(var r = 0; r < grid.rows; r++)
+      {
+        for(var c = 0; c < grid.cols; c++)
+        {
+          if(grid.nodeAt(c,r).type == NODE_TYPE_BADB)
+            self.pts[i] = grid.nodeAt(c,r).h;
+            i++;
+        }
+      }
+      n_pts = i;
+      while(self.pts[i] != 999) { self.pts[i] = 999; i++; }
+      self.pts.sort(sortNumber);
+
+      if(n_pts == 0)
+        canv.context.fillStyle = DARK_COLOR;
+      else if(n_pts == 1)
+      {
+        self.hsl.h = self.pts[0];
+        HSL2RGB(self.hsl,self.rgb);
+        canv.context.fillStyle = RGB2Hex(self.rgb);
+      }
+      else
+      {
+        self.gradient = canv.context.createLinearGradient(0, self.y+self.h, 0, self.y);
+        for(var i = 0; i < n_pts; i++)
+        {
+          self.hsl.h = self.pts[i];
+          HSL2RGB(self.hsl,self.rgb);
+          self.gradient.addColorStop(i/(n_pts-1), RGB2Hex(self.rgb));
+        }
+        canv.context.fillStyle = self.gradient;
+      }
+
+      canv.context.fillRect(self.x,self.y,self.w,self.h);
     }
   }
 
@@ -624,7 +679,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       canv.context.moveTo(self.x,self.y+self.h);
       canv.context.lineTo(self.x,self.y);
       canv.context.lineTo(self.x+self.w,self.y);
-      if(config.ave_display_width+config.split_display_width+config.tricolor_display_width == 0)
+      if(config.ave_display_width+config.split_display_width+config.tricolor_display_width+config.hsl_display_width == 0)
         canv.context.lineTo(self.x+self.w,self.y+self.h);
       canv.context.stroke();
     }
@@ -867,8 +922,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
                     if(config.colored)
                     {
                       rand = Math.random();
-                           if(rand < config.mutate_rate*0.5)   hc -= Math.random()*config.mutate_distance*360;
-                      else if(rand > 1-config.mutate_rate*0.5) hc += Math.random()*config.mutate_distance*360;
+                           if(rand < config.mutate_rate*0.5)   hc -= Math.random()*config.mutate_distance*180;
+                      else if(rand > 1-config.mutate_rate*0.5) hc += Math.random()*config.mutate_distance*180;
                     }
                     else
                     {
@@ -997,6 +1052,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.smiley;
   self.ave_disp;
   self.split_disp;
+  self.tricolo_disp;
+  self.hsl_disp;
 
   self.dose_amt;
   self.dosing_prog;
@@ -1070,6 +1127,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(config.tricolor_display_width > 0)
       {
         self.tricolor_disp = new TricolorDisplay(self.grid.w,0,config.tricolor_display_width,c.canvas.height,self.grid);
+      }
+
+      if(config.hsl_display_width > 0)
+      {
+        self.hsl_disp = new HSLDisplay(self.grid.w,0,config.hsl_display_width,c.canvas.height,self.grid);
       }
 
       self.ticks_outside = 100000; //"it's been outside forever"
@@ -1228,6 +1290,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(config.tricolor_display_width > 0)
       {
         self.tricolor_disp.draw(canv);
+      }
+      if(config.hsl_display_width > 0)
+      {
+        self.hsl_disp.draw(canv);
       }
 
       if(config.allow_contaminate)
