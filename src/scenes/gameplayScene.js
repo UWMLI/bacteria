@@ -577,8 +577,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
         for(var i = 0; i < n_pts; i++)
         {
           self.hsl.h = self.pts[i];
-          if(!self.start_green && self.hsl.h > 90) self.start_green = i/n_pts;
-          if(self.start_green && self.hsl.h < 150) self.end_green = i/n_pts;
+          if(!self.start_green && self.hsl.h > 90) { self.start_green = i/(n_pts-1); self.end_green = self.start_green; }
+          if(self.start_green && self.hsl.h < 150) self.end_green = i/(n_pts-1);
           HSL2RGB(self.hsl,self.rgb);
           self.gradient.addColorStop(i/(n_pts-1), RGB2Hex(self.rgb));
         }
@@ -587,30 +587,27 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       canv.context.fillRect(self.x,self.y,self.w,self.h);
 
-      if(self.end_green-self.start_green > 0.001)
-      {
-        y = self.y+(1-self.start_green)*self.h;
-        canv.context.fillStyle = "white";
-        canv.context.strokeStyle = DARK_COLOR;
-        canv.context.beginPath();
-        canv.context.moveTo(self.x+self.w+2, y);
-        canv.context.lineTo(self.x+self.w+8, y-4);
-        canv.context.lineTo(self.x+self.w+8, y+4);
-        canv.context.closePath();
-        canv.context.stroke();
-        canv.context.fill();
+      y = self.y+(1-self.start_green)*self.h;
+      canv.context.fillStyle = "white";
+      canv.context.strokeStyle = DARK_COLOR;
+      canv.context.beginPath();
+      canv.context.moveTo(self.x+self.w+2, y);
+      canv.context.lineTo(self.x+self.w+8, y-4);
+      canv.context.lineTo(self.x+self.w+8, y+4);
+      canv.context.closePath();
+      canv.context.stroke();
+      canv.context.fill();
 
-        y = self.y+(1-self.end_green)*self.h;
-        canv.context.fillStyle = "white";
-        canv.context.strokeStyle = DARK_COLOR;
-        canv.context.beginPath();
-        canv.context.moveTo(self.x+self.w+2, y);
-        canv.context.lineTo(self.x+self.w+8, y-4);
-        canv.context.lineTo(self.x+self.w+8, y+4);
-        canv.context.closePath();
-        canv.context.stroke();
-        canv.context.fill();
-      }
+      y = self.y+(1-self.end_green)*self.h;
+      canv.context.fillStyle = "white";
+      canv.context.strokeStyle = DARK_COLOR;
+      canv.context.beginPath();
+      canv.context.moveTo(self.x+self.w+2, y);
+      canv.context.lineTo(self.x+self.w+8, y-4);
+      canv.context.lineTo(self.x+self.w+8, y+4);
+      canv.context.closePath();
+      canv.context.stroke();
+      canv.context.fill();
     }
   }
 
@@ -769,6 +766,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BADB:
             self.hovering_node.setType(NODE_TYPE_BADB);
+            self.hovering_node.h = 0;
+            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.hovering_node.biot_resist = config.default_badb_resist;
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -781,6 +780,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_GOOD:
             self.hovering_node.setType(NODE_TYPE_GOOD);
+            self.hovering_node.h = 0;
+            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.hovering_node.biot_resist = config.default_good_resist;
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -793,6 +794,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BODY:
             self.hovering_node.setType(NODE_TYPE_BODY);
+            self.hovering_node.h = 0;
+            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
             {
@@ -833,6 +836,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BADB:
             self.dragging_node.setType(NODE_TYPE_BADB);
+            self.hovering_node.h = 0;
+            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.dragging_node.biot_resist = config.default_badb_resist;
             self.dragging_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -845,6 +850,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_GOOD:
             self.dragging_node.setType(NODE_TYPE_GOOD);
+            self.hovering_node.h = 0;
+            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.dragging_node.biot_resist = config.default_good_resist;
             self.dragging_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -857,6 +864,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BODY:
             self.dragging_node.setType(NODE_TYPE_BODY);
+            self.hovering_node.h = 0;
+            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.dragging_node.parent_node = undefined;
             if(config.swab_size > 1)
             {
