@@ -120,3 +120,53 @@ var ptNear = function(ptx, pty, x, y, r)
   return w2+h2 < d2;
 }
 
+var RGB2HSL = function(rgb, hsl)
+{
+  var cmax = Math.max(rgb.r,rgb.g,rgb.b);
+  var cmin = Math.min(rgb.r,rgb.g,rgb.b);
+  var d = cmax-cmin;
+  hsl.l = (cmax+cmin)/2;
+  if(hsl.l < 0.5) hsl.s = (cmax-cmin)/(cmax+cmin);
+  else            hsl.s = (cmax-cmin)/(2-cmax-cmin);
+
+  If Red is max, then Hue = (G-B)/(max-min)
+  If Green is max, then Hue = 2.0 + (B-R)/(max-min)
+  If Blue is max, then Hue = 4.0 + (R-G)/(max-min)
+
+  if(cmax == rgb.r) hsl.h = (rgb.g-rgb.b)/(cmax-cmin);
+  if(cmax == rgb.g) hsl.h = 2 + (rgb.b-rgb.r)/(cmax-cmin);
+  if(cmax == rgb.b) hsl.h = 4 + (rgb.r-rgb.g)/(cmax-cmin);
+
+  hsl.h *= 60;
+
+  if(hsl.h < 0) hsl.h += 360;
+}
+
+var HSL2RGBHelperConvertTMPValToFinal = function(tmp_1, tmp_2, val)
+{
+  if(val*6 < 1) return tmp_2 + (tmp_1-tmp_2)*6*val;
+  else if(val*2 < 1) return tmp_1;
+  else if(val*3 < 2) return tmp_2 + (tmp_1-tmp_2)*(0.666-val)*6;
+  else return tmp_2;
+}
+var HSL2RGB = function(hsl, rgb)
+{
+  var tmp_1;
+  var tmp_2;
+  var tmp_3;
+
+  if(hsl.l < 0.5) tmp_1 = hsl.l * (1+hsl.s);
+  else            tmp_1 = hsl.l + hsl.s - (hsl.l*hsl.s);
+
+  tmp_2 = (2*hsl.l)-tmp_1;
+  tmp_3 = hsl.h/360;
+
+  rgb.r = tmp_3 + 0.333; while(rgb.r > 1) rgb.r -= 1; while(rgb.r < 0) rgb.r += 1;
+  rgb.g = tmp_3;         while(rgb.g > 1) rgb.g -= 1; while(rgb.g < 0) rgb.g += 1;
+  rgb.b = tmp_3 - 0.333; while(rgb.b > 1) rgb.b -= 1; while(rgb.b < 0) rgb.b += 1;
+
+  rgb.r = HSL2RGBHelperConvertTMPValToFinal(tmp_1, tmp_2, rgb.r);
+  rgb.g = HSL2RGBHelperConvertTMPValToFinal(tmp_1, tmp_2, rgb.g);
+  rgb.b = HSL2RGBHelperConvertTMPValToFinal(tmp_1, tmp_2, rgb.b);
+}
+
