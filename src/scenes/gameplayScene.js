@@ -78,16 +78,23 @@ var GamePlayScene = function(game, stage, config, popup_div)
     self.x = 0;
     self.y = 0;
     self.w = 1;
-    self.h = 1;
+    self.height = 1; //to maintain 'self.h' as flat HSL object
 
     self.row = 0;
     self.col = 0;
 
     self.parent_node = undefined;
 
-    self.r = 0.5;
-    self.g = 0.5;
-    self.b = 0.5;
+    //rgb will get set by HSL2RGB- values don't matter
+    self.r = 0;
+    self.g = 0;
+    self.b = 0;
+
+    self.h = 0;
+    self.s = 1;
+    self.l = 0.7;
+
+    HSL2RGB(self,self); //sets RGB based on HSL
 
     self.type = 0;
     self.biot_resist = 0.1;
@@ -105,7 +112,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.x = Math.floor(rect.x+col/n_cols*rect.w);
       self.y = Math.floor(rect.y+row/n_rows*rect.h);
       self.w = Math.ceil(1/n_cols*rect.w);
-      self.h = Math.ceil(1/n_rows*rect.h);
+      self.height = Math.ceil(1/n_rows*rect.h);
     }
 
     self.setType = function(t)
@@ -123,7 +130,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.x = n.x;
       self.y = n.y;
       self.w = n.w;
-      self.h = n.h;
+      self.height = n.height;
 
       self.row = n.row;
       self.col = n.col;
@@ -137,6 +144,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.r = n.r;
       self.g = n.g;
       self.b = n.b;
+
+      self.h = n.h;
+      self.s = n.s;
+      self.l = n.l;
 
       self.type = n.type;
       self.biot_resist = n.biot_resist;
@@ -152,7 +163,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var x = self.x;
       var y = self.y;
       var w = self.w;
-      var h = self.h;
+      var h = self.height;
 
       var resist_drawn = self.biot_resist;
       var r_drawn = self.r;
@@ -186,12 +197,12 @@ var GamePlayScene = function(game, stage, config, popup_div)
             else if(self.parent_node.row < self.row) //multiply to the bottom
             {
               y = self.parent_node.y;
-              h = self.h + (sub_prog*self.h);
+              h = self.height + (sub_prog*self.height);
             }
             else if(self.parent_node.row > self.row) //multiply to the top
             {
-              y = self.parent_node.y - (sub_prog*self.h);
-              h = self.h + (sub_prog*self.h);
+              y = self.parent_node.y - (sub_prog*self.height);
+              h = self.height + (sub_prog*self.height);
             }
           }
           else //bounce
@@ -599,12 +610,12 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         if(config.swab_size == 1)
         {
-          canv.context.strokeRect(self.hovering_node.x,self.hovering_node.y,self.hovering_node.w,self.hovering_node.h);
+          canv.context.strokeRect(self.hovering_node.x,self.hovering_node.y,self.hovering_node.w,self.hovering_node.height);
         }
         else
         {
-          canv.context.strokeRect(self.hovering_node.x-self.hovering_node.w,self.hovering_node.y,self.hovering_node.w*3,self.hovering_node.h);
-          canv.context.strokeRect(self.hovering_node.x,self.hovering_node.y-self.hovering_node.h,self.hovering_node.w,self.hovering_node.h*3);
+          canv.context.strokeRect(self.hovering_node.x-self.hovering_node.w,self.hovering_node.y,self.hovering_node.w*3,self.hovering_node.height);
+          canv.context.strokeRect(self.hovering_node.x,self.hovering_node.y-self.hovering_node.height,self.hovering_node.w,self.hovering_node.height*3);
         }
       }
 
@@ -835,9 +846,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
                 new_nodes[i].parent_node = token_node;
                 new_nodes[i].setType(token_node.type);
                 var biot_resist = token_node.biot_resist;
-                var rc = token_node.r;
-                var gc = token_node.g;
-                var bc = token_node.b;
+                var hc = token_node.h;
                 var rand;
                 if(config.mutate_rate)
                 {
@@ -849,9 +858,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
                       biot_resist = Math.random();
                       if(config.colored)
                       {
-                        rc = Math.random();
-                        gc = Math.random();
-                        bc = Math.random();
+                        hc = Math.random()*360;
                       }
                     }
                   }
@@ -860,38 +867,33 @@ var GamePlayScene = function(game, stage, config, popup_div)
                     if(config.colored)
                     {
                       rand = Math.random();
-                           if(rand < config.mutate_rate*0.5)   rc -= Math.random()*config.mutate_distance;
-                      else if(rand > 1-config.mutate_rate*0.5) rc += Math.random()*config.mutate_distance;
-                      rand = Math.random();
-                           if(rand < config.mutate_rate*0.5)   gc -= Math.random()*config.mutate_distance;
-                      else if(rand > 1-config.mutate_rate*0.5) gc += Math.random()*config.mutate_distance;
-                      rand = Math.random();
-                           if(rand < config.mutate_rate*0.5)   bc -= Math.random()*config.mutate_distance;
-                      else if(rand > 1-config.mutate_rate*0.5) bc += Math.random()*config.mutate_distance;
-                    }
-                    if(config.bias_mutate)
-                    {
-                      rand = Math.random();
-                           if(rand < config.mutate_rate*0.4)   biot_resist -= Math.random()*config.mutate_distance;
-                      else if(rand > 1-config.mutate_rate*0.6) biot_resist += Math.random()*config.mutate_distance;
+                           if(rand < config.mutate_rate*0.5)   hc -= Math.random()*config.mutate_distance*360;
+                      else if(rand > 1-config.mutate_rate*0.5) hc += Math.random()*config.mutate_distance*360;
                     }
                     else
                     {
-                      rand = Math.random();
-                           if(rand < config.mutate_rate*0.5)   biot_resist -= Math.random()*config.mutate_distance;
-                      else if(rand > 1-config.mutate_rate*0.5) biot_resist += Math.random()*config.mutate_distance;
+                      if(config.bias_mutate)
+                      {
+                        rand = Math.random();
+                             if(rand < config.mutate_rate*0.4)   biot_resist -= Math.random()*config.mutate_distance;
+                        else if(rand > 1-config.mutate_rate*0.6) biot_resist += Math.random()*config.mutate_distance;
+                      }
+                      else
+                      {
+                        rand = Math.random();
+                             if(rand < config.mutate_rate*0.5)   biot_resist -= Math.random()*config.mutate_distance;
+                        else if(rand > 1-config.mutate_rate*0.5) biot_resist += Math.random()*config.mutate_distance;
+                      }
                     }
                   }
                 }
 
                 if(config.colored)
                 {
-                  if(rc < 0) rc = 0; else if(rc > 1) rc = 1;
-                  if(gc < 0) gc = 0; else if(gc > 1) gc = 1;
-                  if(bc < 0) bc = 0; else if(bc > 1) bc = 1;
-                  new_nodes[i].r = rc;
-                  new_nodes[i].g = gc;
-                  new_nodes[i].b = bc;
+                  while(hc < 0) hc += 360;
+                  while(hc > 360) hc -= 360;
+                  new_nodes[i].h = hc;
+                  HSL2RGB(new_nodes[i],new_nodes[i]);
                 }
                 if(biot_resist < 0) biot_resist = 0;
                 else if(biot_resist > 1) biot_resist = 1;
@@ -1087,9 +1089,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/3),Math.floor(self.grid.rows/3));
         n.setType(NODE_TYPE_BADB);
         n.biot_resist = config.default_badb_resist;
-        n.r = 0.5;
-        n.g = 0.5;
-        n.b = 0.5;
+        n.h = 0;
+        HSL2RGB(n,n);
         n.parent_node = undefined;
         self.grid.n_badb = 1;
       }
@@ -1100,9 +1101,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3));
         n.setType(NODE_TYPE_GOOD);
         n.biot_resist = config.default_good_resist;
-        n.r = 0.5;
-        n.g = 0.5;
-        n.b = 0.5;
+        n.h = 0;
+        HSL2RGB(n,n);
         n.parent_node = undefined;
         self.grid.n_good = 1;
       }
@@ -1112,9 +1112,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/2),Math.floor(self.grid.rows/3*2))
         n.setType(NODE_TYPE_BODY);
-        n.r = 0.5;
-        n.g = 0.5;
-        n.b = 0.5;
+        n.h = 0;
+        HSL2RGB(n,n);
         n.parent_node = undefined;
         self.grid.n_body = 1;
       }
@@ -1289,7 +1288,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(config.prompt_reset_on_empty && (self.grid.n_badb + self.grid.n_good + self.grid.n_body) == 0)
       {
-        console.log("hello?");
         canv.context.fillStyle = DARK_COLOR;
         canv.context.font = "12px Helvetica Neue";
         canv.context.fillText("Reset to add bacteria "+String.fromCharCode(8595),Math.round(self.grid.w/2-60),Math.round(canv.canvas.height-50));

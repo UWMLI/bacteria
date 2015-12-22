@@ -129,10 +129,6 @@ var RGB2HSL = function(rgb, hsl)
   if(hsl.l < 0.5) hsl.s = (cmax-cmin)/(cmax+cmin);
   else            hsl.s = (cmax-cmin)/(2-cmax-cmin);
 
-  If Red is max, then Hue = (G-B)/(max-min)
-  If Green is max, then Hue = 2.0 + (B-R)/(max-min)
-  If Blue is max, then Hue = 4.0 + (R-G)/(max-min)
-
   if(cmax == rgb.r) hsl.h = (rgb.g-rgb.b)/(cmax-cmin);
   if(cmax == rgb.g) hsl.h = 2 + (rgb.b-rgb.r)/(cmax-cmin);
   if(cmax == rgb.b) hsl.h = 4 + (rgb.r-rgb.g)/(cmax-cmin);
