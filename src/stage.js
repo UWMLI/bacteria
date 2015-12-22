@@ -13,9 +13,9 @@ var Stage = function(init)
 
   self.drawCanv = new Canv({width:self.width,height:self.height});
   self.dispCanv = new Canv({width:self.width,height:self.height});
-  self.dispCanv.canvas.style.borderTop = "1px solid #EEEEEE";
-  self.dispCanv.canvas.style.borderLeft = "1px solid #EEEEEE";
-  self.dispCanv.canvas.style.borderRight = "1px solid #EEEEEE";
+  //self.dispCanv.canvas.style.borderTop = "1px solid #EEEEEE";
+  //self.dispCanv.canvas.style.borderLeft = "1px solid #EEEEEE";
+  //self.dispCanv.canvas.style.borderRight = "1px solid #EEEEEE";
 
   self.draw = function()
   {

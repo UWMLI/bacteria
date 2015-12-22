@@ -19,6 +19,7 @@ var CLICK_FUNC_GOOD = ENUM; ENUM++;
 var CLICK_FUNC_BODY = ENUM; ENUM++;
 
 var DARK_COLOR = "#333333";
+var LIGHT_COLOR = "#DDDDDD";
 
 var GamePlayScene = function(game, stage, config, popup_div)
 {
@@ -378,12 +379,19 @@ var GamePlayScene = function(game, stage, config, popup_div)
       canv.context.fillStyle = "white";
       canv.context.strokeStyle = DARK_COLOR;
       canv.context.beginPath();
-      canv.context.moveTo(self.x-2, y);
-      canv.context.lineTo(self.x-8, y-4);
-      canv.context.lineTo(self.x-8, y+4);
+      canv.context.moveTo(self.x+self.w+2, y);
+      canv.context.lineTo(self.x+self.w+8, y-4);
+      canv.context.lineTo(self.x+self.w+8, y+4);
       canv.context.closePath();
       canv.context.stroke();
       canv.context.fill();
+
+      if(y < self.y+self.h-2) //don't display text if really low
+      {
+        canv.context.fillStyle = DARK_COLOR;
+        canv.context.font = "12px Helvetica Neue";
+        canv.context.fillText("Ave. Resist",self.x+self.w+12,y+4);
+      }
     }
   }
 
@@ -454,6 +462,54 @@ var GamePlayScene = function(game, stage, config, popup_div)
       canv.context.fillRect(self.x,self.y+rh,self.w,gh);
       canv.context.fillStyle = "blue";
       canv.context.fillRect(self.x,self.y+rh+gh,self.w,bh);
+
+      canv.context.font = "12px Helvetica Neue";
+      var y;
+      if(grid.n_r)
+      {
+        y = self.y+rh/2;
+        canv.context.fillStyle = DARK_COLOR;
+        canv.context.fillText("% Red",self.x+self.w+12,y+4);
+        canv.context.fillStyle = "white";
+        canv.context.strokeStyle = DARK_COLOR;
+        canv.context.beginPath();
+        canv.context.moveTo(self.x+self.w+2, y);
+        canv.context.lineTo(self.x+self.w+8, y-4);
+        canv.context.lineTo(self.x+self.w+8, y+4);
+        canv.context.closePath();
+        canv.context.stroke();
+        canv.context.fill();
+      }
+      if(grid.n_g)
+      {
+        y = self.y+rh+gh/2;
+        canv.context.fillStyle = DARK_COLOR;
+        canv.context.fillText("% Green",self.x+self.w+12,y+4);
+        canv.context.fillStyle = "white";
+        canv.context.strokeStyle = DARK_COLOR;
+        canv.context.beginPath();
+        canv.context.moveTo(self.x+self.w+2, y);
+        canv.context.lineTo(self.x+self.w+8, y-4);
+        canv.context.lineTo(self.x+self.w+8, y+4);
+        canv.context.closePath();
+        canv.context.stroke();
+        canv.context.fill();
+      }
+      if(grid.n_b)
+      {
+        y = self.y+rh+gh+bh/2;
+        canv.context.fillStyle = DARK_COLOR;
+        canv.context.fillText("% Blue",self.x+self.w+12,y+4);
+        canv.context.fillStyle = "white";
+        canv.context.strokeStyle = DARK_COLOR;
+        canv.context.beginPath();
+        canv.context.moveTo(self.x+self.w+2, y);
+        canv.context.lineTo(self.x+self.w+8, y-4);
+        canv.context.lineTo(self.x+self.w+8, y+4);
+        canv.context.closePath();
+        canv.context.stroke();
+        canv.context.fill();
+      }
     }
   }
 
@@ -551,8 +607,15 @@ var GamePlayScene = function(game, stage, config, popup_div)
           canv.context.strokeRect(self.hovering_node.x,self.hovering_node.y-self.hovering_node.h,self.hovering_node.w,self.hovering_node.h*3);
         }
       }
-      canv.context.strokeStyle = "#00FFFF";
-      //if(self.dragging_node) canv.context.strokeRect(self.dragging_node.x,self.dragging_node.y,self.dragging_node.w,self.dragging_node.h);
+
+      canv.context.strokeStyle = LIGHT_COLOR;
+      canv.context.beginPath();
+      canv.context.moveTo(self.x,self.y+self.h);
+      canv.context.lineTo(self.x,self.y);
+      canv.context.lineTo(self.x+self.w,self.y);
+      if(config.ave_display_width+config.split_display_width+config.tricolor_display_width == 0)
+        canv.context.lineTo(self.x+self.w,self.y+self.h);
+      canv.context.stroke();
     }
 
     self.tick = function()
@@ -994,17 +1057,17 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(config.ave_display_width > 0)
       {
-        self.ave_disp = new AveDisplay(c.canvas.width-config.ave_display_width,0,config.ave_display_width,c.canvas.height,self.grid);
+        self.ave_disp = new AveDisplay(self.grid.w,0,config.ave_display_width,c.canvas.height,self.grid);
       }
 
       if(config.split_display_width > 0)
       {
-        self.split_disp = new SplitDisplay(c.canvas.width-config.split_display_width,0,config.split_display_width,c.canvas.height,self.grid);
+        self.split_disp = new SplitDisplay(self.grid.w,0,config.split_display_width,c.canvas.height,self.grid);
       }
 
       if(config.tricolor_display_width > 0)
       {
-        self.tricolor_disp = new TricolorDisplay(c.canvas.width-config.tricolor_display_width,0,config.tricolor_display_width,c.canvas.height,self.grid);
+        self.tricolor_disp = new TricolorDisplay(self.grid.w,0,config.tricolor_display_width,c.canvas.height,self.grid);
       }
 
       self.ticks_outside = 100000; //"it's been outside forever"
@@ -1186,6 +1249,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.fillStyle = "rgba(255,255,255,0.5)";
         canv.context.fillRect(0,0,w,canv.canvas.height);
 
+        w = self.grid.w;
         canv.context.fillStyle = "white";
         canv.context.strokeStyle = DARK_COLOR;
         canv.context.fillRect(w-28,10,8,20);
@@ -1197,7 +1261,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         if(config.display_pause && self.ticks_unpaused < 30)
         {
-          var w = canv.canvas.width;
+          var w = self.grid.w;
           canv.context.fillStyle = "white";
           canv.context.strokeStyle = DARK_COLOR;
           canv.context.beginPath();
@@ -1213,21 +1277,22 @@ var GamePlayScene = function(game, stage, config, popup_div)
         {
           canv.context.fillStyle = DARK_COLOR;
           canv.context.font = "12px Helvetica Neue";
-          canv.context.fillText("Waiting for population to grow...",Math.round(canv.canvas.width/2-100),Math.round(canv.canvas.height-50));
+          canv.context.fillText("Waiting for population to grow...",Math.round(self.grid.w/2-100),Math.round(canv.canvas.height-50));
         }
         else if(config.prompt_prerequisite_unmet && self.ticks_initialized < 30)
         {
           canv.context.fillStyle = DARK_COLOR;
           canv.context.font = "12px Helvetica Neue";
-          canv.context.fillText("Begin!",Math.round(canv.canvas.width/2-100),Math.round(canv.canvas.height-50));
+          canv.context.fillText("Begin!",Math.round(self.grid.w/2-100),Math.round(canv.canvas.height-50));
         }
       }
 
       if(config.prompt_reset_on_empty && (self.grid.n_badb + self.grid.n_good + self.grid.n_body) == 0)
       {
+        console.log("hello?");
         canv.context.fillStyle = DARK_COLOR;
-        canv.context.font = "20px Helvetica Neue";
-        canv.context.fillText("(click reset) "+String.fromCharCode(8595),Math.round(canv.canvas.width/2-60),Math.round(canv.canvas.height-50));
+        canv.context.font = "12px Helvetica Neue";
+        canv.context.fillText("Reset to add bacteria "+String.fromCharCode(8595),Math.round(self.grid.w/2-60),Math.round(canv.canvas.height-50));
       }
 
       /*
