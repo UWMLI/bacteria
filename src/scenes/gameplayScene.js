@@ -35,6 +35,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
     grid_cols:50,
     grid_rows:25,
     colored:false,
+    default_h:150,
+    default_s:1,
+    default_l:0.7,
     sim_speed:1,
     badb_sim_speed:1,
     hover_to_play:true,
@@ -91,9 +94,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
     self.g = 0;
     self.b = 0;
 
-    self.h = 0;
-    self.s = 1;
-    self.l = 0.7;
+    self.h = config.default_h;
+    self.s = config.default_s;
+    self.l = config.default_l;
 
     HSL2RGB(self,self); //sets RGB based on HSL
 
@@ -402,7 +405,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         canv.context.fillStyle = DARK_COLOR;
         canv.context.font = "12px Helvetica Neue";
-        canv.context.fillText("Ave. Resist",self.x+self.w+12,y+4);
+        canv.context.fillText("Avg. Resist",self.x+self.w+12,y+4);
       }
     }
   }
@@ -766,7 +769,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BADB:
             self.hovering_node.setType(NODE_TYPE_BADB);
-            self.hovering_node.h = 0;
+            self.hovering_node.h = config.default_h;
             if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.hovering_node.biot_resist = config.default_badb_resist;
             self.hovering_node.parent_node = undefined;
@@ -780,7 +783,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_GOOD:
             self.hovering_node.setType(NODE_TYPE_GOOD);
-            self.hovering_node.h = 0;
+            self.hovering_node.h = config.default_h;
             if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.hovering_node.biot_resist = config.default_good_resist;
             self.hovering_node.parent_node = undefined;
@@ -794,7 +797,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BODY:
             self.hovering_node.setType(NODE_TYPE_BODY);
-            self.hovering_node.h = 0;
+            self.hovering_node.h = config.default_h;
             if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -836,7 +839,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BADB:
             self.dragging_node.setType(NODE_TYPE_BADB);
-            self.hovering_node.h = 0;
+            self.hovering_node.h = config.default_h;
             if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.dragging_node.biot_resist = config.default_badb_resist;
             self.dragging_node.parent_node = undefined;
@@ -850,7 +853,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_GOOD:
             self.dragging_node.setType(NODE_TYPE_GOOD);
-            self.hovering_node.h = 0;
+            self.hovering_node.h = config.default_h;
             if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.dragging_node.biot_resist = config.default_good_resist;
             self.dragging_node.parent_node = undefined;
@@ -864,7 +867,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BODY:
             self.dragging_node.setType(NODE_TYPE_BODY);
-            self.hovering_node.h = 0;
+            self.hovering_node.h = config.default_h;
             if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
             self.dragging_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -1195,7 +1198,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/3),Math.floor(self.grid.rows/3));
         n.setType(NODE_TYPE_BADB);
         n.biot_resist = config.default_badb_resist;
-        n.h = 0;
+        n.h = config.default_h;
         HSL2RGB(n,n);
         n.parent_node = undefined;
         self.grid.n_badb = 1;
@@ -1207,7 +1210,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3));
         n.setType(NODE_TYPE_GOOD);
         n.biot_resist = config.default_good_resist;
-        n.h = 0;
+        n.h = config.default_h;
         HSL2RGB(n,n);
         n.parent_node = undefined;
         self.grid.n_good = 1;
@@ -1218,7 +1221,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/2),Math.floor(self.grid.rows/3*2))
         n.setType(NODE_TYPE_BODY);
-        n.h = 0;
+        n.h = config.default_h;
         HSL2RGB(n,n);
         n.parent_node = undefined;
         self.grid.n_body = 1;
