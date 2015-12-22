@@ -642,7 +642,7 @@ function begin()
       allow_body:false,
       init_body:false,
       reinit_body:false,
-      swab_size:1,
+      swab_size:2,
       click_function:CLICK_FUNC_NONE,
       hover_function:CLICK_FUNC_DAMG,
       show_hover:true,
@@ -938,7 +938,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Maybe unsurprisingly, the population of green bacteria diminishes. But if you keep it up long enough to develop a dominant population of reds and blues, it also seems to maintain a kind of "non green" momentum, with little extra extermination work required from you.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Maybe unsurprisingly, the population of green bacteria diminishes. But if you keep it up long enough to develop a dominant population of reds and blues, the population seems to maintain a kind of "non green" momentum, with little extra extermination work required from you.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;Let's change the rules back to "random attribute assignment at birth" and try this experiment again, to take note of any differences.<br /><br />
     </div>
     <div class="margin margin_right">
@@ -1012,7 +1012,7 @@ window.addEventListener("load",begin,false);
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;We're again able to shift the attributes in a population. After all, the only thing we did was switch out which attribute was being <span class="keyword">selected for</span> (...the attribute for which we were selecting? you get the idea). Anyways- we never really went into what the attribute of <span class="keyword">antibiotic resistance</span> is:<br /> <br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotics</span> are substances that kill bacteria. <span class="keyword">Antibiotic resistance</span> is just the bacteria's ability to survive those substances.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Let's try the experiment again, but this time we'll let the function of that attribute do the work. Rather than make an explicit effort to single out bacteria with a certain attribute, you should just try to kill bacteria indescriminately.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Let's try the experiment again, but this time we'll let the <i>function</i> of that attribute do the work. Rather than make an explicit effort to single out bacteria with a certain attribute, you should just try to kill bacteria indescriminately. (We'll even increase your cursor size to make things easier!)<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1049,7 +1049,7 @@ window.addEventListener("load",begin,false);
     </div>
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;Ok! So again, the same kind of thing happens! The bacteria's survivability shifted the entire population toward being resistant to that threat, even though there was no intent in your applied selective force!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;All this manual work to kill bacteria is exhausting. Let's simplify it and just add a button that does the work for us so we can really let this behavior show. Now you can choose how much antibiotic will be applied, then press a button to apply it to every bacteria in our model.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;All this manual work to kill bacteria is exhausting. Let's simplify it and just add a button that does the work for us, so we can really let this behavior show. Now you can choose how much antibiotic will be applied, then press a button to apply it to every bacteria in our model.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1085,6 +1085,7 @@ window.addEventListener("load",begin,false);
     </div>
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;Well that was much easier! Hit reset and try applying different threshholds at different times. Pay attention to how the bacteria responds.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<br /><br />
     </div>
     <div class="margin margin_right">
     </div>

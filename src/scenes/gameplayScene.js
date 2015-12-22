@@ -939,8 +939,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.dose_slider;
   self.dose_button;
 
-  self.just_paused;
-  self.just_initializing;
+  self.ticks_outside;
+  self.ticks_unpaused;
+  self.ticks_initialized;
 
   self.external_biot_resist;
   self.sneeze_button;
@@ -1006,8 +1007,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
         self.tricolor_disp = new TricolorDisplay(c.canvas.width-config.tricolor_display_width,0,config.tricolor_display_width,c.canvas.height,self.grid);
       }
 
-      self.just_paused = 0;
-      self.just_initializing = 0;
+      self.ticks_outside = 100000; //"it's been outside forever"
+      self.ticks_unpaused = 0;
+      self.ticks_initialized = 0;
     }
   };
 
@@ -1061,13 +1063,22 @@ var GamePlayScene = function(game, stage, config, popup_div)
   {
     if(config.special == SPECIAL_NONE)
     {
+      self.hoverer.flush();
+
+      if(self.grid.hovering) self.ticks_outside = 0;
+      else                   self.ticks_outside++;
+
+      if(config.hover_to_play && self.ticks_outside > 10) self.ticks_unpaused = 0;
+      else                                                self.ticks_unpaused++;
+
       var n_nodes = self.grid.n_badb + self.grid.n_good + self.grid.n_body ;
       if(config.prerequisite_fill_for_interaction == 0 || n_nodes == 0 || n_nodes >= config.prerequisite_fill_for_interaction*self.grid.rows*self.grid.cols)
         self.prerequisite_met = true;
-      if(!self.prerequisite_met) self.just_initializing = 30;
 
-      self.hoverer.flush();
-      if(!config.hover_to_play || self.grid.hovering)
+      if(!self.prerequisite_met) self.ticks_initialized = 0;
+      else                       self.ticks_initialized++;
+
+      if(self.ticks_unpaused > 0)
       {
         self.presser.flush();
         self.dragger.flush();
@@ -1169,7 +1180,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
       }
 
-      if(config.hover_to_play && !self.grid.hovering && config.display_pause)
+      if(config.display_pause && self.ticks_unpaused == 0)
       {
         var w = canv.canvas.width;
         canv.context.fillStyle = "rgba(255,255,255,0.5)";
@@ -1181,13 +1192,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.strokeRect(w-28,10,8,20);
         canv.context.fillRect(w-18,10,8,20);
         canv.context.strokeRect(w-18,10,8,20);
-        self.just_paused = 30;
       }
       else
       {
-        if(self.just_paused)
+        if(config.display_pause && self.ticks_unpaused < 30)
         {
-          self.just_paused--;
           var w = canv.canvas.width;
           canv.context.fillStyle = "white";
           canv.context.strokeStyle = DARK_COLOR;
@@ -1199,18 +1208,18 @@ var GamePlayScene = function(game, stage, config, popup_div)
           canv.context.fill();
           canv.context.stroke();
         }
-        if(self.prerequisite_met && self.just_initializing)
-        {
-          self.just_initializing--;
-          canv.context.fillStyle = DARK_COLOR;
-          canv.context.font = "12px Helvetica Neue";
-          canv.context.fillText("kill enabled",Math.round(canv.canvas.width/2-100),Math.round(canv.canvas.height-50));
-        }
-        else if(config.prompt_prerequisite_unmet && !self.prerequisite_met)
+
+        if(config.prompt_prerequisite_unmet && self.ticks_initialized == 0)
         {
           canv.context.fillStyle = DARK_COLOR;
           canv.context.font = "12px Helvetica Neue";
           canv.context.fillText("Waiting for population to grow...",Math.round(canv.canvas.width/2-100),Math.round(canv.canvas.height-50));
+        }
+        else if(config.prompt_prerequisite_unmet && self.ticks_initialized < 30)
+        {
+          canv.context.fillStyle = DARK_COLOR;
+          canv.context.font = "12px Helvetica Neue";
+          canv.context.fillText("Begin!",Math.round(canv.canvas.width/2-100),Math.round(canv.canvas.height-50));
         }
       }
 
