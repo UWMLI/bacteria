@@ -34,7 +34,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
     grid_h:-1,
     grid_cols:50,
     grid_rows:25,
-    colored:false,
+    colored_rgb:false,
+    colored_hsl:false,
     default_h:150,
     default_s:1,
     default_l:0.7,
@@ -237,7 +238,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
           }
           else
           {
-            if(config.colored)
+            if(config.colored_hsl || config.colored_rgb)
             {
               canv.context.fillStyle = "rgba("+Math.floor(r_drawn*255)+","+Math.floor(g_drawn*255)+","+Math.floor(b_drawn*255)+",1)";
               canv.context.fillRect(x,y,w,h);
@@ -263,7 +264,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
           }
           else
           {
-            if(config.colored)
+            if(config.colored_hsl || config.colored_rgb)
             {
               canv.context.fillStyle = "rgba("+(r_drawn*255)+","+(g_drawn*255)+","+(b_drawn*255)+",1)";
               canv.context.fillRect(x,y,w,h);
@@ -796,8 +797,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BADB:
             self.hovering_node.setType(NODE_TYPE_BADB);
-            self.hovering_node.h = config.default_h;
-            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
+            if(config.colored_hsl)
+            {
+              self.hovering_node.h = config.default_h;
+              HSL2RGB(self.hovering_node,self.hovering_node);
+            }
             self.hovering_node.biot_resist = config.default_badb_resist;
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -810,8 +814,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_GOOD:
             self.hovering_node.setType(NODE_TYPE_GOOD);
-            self.hovering_node.h = config.default_h;
-            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
+            if(config.colored_hsl)
+            {
+              self.hovering_node.h = config.default_h;
+              HSL2RGB(self.hovering_node,self.hovering_node);
+            }
             self.hovering_node.biot_resist = config.default_good_resist;
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -824,8 +831,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BODY:
             self.hovering_node.setType(NODE_TYPE_BODY);
-            self.hovering_node.h = config.default_h;
-            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
+            if(config.colored_hsl)
+            {
+              self.hovering_node.h = config.default_h;
+              HSL2RGB(self.hovering_node,self.hovering_node);
+            }
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
             {
@@ -866,8 +876,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BADB:
             self.dragging_node.setType(NODE_TYPE_BADB);
-            self.hovering_node.h = config.default_h;
-            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
+            if(config.colored_hsl)
+            {
+              self.hovering_node.h = config.default_h;
+              HSL2RGB(self.hovering_node,self.hovering_node);
+            }
             self.dragging_node.biot_resist = config.default_badb_resist;
             self.dragging_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -880,8 +893,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_GOOD:
             self.dragging_node.setType(NODE_TYPE_GOOD);
-            self.hovering_node.h = config.default_h;
-            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
+            if(config.colored_hsl)
+            {
+              self.hovering_node.h = config.default_h;
+              HSL2RGB(self.hovering_node,self.hovering_node);
+            }
             self.dragging_node.biot_resist = config.default_good_resist;
             self.dragging_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -894,8 +910,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
             break;
           case CLICK_FUNC_BODY:
             self.dragging_node.setType(NODE_TYPE_BODY);
-            self.hovering_node.h = config.default_h;
-            if(config.colored) HSL2RGB(self.hovering_node,self.hovering_node);
+            if(config.colored_hsl)
+            {
+              self.hovering_node.h = config.default_h;
+              HSL2RGB(self.hovering_node,self.hovering_node);
+            }
             self.dragging_node.parent_node = undefined;
             if(config.swab_size > 1)
             {
@@ -976,6 +995,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
                 new_nodes[i].setType(token_node.type);
                 var biot_resist = token_node.biot_resist;
                 var hc = token_node.h;
+                var rc = token_node.r;
+                var gc = token_node.g;
+                var bc = token_node.b;
                 var rand;
                 if(config.mutate_rate)
                 {
@@ -985,7 +1007,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
                     if(rand < config.mutate_random_assign)
                     {
                       biot_resist = Math.random();
-                      if(config.colored)
+                      if(config.colored_rgb)
+                      {
+                        rc = Math.random();
+                        gc = Math.random();
+                        bc = Math.random();
+                      }
+                      if(config.colored_hsl)
                       {
                         hc = Math.random()*360;
                       }
@@ -993,7 +1021,19 @@ var GamePlayScene = function(game, stage, config, popup_div)
                   }
                   else if(config.mutate_distance)
                   {
-                    if(config.colored)
+                    if(config.colored_rgb)
+                    {
+                      rand = Math.random();
+                           if(rand < config.mutate_rate*0.5)   rc -= Math.random()*config.mutate_distance;
+                      else if(rand > 1-config.mutate_rate*0.5) rc += Math.random()*config.mutate_distance;
+                      rand = Math.random();
+                           if(rand < config.mutate_rate*0.5)   gc -= Math.random()*config.mutate_distance;
+                      else if(rand > 1-config.mutate_rate*0.5) rc += Math.random()*config.mutate_distance;
+                      rand = Math.random();
+                           if(rand < config.mutate_rate*0.5)   bc -= Math.random()*config.mutate_distance;
+                      else if(rand > 1-config.mutate_rate*0.5) bc += Math.random()*config.mutate_distance;
+                    }
+                    else if(config.colored_hsl)
                     {
                       rand = Math.random();
                            if(rand < config.mutate_rate*0.5)   hc -= Math.random()*config.mutate_distance*180;
@@ -1017,7 +1057,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
                   }
                 }
 
-                if(config.colored)
+                if(config.colored_rgb)
+                {
+                  while(rc < 0) rc += 1; while(rc > 1) rc -= 1; new_nodes[i].r = rc;
+                  while(gc < 0) gc += 1; while(gc > 1) gc -= 1; new_nodes[i].g = gc;
+                  while(bc < 0) bc += 1; while(bc > 1) bc -= 1; new_nodes[i].b = bc;
+                }
+                else if(config.colored_hsl)
                 {
                   while(hc < 0) hc += 360;
                   while(hc > 360) hc -= 360;
@@ -1079,8 +1125,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         var n = new_nodes[i];
         n.tick();
-             if(n.type == NODE_TYPE_BADB) { if(config.colored) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_badb++; self.ave_badb_biot_resist += n.biot_resist; }
-        else if(n.type == NODE_TYPE_GOOD) { if(config.colored) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_good++; self.ave_good_biot_resist += n.biot_resist; }
+             if(n.type == NODE_TYPE_BADB) { if(config.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_badb++; self.ave_badb_biot_resist += n.biot_resist; }
+        else if(n.type == NODE_TYPE_GOOD) { if(config.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_good++; self.ave_good_biot_resist += n.biot_resist; }
         else if(n.type == NODE_TYPE_BODY) { self.n_body++; self.ave_body_biot_resist += n.biot_resist; }
       }
       if(self.n_badb > 0) self.ave_badb_biot_resist /= self.n_badb;
