@@ -1099,9 +1099,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
                 if(config.colored_rgb)
                 {
-                  while(rc < 0) rc += 1; while(rc > 1) rc -= 1; new_nodes[i].r = rc;
-                  while(gc < 0) gc += 1; while(gc > 1) gc -= 1; new_nodes[i].g = gc;
-                  while(bc < 0) bc += 1; while(bc > 1) bc -= 1; new_nodes[i].b = bc;
+                  if(rc < 0) rc = 0; else if(rc > 1) rc = 1; else new_nodes[i].r = rc;
+                  if(gc < 0) gc = 0; else if(gc > 1) gc = 1; else new_nodes[i].g = gc;
+                  if(bc < 0) bc = 0; else if(bc > 1) bc = 1; else new_nodes[i].b = bc;
                 }
                 else if(config.colored_hsl)
                 {
