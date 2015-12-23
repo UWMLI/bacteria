@@ -35,6 +35,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
     grid_cols:50,
     grid_rows:25,
     colored_rgb:false,
+    default_r:0.5,
+    default_g:0.5,
+    default_b:0.5,
     colored_hsl:false,
     default_h:150,
     default_s:1,
@@ -91,16 +94,15 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
     self.parent_node = undefined;
 
-    //rgb will get set by HSL2RGB- values don't matter
-    self.r = 0;
-    self.g = 0;
-    self.b = 0;
+    self.r = config.default_r;
+    self.g = config.default_g;
+    self.b = config.default_g;
 
     self.h = config.default_h;
     self.s = config.default_s;
     self.l = config.default_l;
 
-    HSL2RGB(self,self); //sets RGB based on HSL
+    if(config.colored_hs) HSL2RGB(self,self); //sets RGB based on HSL
 
     self.type = 0;
     self.biot_resist = 0.1;
@@ -716,7 +718,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         for(var i = 0; i < nodes.length; i++)
         {
-          if(nodes[i].h > 90 && nodes[i].h < 150)
+          if(config.colored_hsl && nodes[i].h > 90 && nodes[i].h < 150)
+            nodes[i].draw(canv,true,false);
+          else if(config.colored_rgb && nodes[i].g > nodes[i].r && nodes[i].g > nodes[i].b)
             nodes[i].draw(canv,true,false);
           else
             nodes[i].draw(canv,false,false);
@@ -802,6 +806,12 @@ var GamePlayScene = function(game, stage, config, popup_div)
               self.hovering_node.h = config.default_h;
               HSL2RGB(self.hovering_node,self.hovering_node);
             }
+            else if(config.colored_rgb)
+            {
+              self.hovering_node.r = config.default_r;
+              self.hovering_node.g = config.default_g;
+              self.hovering_node.b = config.default_b;
+            }
             self.hovering_node.biot_resist = config.default_badb_resist;
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -819,6 +829,12 @@ var GamePlayScene = function(game, stage, config, popup_div)
               self.hovering_node.h = config.default_h;
               HSL2RGB(self.hovering_node,self.hovering_node);
             }
+            else if(config.colored_rgb)
+            {
+              self.hovering_node.r = config.default_r;
+              self.hovering_node.g = config.default_g;
+              self.hovering_node.b = config.default_b;
+            }
             self.hovering_node.biot_resist = config.default_good_resist;
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -835,6 +851,12 @@ var GamePlayScene = function(game, stage, config, popup_div)
             {
               self.hovering_node.h = config.default_h;
               HSL2RGB(self.hovering_node,self.hovering_node);
+            }
+            else if(config.colored_rgb)
+            {
+              self.hovering_node.r = config.default_r;
+              self.hovering_node.g = config.default_g;
+              self.hovering_node.b = config.default_b;
             }
             self.hovering_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -878,8 +900,14 @@ var GamePlayScene = function(game, stage, config, popup_div)
             self.dragging_node.setType(NODE_TYPE_BADB);
             if(config.colored_hsl)
             {
-              self.hovering_node.h = config.default_h;
-              HSL2RGB(self.hovering_node,self.hovering_node);
+              self.dragging_node.h = config.default_h;
+              HSL2RGB(self.dragging_node,self.dragging_node);
+            }
+            else if(config.colored_rgb)
+            {
+              self.dragging_node.r = config.default_r;
+              self.dragging_node.g = config.default_g;
+              self.dragging_node.b = config.default_b;
             }
             self.dragging_node.biot_resist = config.default_badb_resist;
             self.dragging_node.parent_node = undefined;
@@ -895,8 +923,14 @@ var GamePlayScene = function(game, stage, config, popup_div)
             self.dragging_node.setType(NODE_TYPE_GOOD);
             if(config.colored_hsl)
             {
-              self.hovering_node.h = config.default_h;
-              HSL2RGB(self.hovering_node,self.hovering_node);
+              self.dragging_node.h = config.default_h;
+              HSL2RGB(self.dragging_node,self.dragging_node);
+            }
+            else if(config.colored_rgb)
+            {
+              self.dragging_node.r = config.default_r;
+              self.dragging_node.g = config.default_g;
+              self.dragging_node.b = config.default_b;
             }
             self.dragging_node.biot_resist = config.default_good_resist;
             self.dragging_node.parent_node = undefined;
@@ -912,8 +946,14 @@ var GamePlayScene = function(game, stage, config, popup_div)
             self.dragging_node.setType(NODE_TYPE_BODY);
             if(config.colored_hsl)
             {
-              self.hovering_node.h = config.default_h;
-              HSL2RGB(self.hovering_node,self.hovering_node);
+              self.dragging_node.h = config.default_h;
+              HSL2RGB(self.dragging_node,self.dragging_node);
+            }
+            else if(config.colored_rgb)
+            {
+              self.dragging_node.r = config.default_r;
+              self.dragging_node.g = config.default_g;
+              self.dragging_node.b = config.default_b;
             }
             self.dragging_node.parent_node = undefined;
             if(config.swab_size > 1)
@@ -1028,7 +1068,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
                       else if(rand > 1-config.mutate_rate*0.5) rc += Math.random()*config.mutate_distance;
                       rand = Math.random();
                            if(rand < config.mutate_rate*0.5)   gc -= Math.random()*config.mutate_distance;
-                      else if(rand > 1-config.mutate_rate*0.5) rc += Math.random()*config.mutate_distance;
+                      else if(rand > 1-config.mutate_rate*0.5) gc += Math.random()*config.mutate_distance;
                       rand = Math.random();
                            if(rand < config.mutate_rate*0.5)   bc -= Math.random()*config.mutate_distance;
                       else if(rand > 1-config.mutate_rate*0.5) bc += Math.random()*config.mutate_distance;
@@ -1281,8 +1321,17 @@ var GamePlayScene = function(game, stage, config, popup_div)
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/3),Math.floor(self.grid.rows/3));
         n.setType(NODE_TYPE_BADB);
         n.biot_resist = config.default_badb_resist;
-        n.h = config.default_h;
-        HSL2RGB(n,n);
+        if(config.colored_hsl)
+        {
+          n.h = config.default_h;
+          HSL2RGB(n,n);
+        }
+        else if(config.colored_rgb)
+        {
+          n.r = config.default_r;
+          n.g = config.default_g;
+          n.b = config.default_b;
+        }
         n.parent_node = undefined;
         self.grid.n_badb = 1;
       }
@@ -1293,8 +1342,17 @@ var GamePlayScene = function(game, stage, config, popup_div)
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/3*2),Math.floor(self.grid.rows/3));
         n.setType(NODE_TYPE_GOOD);
         n.biot_resist = config.default_good_resist;
-        n.h = config.default_h;
-        HSL2RGB(n,n);
+        if(config.colored_hsl)
+        {
+          n.h = config.default_h;
+          HSL2RGB(n,n);
+        }
+        else if(config.colored_rgb)
+        {
+          n.r = config.default_r;
+          n.g = config.default_g;
+          n.b = config.default_b;
+        }
         n.parent_node = undefined;
         self.grid.n_good = 1;
       }
@@ -1304,8 +1362,17 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         var n = self.grid.nodeAt(Math.floor(self.grid.cols/2),Math.floor(self.grid.rows/3*2))
         n.setType(NODE_TYPE_BODY);
-        n.h = config.default_h;
-        HSL2RGB(n,n);
+        if(config.colored_hsl)
+        {
+          n.h = config.default_h;
+          HSL2RGB(n,n);
+        }
+        else if(config.colored_rgb)
+        {
+          n.r = config.default_r;
+          n.g = config.default_g;
+          n.b = config.default_b;
+        }
         n.parent_node = undefined;
         self.grid.n_body = 1;
       }
