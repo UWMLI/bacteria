@@ -38,6 +38,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     default_h:150,
     default_s:1,
     default_l:0.7,
+    colorblind:false,
     sim_speed:1,
     badb_sim_speed:1,
     hover_to_play:true,
@@ -162,7 +163,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.health = n.health;
     }
 
-    self.draw = function(canv, stroke)
+    self.draw = function(canv, colorblind, stroke)
     {
       var x = self.x;
       var y = self.y;
@@ -240,6 +241,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
             {
               canv.context.fillStyle = "rgba("+Math.floor(r_drawn*255)+","+Math.floor(g_drawn*255)+","+Math.floor(b_drawn*255)+",1)";
               canv.context.fillRect(x,y,w,h);
+              if(colorblind)
+              {
+                canv.context.fillStyle = "white";
+                canv.context.fillRect(x+w/4,y+h/4,w/2,h/2);
+              }
             }
             else
             {
@@ -590,27 +596,35 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       canv.context.fillRect(self.x,self.y,self.w,self.h);
 
-      y = self.y+(1-self.start_green)*self.h;
+      var ys = self.y+(1-self.start_green)*self.h;
       canv.context.fillStyle = "white";
       canv.context.strokeStyle = DARK_COLOR;
       canv.context.beginPath();
-      canv.context.moveTo(self.x+self.w+2, y);
-      canv.context.lineTo(self.x+self.w+8, y-4);
-      canv.context.lineTo(self.x+self.w+8, y+4);
+      canv.context.moveTo(self.x+self.w+2, ys);
+      canv.context.lineTo(self.x+self.w+8, ys-4);
+      canv.context.lineTo(self.x+self.w+8, ys+4);
       canv.context.closePath();
       canv.context.stroke();
       canv.context.fill();
 
-      y = self.y+(1-self.end_green)*self.h;
+      var ye = self.y+(1-self.end_green)*self.h;
       canv.context.fillStyle = "white";
       canv.context.strokeStyle = DARK_COLOR;
       canv.context.beginPath();
-      canv.context.moveTo(self.x+self.w+2, y);
-      canv.context.lineTo(self.x+self.w+8, y-4);
-      canv.context.lineTo(self.x+self.w+8, y+4);
+      canv.context.moveTo(self.x+self.w+2, ye);
+      canv.context.lineTo(self.x+self.w+8, ye-4);
+      canv.context.lineTo(self.x+self.w+8, ye+4);
       canv.context.closePath();
       canv.context.stroke();
       canv.context.fill();
+
+      if(ys-6 > ye+6)
+      {
+        canv.context.beginPath();
+        canv.context.moveTo(self.x+self.w+5, ys-6);
+        canv.context.lineTo(self.x+self.w+5, ye+6);
+        canv.context.stroke();
+      }
     }
   }
 
@@ -690,10 +704,23 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var nodes = self.node_buffs[self.node_buff];
       canv.context.lineWidth = nodes[0].w/8;
       for(var i = 0; i < nodes.length; i++)
-        nodes[i].draw(canv,true);
+        nodes[i].draw(canv,false,true);
       canv.context.lineWidth = 2;
-      for(var i = 0; i < nodes.length; i++)
-        nodes[i].draw(canv,false);
+      if(!config.colorblind || !scene.colorblind_mode)
+      {
+        for(var i = 0; i < nodes.length; i++)
+          nodes[i].draw(canv,false,false);
+      }
+      else
+      {
+        for(var i = 0; i < nodes.length; i++)
+        {
+          if(nodes[i].h > 90 && nodes[i].h < 150)
+            nodes[i].draw(canv,true,false);
+          else
+            nodes[i].draw(canv,false,false);
+        }
+      }
 
       canv.context.strokeStyle = "#0000FF";
       if(config.show_hover && self.hovering_node && scene.prerequisite_met)
@@ -1116,6 +1143,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.sneeze_button;
   self.catch_button;
 
+  self.colorblind_mode;
+  self.colorblind_button;
+
   self.ready = function()
   {
     if(config.special == SPECIAL_NONE)
@@ -1179,6 +1209,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(config.hsl_display_width > 0)
       {
         self.hsl_disp = new HSLDisplay(self.grid.w,0,config.hsl_display_width,c.canvas.height,self.grid);
+      }
+
+      self.colorblind_mode = false;
+      if(config.colorblind)
+      {
+        self.colorblind_button = new ButtonBox(c.canvas.width-30,c.canvas.height-30,20,20,function(){ self.colorblind_mode = !self.colorblind_mode; })
+        self.presser.register(self.colorblind_button);
       }
 
       self.ticks_outside = 100000; //"it's been outside forever"
@@ -1249,9 +1286,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(!self.prerequisite_met) self.ticks_initialized = 0;
       else                       self.ticks_initialized++;
 
+      self.presser.flush();
       if(self.ticks_unpaused > 0)
       {
-        self.presser.flush();
         self.dragger.flush();
 
         if(config.allow_dose && self.dosing_prog)
@@ -1355,13 +1392,17 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
       }
 
+      if(config.colorblind)
+      {
+        self.colorblind_button.draw(canv);
+      }
+
       if(config.display_pause && self.ticks_unpaused == 0)
       {
-        var w = canv.canvas.width;
         canv.context.fillStyle = "rgba(255,255,255,0.5)";
-        canv.context.fillRect(0,0,w,canv.canvas.height);
+        canv.context.fillRect(self.grid.x,self.grid.y,self.grid.w,self.grid.h);
 
-        w = self.grid.w;
+        var w = self.grid.w;
         canv.context.fillStyle = "white";
         canv.context.strokeStyle = DARK_COLOR;
         canv.context.fillRect(w-28,10,8,20);
