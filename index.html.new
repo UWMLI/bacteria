@@ -312,133 +312,7 @@ function begin()
   //$("debug_div").style.height = h+"px";
   //d = new Debugger({source:$("debug_div")});
 
-  prefix = "squares_";
-  w = 256;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:-1,
-      grid_h:-1,
-      grid_cols:10,
-      grid_rows:10,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:false,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:false,
-      sim_speed:0,
-      badb_sim_speed:0,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:false,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_BADB,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      prerequisite_fill_for_interaction:0.,
-      prompt_prerequisite_unmet:false,
-      mutate_random_assign:false,
-      mutate_rate:0,
-      mutate_distance:0,
-      bias_mutate:false,
-      reproduce:false,
-      age:false,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "multiply_";
-  w = 256;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:-1,
-      grid_h:-1,
-      grid_cols:10,
-      grid_rows:10,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:false,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:false,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_BADB,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      prerequisite_fill_for_interaction:0.,
-      prompt_prerequisite_unmet:false,
-      mutate_random_assign:false,
-      mutate_rate:0,
-      mutate_distance:0,
-      bias_mutate:false,
-      reproduce:true,
-      age:false,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "death_";
+  prefix = "basic_";
   w = 256;
   h = 256;
   size_prefix(w,h,prefix);
@@ -501,7 +375,7 @@ function begin()
   games[prefix] = g;
   g.begin();
 
-  prefix = "randomdiversity_";
+  prefix = "biodiversity_";
   w = 256;
   h = 256;
   size_prefix(w,h,prefix);
@@ -519,70 +393,7 @@ function begin()
       default_r:0.5,
       default_g:0.5,
       default_b:0.5,
-      colored_hsl:true,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:false,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_BADB,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      prerequisite_fill_for_interaction:0.,
-      prompt_prerequisite_unmet:false,
-      mutate_random_assign:true,
-      mutate_rate:1,
-      mutate_distance:0,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "progressivediversity_";
-  w = 256;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:-1,
-      grid_h:-1,
-      grid_cols:10,
-      grid_rows:10,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:true,
+      colored_hsl:false,
       default_h:150,
       default_s:1,
       default_l:0.7,
@@ -960,7 +771,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;These are bacteria.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;What is <span class="keyword">antibiotic resistance</span>, why is it bad, and what can we do about it. Let's create a <span class="keyword">model</span> of bacteria to help us explore these questions, and hopefully find some answers. We'll start with three simple rules.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -974,84 +785,16 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      <br />
-      <br />
       In this Model:<br />
       <span class="rule new">- Bacteria are squares</span><br />
-    </div>
-    <div class="experiment_content" id="squares_experiment_content">
-      <div class="stage_container" id="squares_stage_container"> </div>
-      <img class="shadow" id="squares_shadow" src="assets/shadow.png" />
-      <div class="reset" id="squares_reset"/>Reset</div>
-      <div class="popup" id="squares_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok no they're not. Those are small red squares. But we can use those small red squares to <span class="keyword">model</span> bacteria! Because "bacteria are squares" is not a very interesting nor a representative model, let's improve upon it.<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
-
-  <div class="description">
-    Click to add. Again.
-  </div>
-  <div class="experiment">
-    <div class="rules rules_left">
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      In this Model:<br />
-      <span class="rule">- Bacteria are squares</span><br />
-      <span class="rule new">- Bacteria sometimes multiply</span><br />
-    </div>
-    <div class="experiment_content" id="multiply_experiment_content">
-      <div class="stage_container" id="multiply_stage_container"> </div>
-      <img class="shadow" id="multiply_shadow" src="assets/shadow.png" />
-      <div class="reset" id="multiply_reset"/>Reset</div>
-      <div class="popup" id="multiply_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Cool. A bit more lively, but ultimately still pretty boring- Once the bacteria fill up the grid, everything stops! That's not right... Bacteria go through a <span class="keyword">life cycle</span>, just like every other living thing. They are born, they live, maybe reproduce, and eventually die.<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
-
-  <div class="description">
-    You know the drill.
-  </div>
-  <div class="experiment">
-    <div class="rules rules_left">
-      <br />
-      <br />
-      <br />
-      <br />
-      In this Model:<br />
-      <span class="rule">- Bacteria are squares</span><br />
-      <span class="rule">- Bacteria sometimes multiply</span><br />
+      <span class="rule new">- Bacteria sometimes reproduce</span><br />
       <span class="rule new">- Bacteria eventually die</span><br />
     </div>
-    <div class="experiment_content"  id="death_experiment_content">
-      <div class="stage_container" id="death_stage_container"> </div>
-      <img class="shadow" id="death_shadow" src="assets/shadow.png" />
-      <div class="reset" id="death_reset"/>Reset</div>
-      <div class="popup" id="death_popup"/>Wow! Watch those bacteria go!</div>
+    <div class="experiment_content" id="basic_experiment_content">
+      <div class="stage_container" id="basic_stage_container"> </div>
+      <img class="shadow" id="basic_shadow" src="assets/shadow.png" />
+      <div class="reset" id="basic_reset"/>Reset</div>
+      <div class="popup" id="basic_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
     </div>
@@ -1061,7 +804,10 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Now we're getting somewhere. Let's keep this ball rolling and add some other properties of life. Like diversity! Living things have properties that make them unique. We can consider these differences "<span class="keyword">attributes</span>". In our model, let's let bacteria differ in their color attribute.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;That looks vaguely bacteria-esque... To make this little simulation more interesting, we'll next add <span class="keyword">inheritance</span> and <span class="keyword">mutation</span>.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Every property of a bacterium (its shape, size, behavior) is encoded into its <span class="keyword">DNA</span>.
+      This <span class="keyword">DNA</span> gets passed onto its children, giving the kid the same set of properties. Sometimes, the <span class="keyword">DNA</span> replication goes less than perfect, resulting in differences in the bacterium's properties- sometimes small, and sometimes drastic.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;We'll add <span class="keyword">lightness</span> (as an arbitrary property) to our model, and ensure it gets inherited during reproduction. But we'll also allow small mutations in lightness to occur.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -1074,52 +820,19 @@ window.addEventListener("load",begin,false);
     <div class="rules rules_left">
       <br />
       <br />
-      <br />
       In this Model:<br />
       <span class="rule">- Bacteria are squares</span><br />
       <span class="rule">- Bacteria sometimes multiply</span><br />
       <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule new">- Bacteria have diverse colors</span><br />
+      <span class="rule new">- Bacteria exhibit the property "lightness"</span><br />
+      <span class="rule new">- Bacteria inherit thier lightness from their parents</span><br />
+      <span class="rule new">- Bacteria sometimes mutate in their inherited properties</span><br />
     </div>
-    <div class="experiment_content"  id="randomdiversity_experiment_content">
-      <div class="stage_container" id="randomdiversity_stage_container"> </div>
-      <img class="shadow" id="randomdiversity_shadow" src="assets/shadow.png" />
-      <div class="reset" id="randomdiversity_reset"/>Reset</div>
-      <div class="popup" id="randomdiversity_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;In constructing a model, we have to be careful that we're not oversimplifying small but important details. We've added diversity, but "random attribute assignment" isn't a very accurate representation of how attributes propagate through a population. Instead, bacteria inherit attributes from their parents.<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
-
-  <div class="description">
-    Sloooow biodiversity
-  </div>
-  <div class="experiment">
-    <div class="rules rules_left">
-      <br />
-      <br />
-      <br />
-      In this Model:<br />
-      <span class="rule">- Bacteria are squares</span><br />
-      <span class="rule">- Bacteria sometimes multiply</span><br />
-      <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule new">- Bacteria are given a color at birth similar to their parents</span><br />
-    </div>
-    <div class="experiment_content"  id="progressivediversity_experiment_content">
-      <div class="stage_container" id="progressivediversity_stage_container"> </div>
-      <img class="shadow" id="progressivediversity_shadow" src="assets/shadow.png" />
-      <div class="reset" id="progressivediversity_reset"/>Reset</div>
-      <div class="popup" id="progressivediversity_popup"/>Wow! Watch those bacteria go!</div>
+    <div class="experiment_content"  id="biodiversity_experiment_content">
+      <div class="stage_container" id="biodiversity_stage_container"> </div>
+      <img class="shadow" id="biodiversity_shadow" src="assets/shadow.png" />
+      <div class="reset" id="biodiversity_reset"/>Reset</div>
+      <div class="popup" id="biodiversity_popup"/>Wow! Watch those bacteria go!</div>
     </div>
     <div class="rules rules_right">
     </div>
