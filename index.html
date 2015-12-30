@@ -187,8 +187,8 @@ function goExperiment()
   var grid_y = 0;
   var grid_w = -1;
   var grid_h = -1;
-  var grid_cols = $("experiment_grid_cols").value;
-  var grid_rows = $("experiment_grid_rows").value;
+  var grid_cols = parseInt($("experiment_grid_cols").value);
+  var grid_rows = parseInt($("experiment_grid_rows").value);
   var colored_rgb = $("experiment_attribute_color_rgb").checked;
   var default_r = 0.5;
   var default_g = 0.5;
@@ -198,7 +198,7 @@ function goExperiment()
   var default_s = 1;
   var default_l = 0.7;
   var colorblind = false;
-  var sim_speed = $("experiment_sim_speed").value;
+  var sim_speed = parseFloat($("experiment_sim_speed").value);
   var badb_sim_speed = 1;
   var hover_to_play = true;
   var display_pause = true;
@@ -208,24 +208,24 @@ function goExperiment()
   var prompt_reset_on_empty = false;
   var allow_contaminate = false;
   var default_badb_resist = 0.;
-  var init_badb = $("experiment_init_badb").value;
+  var init_badb = $("experiment_init_badb").checked;
   var reinit_badb = false;
   var default_good_resist = 0.;
   var allow_good = true;
-  var init_good = $("experiment_init_badb").value;
+  var init_good = $("experiment_init_good").checked;
   var reinit_good = false;
   var allow_body = true;
-  var init_body = $("experiment_init_body").value;
+  var init_body = $("experiment_init_body").checked;
   var reinit_body = false;
   var swab_size = $("experiment_big_swab").checked ? 2 : 1;
-  var click_function = $("experiment_click_func_badb").checked ? CLICK_FUNC_BADB : $("experiment_click_func_good").checked ? CLICK_FUNC_GOOD : $("experiment_click_func_body").checked ? CLICK_FUNC_BODY : $("experiment_click_func_kill").checked ? CLICK_FUNC_KILL : CLICK_FUNC_BADB;
-  var hover_function = $("experiment_hover_func_badb").checked ? CLICK_FUNC_BADB : $("experiment_hover_func_good").checked ? CLICK_FUNC_GOOD : $("experiment_hover_func_body").checked ? CLICK_FUNC_BODY : $("experiment_hover_func_kill").checked ? CLICK_FUNC_KILL : CLICK_FUNC_BADB;
+  var click_function = $("experiment_click_func_none").checked ? CLICK_FUNC_NONE : $("experiment_click_func_badb").checked ? CLICK_FUNC_BADB : $("experiment_click_func_good").checked ? CLICK_FUNC_GOOD : $("experiment_click_func_body").checked ? CLICK_FUNC_BODY : $("experiment_click_func_kill").checked ? CLICK_FUNC_KILL : CLICK_FUNC_NONE;
+  var hover_function = $("experiment_hover_func_none").checked ? CLICK_FUNC_NONE : $("experiment_hover_func_badb").checked ? CLICK_FUNC_BADB : $("experiment_hover_func_good").checked ? CLICK_FUNC_GOOD : $("experiment_hover_func_body").checked ? CLICK_FUNC_BODY : $("experiment_hover_func_kill").checked ? CLICK_FUNC_KILL : CLICK_FUNC_NONE;
   var show_hover = true;
   var prerequisite_fill_for_interaction = 0.;
   var prompt_prerequisite_unmet = false;
   var mutate_random_assign = $("experiment_mutate_random").checked;
-  var mutate_rate = $("experiment_mutate_rate").value;
-  var mutate_distance = $("experiment_mutate_distance").value;
+  var mutate_rate = parseFloat($("experiment_mutate_rate").value);
+  var mutate_distance = parseFloat($("experiment_mutate_distance").value);
   var bias_mutate = false;
   var reproduce = $("experiment_reproduce").checked;
   var age = $("experiment_age").checked;
@@ -1341,13 +1341,15 @@ window.addEventListener("load",begin,false);
       <span class="rule">Init Body: <input id="experiment_init_body" type="checkbox"></input></span><br />
       <span class="rule">Big Swab: <input id="experiment_big_swab" type="checkbox"></input></span><br />
       <span class="rule">Click Func:
-        <input id="experiment_click_func_badb" type="radio" name="click_func" value="badb" checked="checked"></input>
+        <input id="experiment_click_func_none" type="radio" name="click_func" value="none" checked="checked"></input>
+        <input id="experiment_click_func_badb" type="radio" name="click_func" value="badb"></input>
         <input id="experiment_click_func_good" type="radio" name="click_func" value="good"></input>
         <input id="experiment_click_func_body" type="radio" name="click_func" value="body"></input>
         <input id="experiment_click_func_kill" type="radio" name="click_func" value="kill"></input>
       </span><br />
       <span class="rule">Hover Func:
-        <input id="experiment_hover_func_badb" type="radio" name="hover_func" value="badb" checked="checked"></input>
+        <input id="experiment_hover_func_none" type="radio" name="hover_func" value="none" checked="checked"></input>
+        <input id="experiment_hover_func_badb" type="radio" name="hover_func" value="badb"></input>
         <input id="experiment_hover_func_good" type="radio" name="hover_func" value="good"></input>
         <input id="experiment_hover_func_body" type="radio" name="hover_func" value="body"></input>
         <input id="experiment_hover_func_kill" type="radio" name="hover_func" value="kill"></input>
