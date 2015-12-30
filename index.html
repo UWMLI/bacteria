@@ -150,6 +150,11 @@ body
 <script type="text/javascript" src="src/scenes/gameplayScene.js"></script>
 
 <script type="text/javascript">
+function $(id)
+{
+  return document.getElementById(id);
+}
+
 var d;
 var g;
 var g_basic;
@@ -157,25 +162,155 @@ var games = {};
 
 function size_prefix(w,h,prefix)
 {
-  document.getElementById(prefix+"experiment_content").style.width  = (w+2)+"px";
-  document.getElementById(prefix+"experiment_content").style.height = (h+52)+"px";
-  document.getElementById(prefix+"stage_container").style.width  = (w+2)+"px";
-  document.getElementById(prefix+"stage_container").style.height = (h)+"px";
-  document.getElementById(prefix+"shadow").style.top = (h)+"px";
-  //document.getElementById(prefix+"shadow").style.width = w+"px";
-  document.getElementById(prefix+"reset").style.top = (h+20)+"px";
-  document.getElementById(prefix+"reset").style.left = Math.round(w/2-50)+"px";
-  document.getElementById(prefix+"reset").addEventListener("click", function() { games[prefix].reset(); });
-  //document.getElementById(prefix+"popup") //don't really need to do anything...
+  $(prefix+"experiment_content").style.width  = (w+2)+"px";
+  $(prefix+"experiment_content").style.height = (h+52)+"px";
+  $(prefix+"stage_container").style.width  = (w+2)+"px";
+  $(prefix+"stage_container").style.height = (h)+"px";
+  $(prefix+"shadow").style.top = (h)+"px";
+  //$(prefix+"shadow").style.width = w+"px";
+  $(prefix+"reset").style.top = (h+20)+"px";
+  $(prefix+"reset").style.left = Math.round(w/2-50)+"px";
+  $(prefix+"reset").addEventListener("click", function() { games[prefix].reset(); });
+  //$(prefix+"popup") //don't really need to do anything...
 }
+function goExperiment()
+{
+  var prefix = "";
+  var w = 640;
+  var h = 320;
+  //$("debug_div").style.width  = w+"px";
+  //$("debug_div").style.height = h+"px";
+  //d = new Debugger({source:$("debug_div")});
+
+  var special = SPECIAL_NONE;
+  var grid_x = 0;
+  var grid_y = 0;
+  var grid_w = -1;
+  var grid_h = -1;
+  var grid_cols = $("experiment_grid_cols").value;
+  var grid_rows = $("experiment_grid_rows").value;
+  var colored_rgb = $("experiment_attribute_color_rgb").checked;
+  var default_r = 0.5;
+  var default_g = 0.5;
+  var default_b = 0.5;
+  var colored_hsl = $("experiment_attribute_color_hsl").checked;
+  var default_h = 150;
+  var default_s = 1;
+  var default_l = 0.7;
+  var colorblind = false;
+  var sim_speed = $("experiment_sim_speed").value;
+  var badb_sim_speed = 1;
+  var hover_to_play = true;
+  var display_pause = true;
+  var allow_dose = $("experiment_allow_dose").checked;
+  var allow_smile = false;
+  var allow_reset = true;
+  var prompt_reset_on_empty = false;
+  var allow_contaminate = false;
+  var default_badb_resist = 0.;
+  var init_badb = $("experiment_init_badb").value;
+  var reinit_badb = false;
+  var default_good_resist = 0.;
+  var allow_good = true;
+  var init_good = $("experiment_init_badb").value;
+  var reinit_good = false;
+  var allow_body = true;
+  var init_body = $("experiment_init_body").value;
+  var reinit_body = false;
+  var swab_size = $("experiment_big_swab").checked ? 2 : 1;
+  var click_function = $("experiment_click_func_badb").checked ? CLICK_FUNC_BADB : $("experiment_click_func_good").checked ? CLICK_FUNC_GOOD : $("experiment_click_func_body").checked ? CLICK_FUNC_BODY : $("experiment_click_func_kill").checked ? CLICK_FUNC_KILL : CLICK_FUNC_BADB;
+  var hover_function = $("experiment_hover_func_badb").checked ? CLICK_FUNC_BADB : $("experiment_hover_func_good").checked ? CLICK_FUNC_GOOD : $("experiment_hover_func_body").checked ? CLICK_FUNC_BODY : $("experiment_hover_func_kill").checked ? CLICK_FUNC_KILL : CLICK_FUNC_BADB;
+  var show_hover = true;
+  var prerequisite_fill_for_interaction = 0.;
+  var prompt_prerequisite_unmet = false;
+  var mutate_random_assign = $("experiment_mutate_random").checked;
+  var mutate_rate = $("experiment_mutate_rate").value;
+  var mutate_distance = $("experiment_mutate_distance").value;
+  var bias_mutate = false;
+  var reproduce = $("experiment_reproduce").checked;
+  var age = $("experiment_age").checked;
+  var ave_display_width = (!colored_rgb && !colored_hsl) ? 10 : 0;
+  var split_display_width = (!colored_rgb && !colored_hsl && init_badb && init_good) ? 10 : 0;
+  var tricolor_display_width = colored_rgb ? 10 : 0;
+  var hsl_display_width = colored_hsl ? 10 : 0;
+
+
+  prefix = "experiment_";
+  var expcontainer = $(prefix+"stage_container");
+  while(expcontainer.firstChild) expcontainer.removeChild(expcontainer.firstChild);
+
+  w = 256 + ave_display_width + split_display_width + tricolor_display_width + hsl_display_width;
+  grid_w = 256; //hardcoded...
+  h = 256;
+  size_prefix(w,h,prefix);
+  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
+    config:
+    {
+      special:special,
+      grid_x:grid_x,
+      grid_y:grid_y,
+      grid_w:grid_w,
+      grid_h:grid_h,
+      grid_cols:grid_cols,
+      grid_rows:grid_rows,
+      colored_rgb:colored_rgb,
+      default_r:default_r,
+      default_g:default_g,
+      default_b:default_b,
+      colored_hsl:colored_hsl,
+      default_h:default_h,
+      default_s:default_s,
+      default_l:default_l,
+      colorblind:colorblind,
+      sim_speed:sim_speed,
+      badb_sim_speed:badb_sim_speed,
+      hover_to_play:hover_to_play,
+      display_pause:display_pause,
+      allow_dose:allow_dose,
+      allow_smile:allow_smile,
+      allow_reset:allow_reset,
+      prompt_reset_on_empty:prompt_reset_on_empty,
+      allow_contaminate:allow_contaminate,
+      default_badb_resist:default_badb_resist,
+      init_badb:init_badb,
+      reinit_badb:reinit_badb,
+      default_good_resist:default_good_resist,
+      allow_good:allow_good,
+      init_good:init_good,
+      reinit_good:reinit_good,
+      allow_body:allow_body,
+      init_body:init_body,
+      reinit_body:reinit_body,
+      swab_size:swab_size,
+      click_function:click_function,
+      hover_function:hover_function,
+      show_hover:show_hover,
+      prerequisite_fill_for_interaction:prerequisite_fill_for_interaction,
+      prompt_prerequisite_unmet:prompt_prerequisite_unmet,
+      mutate_random_assign:mutate_random_assign,
+      mutate_rate:mutate_rate,
+      mutate_distance:mutate_distance,
+      bias_mutate:bias_mutate,
+      reproduce:reproduce,
+      age:age,
+      ave_display_width:ave_display_width,
+      split_display_width:split_display_width,
+      tricolor_display_width:tricolor_display_width,
+      hsl_display_width:hsl_display_width,
+    }
+  });
+  games[prefix] = g;
+  g.begin();
+}
+
 function begin()
 {
   var prefix = "";
   var w = 640;
   var h = 320;
-  //document.getElementById("debug_div").style.width  = w+"px";
-  //document.getElementById("debug_div").style.height = h+"px";
-  //d = new Debugger({source:document.getElementById("debug_div")});
+  //$("debug_div").style.width  = w+"px";
+  //$("debug_div").style.height = h+"px";
+  //d = new Debugger({source:$("debug_div")});
 
   prefix = "squares_";
   w = 256;
@@ -807,6 +942,7 @@ function begin()
   games[prefix] = g;
   g.begin();
 
+  goExperiment();
 }
 window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
 window.addEventListener("load",begin,false);
@@ -1179,6 +1315,57 @@ window.addEventListener("load",begin,false);
       &nbsp;&nbsp;&nbsp;&nbsp;<br /><br />
     </div>
     <div class="margin margin_right">
+    </div>
+  </div>
+
+  <div class="description">
+    Use the slider to quantify antibiotics. Press the button to apply.
+  </div>
+  <div class="experiment">
+    <div class="rules rules_left">
+      <br />
+      <br />
+      <br />
+      In this Model: <b>(Same as before)</b><br />
+      <span class="rule">Grid Cols: <input id="experiment_grid_cols" type="number" value="10"></input></span><br />
+      <span class="rule">Grid Rows: <input id="experiment_grid_rows" type="number" value="10"></input></span><br />
+      <span class="rule">Attribute:
+        <input id="experiment_attribute_color_rgb" type="radio" name="attribute" value="color_rgb" checked="checked"></input>
+        <input id="experiment_attribute_color_hsl" type="radio" name="attribute" value="color_hsl"></input>
+        <input id="experiment_attribute_antibio" type="radio" name="attribute" value="antibio"></input>
+      </span><br />
+      <span class="rule">Sim Speed: <input id="experiment_sim_speed" type="number" value="1"></input></span><br />
+      <span class="rule">Dose: <input id="experiment_allow_dose" type="checkbox"></input></span><br />
+      <span class="rule">Init Badb: <input id="experiment_init_badb" type="checkbox" checked="checked"></input></span><br />
+      <span class="rule">Init Goodb: <input id="experiment_init_good" type="checkbox"></input></span><br />
+      <span class="rule">Init Body: <input id="experiment_init_body" type="checkbox"></input></span><br />
+      <span class="rule">Big Swab: <input id="experiment_big_swab" type="checkbox"></input></span><br />
+      <span class="rule">Click Func:
+        <input id="experiment_click_func_badb" type="radio" name="click_func" value="badb" checked="checked"></input>
+        <input id="experiment_click_func_good" type="radio" name="click_func" value="good"></input>
+        <input id="experiment_click_func_body" type="radio" name="click_func" value="body"></input>
+        <input id="experiment_click_func_kill" type="radio" name="click_func" value="kill"></input>
+      </span><br />
+      <span class="rule">Hover Func:
+        <input id="experiment_hover_func_badb" type="radio" name="hover_func" value="badb" checked="checked"></input>
+        <input id="experiment_hover_func_good" type="radio" name="hover_func" value="good"></input>
+        <input id="experiment_hover_func_body" type="radio" name="hover_func" value="body"></input>
+        <input id="experiment_hover_func_kill" type="radio" name="hover_func" value="kill"></input>
+      </span><br />
+      <span class="rule">Mutate Random: <input id="experiment_mutate_random" type="checkbox"></input></span><br />
+      <span class="rule">Mutate rate: <input id="experiment_mutate_rate" type="number" value="1"></input></span><br />
+      <span class="rule">Mutate distance: <input id="experiment_mutate_distance" type="number" value="1"></input></span><br />
+      <span class="rule">Reproduce: <input id="experiment_reproduce" type="checkbox" checked="checked"></input></span><br />
+      <span class="rule">Age: <input id="experiment_age" type="checkbox" checked="checked"></input></span><br />
+      <span class="rule">Go! <input id="experiment_go" type="button" onclick="goExperiment()"></input></span><br />
+    </div>
+    <div class="experiment_content"  id="experiment_experiment_content">
+      <div class="stage_container" id="experiment_stage_container"> </div>
+      <img class="shadow" id="experiment_shadow" src="assets/shadow.png" />
+      <div class="reset" id="experiment_reset"/>Reset</div>
+      <div class="popup" id="experiment_popup"/>Wow! Watch those bacteria go!</div>
+    </div>
+    <div class="rules rules_right">
     </div>
   </div>
 
