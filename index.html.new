@@ -207,6 +207,7 @@ function goExperiment()
   var display_pause = true;
   var allow_dose_slider = $("experiment_allow_dose_slider").checked;
   var allow_dose_button = $("experiment_allow_dose_button").checked;
+  var dose_chip_damage = $("experiment_dose_chip_damage").checked;
   var allow_smile = false;
   var allow_reset = true;
   var prompt_reset_on_empty = false;
@@ -275,6 +276,7 @@ function goExperiment()
       display_pause:display_pause,
       allow_dose_slider:allow_dose_slider,
       allow_dose_button:allow_dose_button,
+      dose_chip_damage:dose_chip_damage,
       allow_smile:allow_smile,
       allow_reset:allow_reset,
       prompt_reset_on_empty:prompt_reset_on_empty,
@@ -352,6 +354,7 @@ function begin()
       display_pause:true,
       allow_dose_slider:false,
       allow_dose_button:false,
+      dose_chip_damage:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:false,
@@ -419,6 +422,7 @@ function begin()
       display_pause:true,
       allow_dose_slider:false,
       allow_dose_button:false,
+      dose_chip_damage:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:false,
@@ -484,8 +488,9 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose_slider:true,
-      allow_dose_button:false,
+      allow_dose_slider:false,
+      allow_dose_button:true,
+      dose_chip_damage:true,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:true,
@@ -673,6 +678,7 @@ window.addEventListener("load",begin,false);
       <span class="rule">Sim Speed: <input id="experiment_sim_speed" type="number" value="1"></input></span><br />
       <span class="rule">Dose Slider: <input id="experiment_allow_dose_slider" type="checkbox"></input></span><br />
       <span class="rule">Dose Button: <input id="experiment_allow_dose_button" type="checkbox"></input></span><br />
+      <span class="rule">Chip damage: <input id="experiment_dose_chip_damage" type="checkbox"></input></span><br />
       <span class="rule">Init Badb: <input id="experiment_init_badb" type="checkbox" checked="checked"></input></span><br />
       <span class="rule">Init Goodb: <input id="experiment_init_good" type="checkbox"></input></span><br />
       <span class="rule">Init Body: <input id="experiment_init_body" type="checkbox"></input></span><br />

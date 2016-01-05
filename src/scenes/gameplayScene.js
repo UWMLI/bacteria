@@ -52,6 +52,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     display_pause:true,
     allow_dose_slider:false,
     allow_dose_button:false,
+    dose_chip_damage:false,
     allow_smile:true,
     allow_reset:true,
     prompt_reset_on_empty:false,
@@ -1287,6 +1288,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
         self.presser.register(self.dose_button);
+
+        self.dose_amt = 0;
+        self.dosing_prog = 0;
+        self.dosing_prog_rate = 0.01;
       }
 
       if(config.allow_smile)
@@ -1435,6 +1440,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         else if(config.allow_dose_button && self.dosing_prog)
         {
           self.grid.dose(self.dosing_prog);
+          self.dosing_prog = 0;
         }
         if(config.allow_smile)
         {
