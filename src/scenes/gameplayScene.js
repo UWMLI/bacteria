@@ -45,6 +45,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
     colorblind:false,
     sim_speed:1,
     badb_sim_speed:1,
+    allow_sim_speed_slider:false,
+    sim_speed_min:1,
+    sim_speed_max:2,
     hover_to_play:true,
     display_pause:true,
     allow_dose:true,
@@ -1215,6 +1218,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.tricolo_disp;
   self.hsl_disp;
 
+  self.speed_slider;
+
   self.dose_amt;
   self.dosing_prog;
   self.dosing_prog_rate;
@@ -1258,6 +1263,12 @@ var GamePlayScene = function(game, stage, config, popup_div)
           self.grid.nodeAt(9,10).biot_resist = self.external_biot_resist;
         })
         self.presser.register(self.catch_button);
+      }
+
+      if(config.allow_sim_speed_slider)
+      {
+        self.simspeed_slider = new SmoothSliderBox(10,c.canvas.height-30,100,20,config.sim_speed_min,config.sim_speed_max,config.sim_speed,function(v){ config.sim_speed = v; });
+        self.dragger.register(self.simspeed_slider);
       }
 
       if(config.allow_dose)
@@ -1424,6 +1435,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
         }
 
         self.grid.tick();
+        if(config.allow_sim_speed_slider)
+        {
+          self.simspeed_slider.tick();
+        }
         if(config.allow_dose)
         {
           self.dose_slider.tick();
@@ -1458,6 +1473,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       self.grid.draw(canv);
 
+      if(config.allow_sim_speed_slider)
+      {
+        self.simspeed_slider.draw(canv);
+      }
       if(config.allow_dose)
       {
         canv.context.strokeStyle = "#00FF00";
