@@ -205,7 +205,8 @@ function goExperiment()
   var sim_speed_max = 2;
   var hover_to_play = true;
   var display_pause = true;
-  var allow_dose = $("experiment_allow_dose").checked;
+  var allow_dose_slider = $("experiment_allow_dose_slider").checked;
+  var allow_dose_button = $("experiment_allow_dose_button").checked;
   var allow_smile = false;
   var allow_reset = true;
   var prompt_reset_on_empty = false;
@@ -272,7 +273,8 @@ function goExperiment()
       sim_speed_max:sim_speed_max,
       hover_to_play:hover_to_play,
       display_pause:display_pause,
-      allow_dose:allow_dose,
+      allow_dose_slider:allow_dose_slider,
+      allow_dose_button:allow_dose_button,
       allow_smile:allow_smile,
       allow_reset:allow_reset,
       prompt_reset_on_empty:prompt_reset_on_empty,
@@ -348,7 +350,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:false,
@@ -409,12 +412,13 @@ function begin()
       colorblind:false,
       sim_speed:1,
       badb_sim_speed:1,
-      allow_sim_speed_slider:true,
+      allow_sim_speed_slider:false,
       sim_speed_min:1,
-      sim_speed_max:10,
+      sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:false,
@@ -442,270 +446,6 @@ function begin()
       reproduce:true,
       age:true,
       ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "murderprogressive_";
-  w = 356;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:256,
-      grid_h:-1,
-      grid_cols:10,
-      grid_rows:10,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:true,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:true,
-      sim_speed:1,
-      badb_sim_speed:1,
-      allow_sim_speed_slider:false,
-      sim_speed_min:1,
-      sim_speed_max:2,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:true,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:true,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_KILL,
-      hover_function:CLICK_FUNC_KILL,
-      show_hover:true,
-      prerequisite_fill_for_interaction:0.5,
-      prompt_prerequisite_unmet:true,
-      mutate_random_assign:false,
-      mutate_rate:1,
-      mutate_distance:0.2,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:10,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "murderrandom_";
-  w = 356;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:256,
-      grid_h:-1,
-      grid_cols:10,
-      grid_rows:10,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:true,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:true,
-      sim_speed:1,
-      badb_sim_speed:1,
-      allow_sim_speed_slider:false,
-      sim_speed_min:1,
-      sim_speed_max:2,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:true,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:true,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_KILL,
-      hover_function:CLICK_FUNC_KILL,
-      show_hover:true,
-      prerequisite_fill_for_interaction:0.5,
-      prompt_prerequisite_unmet:true,
-      mutate_random_assign:true,
-      mutate_rate:1,
-      mutate_distance:0,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:10,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "murderresistance_";
-  w = 356;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:256,
-      grid_h:-1,
-      grid_cols:10,
-      grid_rows:10,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:false,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      allow_sim_speed_slider:false,
-      sim_speed_min:1,
-      sim_speed_max:2,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:true,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:true,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_KILL,
-      hover_function:CLICK_FUNC_KILL,
-      show_hover:true,
-      prerequisite_fill_for_interaction:0.5,
-      prompt_prerequisite_unmet:true,
-      mutate_random_assign:false,
-      mutate_rate:1,
-      mutate_distance:0.2,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:10,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "damageresistance_";
-  w = 356;
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:256,
-      grid_h:-1,
-      grid_cols:10,
-      grid_rows:10,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:false,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      allow_sim_speed_slider:false,
-      sim_speed_min:1,
-      sim_speed_max:2,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:true,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:true,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:2,
-      click_function:CLICK_FUNC_NONE,
-      hover_function:CLICK_FUNC_DAMG,
-      show_hover:true,
-      prerequisite_fill_for_interaction:0.5,
-      prompt_prerequisite_unmet:true,
-      mutate_random_assign:false,
-      mutate_rate:1,
-      mutate_distance:0.2,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:10,
       split_display_width:0,
       tricolor_display_width:0,
       hsl_display_width:0,
@@ -744,7 +484,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:true,
+      allow_dose_slider:true,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:true,
@@ -763,8 +504,8 @@ function begin()
       click_function:CLICK_FUNC_NONE,
       hover_function:CLICK_FUNC_NONE,
       show_hover:false,
-      prerequisite_fill_for_interaction:0.5,
-      prompt_prerequisite_unmet:true,
+      prerequisite_fill_for_interaction:0.,
+      prompt_prerequisite_unmet:false,
       mutate_random_assign:false,
       mutate_rate:1,
       mutate_distance:0.2,
@@ -832,8 +573,8 @@ window.addEventListener("load",begin,false);
     </div>
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;That looks vaguely bacteria-esque... To make this little simulation more interesting, we'll next add <span class="keyword">inheritance</span> and <span class="keyword">mutation</span>.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Every property of a bacterium (its shape, size, behavior) is encoded into its <span class="keyword">DNA</span>. This <span class="keyword">DNA</span> gets passed onto its children, giving the kid the same set of properties as its parent. Sometimes, the <span class="keyword">DNA</span> replication goes less than perfect, resulting in differences in the new bacterium's properties- sometimes small, and sometimes drastic.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;We'll add <span class="keyword">lightness</span> (as an arbitrary property) to our model, and ensure it gets inherited during reproduction. But we'll also allow small <span class="keyword">mutations</span> in the reproductive process, and thus changes in lightness, to occur.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Every <span class="keyword">attribute</span> of a bacterium (its shape, size, behavior) is encoded into its <span class="keyword">DNA</span>. This <span class="keyword">DNA</span> gets passed onto its children, giving the kid the same set of <span class="keyword">attributes</span> as its parent. Sometimes, the <span class="keyword">DNA</span> replication goes less than perfect, resulting in differences in the new bacterium's <span class="keyword">attributes</span>- sometimes small, and sometimes drastic.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;We'll add <i>lightness</i> (as an arbitrary <span class="keyword">attribute</span>) to our model, and ensure it gets inherited during reproduction. But we'll also allow small <span class="keyword">mutations</span> in the reproductive process, and thus changes in lightness, to occur.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
@@ -845,14 +586,13 @@ window.addEventListener("load",begin,false);
   <div class="experiment">
     <div class="rules rules_left">
       <br />
-      <br />
       In this Model:<br />
       <span class="rule">- Bacteria are squares</span><br />
       <span class="rule">- Bacteria sometimes multiply</span><br />
       <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule new">- Bacteria exhibit the property "lightness"</span><br />
-      <span class="rule new">- Bacteria inherit thier lightness from their parents</span><br />
-      <span class="rule new">- Bacteria sometimes mutate in their inherited properties</span><br />
+      <span class="rule new">- Bacteria exhibit the attribute "lightness"</span><br />
+      <span class="rule new">- Bacteria inherit thier attributes from their parents</span><br />
+      <span class="rule new">- Bacteria sometimes mutate in their inherited attributes</span><br />
     </div>
     <div class="experiment_content"  id="biodiversity_experiment_content">
       <div class="stage_container" id="biodiversity_stage_container"> </div>
@@ -868,173 +608,30 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. So now that we have a reasonable model for attribute propagation, let's try an experiment. What would happen if there were something trying to <span class="keyword">kill</span> bacteria with a certain attribute. What if that <i>thing</i> was <i>you</i>, and the <i>attribute</i> you wanted to remove was <i>the color green</i>.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;You can watch how <span class="keyword">mutations</span> lead to small communities similar in lightness.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotic resistance</span> -like lightness- is just another <span class="keywrod">attribute</span>, and thus follows the same set of rules regarding its propagation. It is a bit more interesting, however, in that within certain environments, it can play an important role in the bacterium's ability to reproduce.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotics</span> are substances known to have bacteria-killing properties. In turn, <span class="keyword">antibiotic resistance</span> is a bacterium's general ability to survive in spite of the presence of such substances.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;If a bacterium cannot survive, it cannot reproduce. Let's look how this might affect attribute population differently than in our previous model.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;We'll update the simulation to use "lightness" as a stand-in for <span class="keyword">antibiotic resistance</span> (the darker the bacterium, the more resistant it is to antibiotics) and add the ability to apply <span class="keyword">antibiotics</span> to the population with a button.<br /><br />
     </div>
     <div class="margin margin_right">
     </div>
   </div>
 
   <div class="description">
-    Hover to kill any green-ish bacteria.<br />
-    Try not to be too picky- act quickly rather than carefully.<br />
-    (If you kill them all, hit restart)
+    Press the button to apply antibiotics.
   </div>
   <div class="experiment">
     <div class="rules rules_left">
-      <br />
-      <br />
-      <br />
-      In this Model: <b>(Same as before)</b><br />
-      <span class="rule">- Bacteria are squares</span><br />
-      <span class="rule">- Bacteria sometimes multiply</span><br />
-      <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule">- Bacteria are given a color at birth similar to their parents</span><br />
-    </div>
-    <div class="experiment_content"  id="murderprogressive_experiment_content">
-      <div class="stage_container" id="murderprogressive_stage_container"> </div>
-      <img class="shadow" id="murderprogressive_shadow" src="assets/shadow.png" />
-      <div class="reset" id="murderprogressive_reset"/>Reset</div>
-      <div class="popup" id="murderprogressive_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Maybe unsurprisingly, the population of green bacteria diminishes. But if you keep it up long enough to develop a dominant population of reds and blues, the population seems to maintain a kind of "non green" momentum, with little extra extermination work required from you.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Let's change the rules back to "random attribute assignment at birth" and try this experiment again, to take note of any differences.<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
-
-  <div class="description">
-    Again, hover to kill any green-ish bacteria.<br />
-    (If you kill them all, hit restart)
-  </div>
-  <div class="experiment">
-    <div class="rules rules_left">
-      <br />
-      <br />
       <br />
       In this Model:<br />
       <span class="rule">- Bacteria are squares</span><br />
       <span class="rule">- Bacteria sometimes multiply</span><br />
       <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule new">- Bacteria are randomly assigned a color at birth</span><br />
-    </div>
-    <div class="experiment_content"  id="murderrandom_experiment_content">
-      <div class="stage_container" id="murderrandom_stage_container"> </div>
-      <img class="shadow" id="murderrandom_shadow" src="assets/shadow.png" />
-      <div class="reset" id="murderrandom_reset"/>Reset</div>
-      <div class="popup" id="murderrandom_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Though you're still killing just as many greens, it's not really possible to affect any real change in the population. With our previous model, we had the help that any green cleared also removed any likely-green offspring from being created!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Inheriting attributes from parents is a subtle change with important consequences- let's go back to that model. We'll try the experiment once again, but this time with a different attribute ("color" isn't a very realistic attribute for bacteria anyways).<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;The attribute we'll be <span class="keyword">selecting for</span> this time is <span class="keyword">antibiotic resistance</span>. Now, the lighter the bacteria is, the less resistant it is to antibiotics. The darker it is, the more resistant. See if you can kill only those bacteria <i>weak to antibiotics</i> (lighter in color).<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
-
-  <div class="description">
-    Again, hover to kill. Try to kill only the bacteria weak against antibiotics (lighter bacteria).
-  </div>
-  <div class="experiment">
-    <div class="rules rules_left">
-      <br />
-      <br />
-      <br />
-      In this Model:<br />
-      <span class="rule">- Bacteria are squares</span><br />
-      <span class="rule">- Bacteria sometimes multiply</span><br />
-      <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule new">- Bacteria are given an antibiotic resistance at birth similar to their parents</span><br />
-    </div>
-    <div class="experiment_content"  id="murderresistance_experiment_content">
-      <div class="stage_container" id="murderresistance_stage_container"> </div>
-      <img class="shadow" id="murderresistance_shadow" src="assets/shadow.png" />
-      <div class="reset" id="murderresistance_reset"/>Reset</div>
-      <div class="popup" id="murderresistance_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;We're again able to shift the attributes in a population. After all, the only thing we did was switch out which attribute was being <span class="keyword">selected for</span> (...the attribute for which we were selecting? you get the idea). Anyways- we never really went into what the attribute of <span class="keyword">antibiotic resistance</span> is:<br /> <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotics</span> are substances that kill bacteria. <span class="keyword">Antibiotic resistance</span> is just the bacteria's ability to survive those substances.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Let's try the experiment again, but this time we'll let the <i>function</i> of that attribute do the work. Rather than make an explicit effort to single out bacteria with a certain attribute, you should just try to kill bacteria indescriminately. (We'll even increase your cursor size to make things easier!)<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
-
-  <div class="description">
-    Hover to kill as many bacteria as you can.<br />
-    (Just kinda swirl your mouse around, killing whatever you can)<br />
-  </div>
-  <div class="experiment">
-    <div class="rules rules_left">
-      <br />
-      <br />
-      <br />
-      In this Model:<br />
-      <span class="rule">- Bacteria are squares</span><br />
-      <span class="rule">- Bacteria sometimes multiply</span><br />
-      <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule">- Bacteria are given an antibiotic resistance at birth similar to their parents</span><br />
+      <span class="rule new">- Bacteria exhibit the <span class="keyword">attribute</span> "antibiotic resistance"</span><br />
+      <span class="rule">- Bacteria inherit thier attributes from their parents</span><br />
+      <span class="rule">- Bacteria sometimes mutate in their inherited properties</span><br />
       <span class="rule new">- Bacteria with greater antibiotic resistance are harder to kill</span><br />
-    </div>
-    <div class="experiment_content"  id="damageresistance_experiment_content">
-      <div class="stage_container" id="damageresistance_stage_container"> </div>
-      <img class="shadow" id="damageresistance_shadow" src="assets/shadow.png" />
-      <div class="reset" id="damageresistance_reset"/>Reset</div>
-      <div class="popup" id="damageresistance_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok! So again, the same kind of thing happens! The bacteria's survivability shifted the entire population toward being resistant to that threat, even though there was no intent in your applied selective force!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;All this manual work to kill bacteria is exhausting. Let's simplify it and just add a button that does the work for us, so we can really let this behavior show. Now you can choose how much antibiotic will be applied, then press a button to apply it to every bacteria in our model.<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
-
-  <div class="description">
-    Use the slider to quantify antibiotics. Press the button to apply.
-  </div>
-  <div class="experiment">
-    <div class="rules rules_left">
-      <br />
-      <br />
-      <br />
-      In this Model: <b>(Same as before)</b><br />
-      <span class="rule">- Bacteria are squares</span><br />
-      <span class="rule">- Bacteria sometimes multiply</span><br />
-      <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule">- Bacteria are given an antibiotic resistance at birth similar to their parents</span><br />
-      <span class="rule">- Bacteria with greater antibiotic resistance are harder to kill</span><br />
     </div>
     <div class="experiment_content"  id="killbutton_experiment_content">
       <div class="stage_container" id="killbutton_stage_container"> </div>
@@ -1074,7 +671,8 @@ window.addEventListener("load",begin,false);
         <input id="experiment_attribute_antibio" type="radio" name="attribute" value="antibio"></input>
       </span><br />
       <span class="rule">Sim Speed: <input id="experiment_sim_speed" type="number" value="1"></input></span><br />
-      <span class="rule">Dose: <input id="experiment_allow_dose" type="checkbox"></input></span><br />
+      <span class="rule">Dose Slider: <input id="experiment_allow_dose_slider" type="checkbox"></input></span><br />
+      <span class="rule">Dose Button: <input id="experiment_allow_dose_button" type="checkbox"></input></span><br />
       <span class="rule">Init Badb: <input id="experiment_init_badb" type="checkbox" checked="checked"></input></span><br />
       <span class="rule">Init Goodb: <input id="experiment_init_good" type="checkbox"></input></span><br />
       <span class="rule">Init Body: <input id="experiment_init_body" type="checkbox"></input></span><br />

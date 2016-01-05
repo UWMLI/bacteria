@@ -205,7 +205,8 @@ function goExperiment()
   var sim_speed_max = 2;
   var hover_to_play = true;
   var display_pause = true;
-  var allow_dose = $("experiment_allow_dose").checked;
+  var allow_dose_slider = $("experiment_allow_dose_slider").checked;
+  var allow_dose_button = false;
   var allow_smile = false;
   var allow_reset = true;
   var prompt_reset_on_empty = false;
@@ -272,7 +273,8 @@ function goExperiment()
       sim_speed_max:sim_speed_max,
       hover_to_play:hover_to_play,
       display_pause:display_pause,
-      allow_dose:allow_dose,
+      allow_dose_slider:allow_dose_slider,
+      allow_dose_button:allow_dose_button,
       allow_smile:allow_smile,
       allow_reset:allow_reset,
       prompt_reset_on_empty:prompt_reset_on_empty,
@@ -348,7 +350,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:false,
@@ -414,7 +417,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:false,
@@ -480,7 +484,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:false,
@@ -546,7 +551,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:false,
@@ -612,7 +618,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:false,
@@ -678,7 +685,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:true,
@@ -744,7 +752,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:true,
@@ -810,7 +819,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:true,
@@ -876,7 +886,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:false,
+      allow_dose_slider:false,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:true,
@@ -942,7 +953,8 @@ function begin()
       sim_speed_max:2,
       hover_to_play:true,
       display_pause:true,
-      allow_dose:true,
+      allow_dose_slider:true,
+      allow_dose_button:false,
       allow_smile:false,
       allow_reset:true,
       prompt_reset_on_empty:true,
@@ -1371,7 +1383,7 @@ window.addEventListener("load",begin,false);
         <input id="experiment_attribute_antibio" type="radio" name="attribute" value="antibio"></input>
       </span><br />
       <span class="rule">Sim Speed: <input id="experiment_sim_speed" type="number" value="1"></input></span><br />
-      <span class="rule">Dose: <input id="experiment_allow_dose" type="checkbox"></input></span><br />
+      <span class="rule">Dose: <input id="experiment_allow_dose_slider" type="checkbox"></input></span><br />
       <span class="rule">Init Badb: <input id="experiment_init_badb" type="checkbox" checked="checked"></input></span><br />
       <span class="rule">Init Goodb: <input id="experiment_init_good" type="checkbox"></input></span><br />
       <span class="rule">Init Body: <input id="experiment_init_body" type="checkbox"></input></span><br />

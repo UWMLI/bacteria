@@ -50,7 +50,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
     sim_speed_max:2,
     hover_to_play:true,
     display_pause:true,
-    allow_dose:true,
+    allow_dose_slider:false,
+    allow_dose_button:false,
     allow_smile:true,
     allow_reset:true,
     prompt_reset_on_empty:false,
@@ -1271,7 +1272,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         self.dragger.register(self.simspeed_slider);
       }
 
-      if(config.allow_dose)
+      if(config.allow_dose_slider)
       {
         self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
         self.presser.register(self.dose_button);
@@ -1281,6 +1282,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
         self.dosing_prog_rate = 0.01;
         self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
         self.dragger.register(self.dose_slider);
+      }
+      else if(config.allow_dose_button)
+      {
+        self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
+        self.presser.register(self.dose_button);
       }
 
       if(config.allow_smile)
@@ -1415,7 +1421,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         self.dragger.flush();
 
-        if(config.allow_dose && self.dosing_prog)
+        if(config.allow_dose_slider && self.dosing_prog)
         {
           self.grid.dose(self.dosing_prog);
           if(config.allow_smile)
@@ -1425,6 +1431,10 @@ var GamePlayScene = function(game, stage, config, popup_div)
           self.dosing_prog += self.dosing_prog_rate;
           if(self.dosing_prog > self.dose_amt)
             self.dosing_prog = 0;
+        }
+        else if(config.allow_dose_button && self.dosing_prog)
+        {
+          self.grid.dose(self.dosing_prog);
         }
         if(config.allow_smile)
         {
@@ -1439,7 +1449,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         {
           self.simspeed_slider.tick();
         }
-        if(config.allow_dose)
+        if(config.allow_dose_slider)
         {
           self.dose_slider.tick();
         }
@@ -1477,7 +1487,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         self.simspeed_slider.draw(canv);
       }
-      if(config.allow_dose)
+      if(config.allow_dose_slider)
       {
         canv.context.strokeStyle = "#00FF00";
         self.dose_button.draw(canv);
@@ -1489,6 +1499,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.fillStyle = "rgba("+r+","+r+","+r+",1)";
         var switch_x = self.dose_slider.slit_x+(((self.dose_slider.val-self.dose_slider.min_val)/(self.dose_slider.max_val-self.dose_slider.min_val))*self.dose_slider.slit_w);
         canv.context.fillRect(switch_x-(self.dose_slider.w/20)+0.5,self.dose_slider.y+0.5,(self.dose_slider.w/10),self.dose_slider.h);
+      }
+      else if(config.allow_dose_button)
+      {
+        canv.context.strokeStyle = "#00FF00";
+        self.dose_button.draw(canv);
       }
       if(config.allow_smile)
       {
@@ -1518,7 +1533,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         self.catch_button.draw(canv);
       }
 
-      if(config.allow_dose && self.dosing_prog)
+      if(config.allow_dose_slider && self.dosing_prog)
       {
         canv.context.strokeStyle = "#00FF00";
         canv.context.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
