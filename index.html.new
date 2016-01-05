@@ -577,7 +577,7 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;That looks vaguely bacteria-esque... To make this little simulation more interesting, we'll next add <span class="keyword">inheritance</span> and <span class="keyword">mutation</span>.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;That looks vaguely bacterium-esque... To make this little simulation more interesting, we'll next add <span class="keyword">inheritance</span> and <span class="keyword">mutation</span>.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;Every <span class="keyword">attribute</span> of a bacterium (its shape, size, behavior) is encoded into its <span class="keyword">DNA</span>. This <span class="keyword">DNA</span> gets passed onto its children, giving the kid the same set of <span class="keyword">attributes</span> as its parent. Sometimes, the <span class="keyword">DNA</span> replication goes less than perfect, resulting in differences in the new bacterium's <span class="keyword">attributes</span>- sometimes small, and sometimes drastic.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;We'll add <i>lightness</i> (as an arbitrary <span class="keyword">attribute</span>) to our model, and ensure it gets inherited during reproduction. But we'll also allow small <span class="keyword">mutations</span> in the reproductive process, and thus changes in lightness, to occur.<br /><br />
     </div>
@@ -615,8 +615,8 @@ window.addEventListener("load",begin,false);
     <div class="paragraph">
       &nbsp;&nbsp;&nbsp;&nbsp;You can watch how <span class="keyword">mutations</span> lead to small communities similar in lightness.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotic resistance</span> -like lightness- is just another <span class="keywrod">attribute</span>, and thus follows the same set of rules regarding its propagation. It is a bit more interesting, however, in that within certain environments, it can play an important role in the bacterium's ability to reproduce.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotics</span> are substances known to have bacteria-killing properties. In turn, <span class="keyword">antibiotic resistance</span> is a bacterium's general ability to survive in spite of the presence of such substances.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;If a bacterium cannot survive, it cannot reproduce. Let's look how this might affect attribute population differently than in our previous model.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotics</span> are substances known to have bacterium-killing properties. In turn, <span class="keyword">antibiotic resistance</span> is a bacterium's general ability to survive in spite of the presence of such substances.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;If a bacterium cannot survive, it cannot reproduce. Let's look how this might affect attribute propagation differently than in our previous model.<br /><br />
       &nbsp;&nbsp;&nbsp;&nbsp;We'll update the simulation to use "lightness" as a stand-in for <span class="keyword">antibiotic resistance</span> (the darker the bacterium, the more resistant it is to antibiotics) and add the ability to apply <span class="keyword">antibiotics</span> to the population with a button.<br /><br />
     </div>
     <div class="margin margin_right">
@@ -652,15 +652,49 @@ window.addEventListener("load",begin,false);
     <div class="margin margin_left">
     </div>
     <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Well that was much easier! Hit reset and try applying different threshholds at different times. Pay attention to how the bacteria responds.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Experiment with applying antibiotics at different intervals. Play around with how long you wait before starting to apply it, and how ofter you apply it once you start. See if you can create an un-killable colony of bacteria.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;So what's happening here? Why are they getting stronger in some cases, and being eliminated in others?<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;When you apply antibiotics, you're preventing any bacteria killed from further reproducing. Because those with weak resistances are the most likely to die, the only left to reproduce (and pass on their attributes) are the strong ones!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;The ideas presented here are surprisingly deep and complex. They might raise more questions than answers...<br /><br />
+      <br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<b>How accurate are our models?</b><br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;That is an excellent question! Always be cautious to accept conclusions drawn from simplified models. Simple models are useful in exploring an idea to gain a more intuitive understanding- but they're no replacement for the scientific method!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Some key gaps in our models:<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;- Colonies of bacteria are in reality MUCH bigger. At any given time, our bodies hold <i>trillions</i> of individual bacterium!<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;- The mutation rate is in reality MUCH slower. DNA is incredibly complex. For a random error in its duplication to result in anything useful, a lot of lucky factors need to fall into place.<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;- "Super unkillable bacteria" aren't created in a single body. Because useful mutation happens so slowly, this process of evolution happens across many many generations, through infections across many different individuals.<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;- We didn't take into account many other factors at play in bacterial infection. (The body's natural defenses against infection, the presense of "good bacteria", etc...)<br />
+      <br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<b>So, should I use antibiotics or not?</b><br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;Another excellent question- one that can only really be answered by a medically trained doctor. That said, we can go through some of the considerations a doctor will need to take in deciding whether antibiotics are right for you.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;- Some infections, and thus illnesses, are <i>non-bacterial</i> (they can instead be viral, fungal, parasitic, etc...). That means that antibiotics will do nothing to help!<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;- The human body naturally has a pretty darned good line of defense against infection. In most cases, the added help of antibiotics is unneeded.<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;- In the case that your body <i>does</i> need help, the dosage needs to be considered very carefully.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;We saw that there is a danger in killing <i>most</i> of the bacteria vs killing <i>all</i> of them. Does this mean we should take a very large amount whenever we might need it? <b>No!</b><br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;- Our body contains mostly <i>good</i> bacteria- bacteria helpful in digestion and other bodily functions. Unfortunately, antibiotics just "kill bacteria"- they don't care about which ones we want to keep!<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;- On the other hand, if we take too little, we risk leaving only the strongest left to further infect our bodies, and other people around us.<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;This is the tricky balance best left to doctors. If there's one thing you can do- it's <i>listen to them</i>!<br /><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;If they prescribe for you to take a weeks worth of pills, make sure you take them for the whole week. Even if you're feeling better before you're done! You might start to feel better, but the strongest of the bacteria could still be making their last stand. Your doctor is your best bet at safely eliminating all of them!<br />
+      <br /><br />
+
     </div>
     <div class="margin margin_right">
     </div>
   </div>
 
+  <div class="blurb">
+    <div class="margin margin_left">
+    </div>
+    <div class="paragraph">
+      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Enough lecturing. If you want to play with some of the ideas above (what would the model do if there were more bacteria? If they mutated faster? If they mutated more slowly?), here's a playground.<br /><br />
+      <br /><br />
+
+    </div>
+    <div class="margin margin_right">
+    </div>
+  </div>
   <div class="description">
-    Use the slider to quantify antibiotics. Press the button to apply.
+    Set the rules for the model to the left. Then hit go to see what happens!
   </div>
   <div class="experiment">
     <div class="rules rules_left">

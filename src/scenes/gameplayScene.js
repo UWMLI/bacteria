@@ -702,8 +702,16 @@ var GamePlayScene = function(game, stage, config, popup_div)
       for(var i = 0; i < nodes.length; i++)
       {
         var n = nodes[i];
-        if(amt > n.biot_resist)
-          n.setType(NODE_TYPE_NONE);
+        if(config.dose_chip_damage)
+        {
+          if(Math.random() * amt > n.biot_resist)
+            n.setType(NODE_TYPE_NONE);
+        }
+        else
+        {
+          if(amt > n.biot_resist)
+            n.setType(NODE_TYPE_NONE);
+        }
       }
     }
 
@@ -1291,7 +1299,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
         self.dose_amt = 0;
         self.dosing_prog = 0;
-        self.dosing_prog_rate = 0.01;
+        self.dosing_prog_rate = 1;
       }
 
       if(config.allow_smile)
