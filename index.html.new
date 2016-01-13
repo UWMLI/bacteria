@@ -695,6 +695,8 @@ window.addEventListener("load",begin,false);
   </div>
   <div class="description">
     Set the rules for the model to the left. Then hit go to see what happens!
+    <br />
+    <b>Disclaimer: This portion of the explorable is placeholder. Some of the buttons won't work, aren't labeled, or don't exist. Feel free to play around anyway!</b>
   </div>
   <div class="experiment">
     <div class="rules rules_left">
