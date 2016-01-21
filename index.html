@@ -13,32 +13,68 @@ body,div
 body
 {
 }
-.content /*outer-width: 1140px; 2*margin+paragraph*/
+.convo
 {
-  width:1140px; /*margins+paragraphs*/
+  width:100%;
+  background-color:#FBF0EE;
+}
+.convo_content
+{
+  width:824px;
   margin:0px auto;
+  padding-top:40px;
+  padding-bottom:40px;
 }
-.title
+
+.chat
 {
-  text-align:center;
+  width:100%;
+  padding-top:0px;
+  padding-bottom:0px;
 }
-.blurb
+.chat_img
 {
-}
-.margin /*outer-width: 240px*/
-{
-  width:200px;
-  padding:10px;
-  min-height:10px;
-  float:left;
-  font-style:italic;
-}
-.paragraph /*outer-width: 660px*/
-{
-  width:640px;
-  padding:10px;
+  width:100px;
+  height:100px;
   float:left;
 }
+.chat_txt
+{
+  padding-top:20px;
+  float:left;
+  width:704px;
+}
+
+.short_img
+{
+  background-image:url('assets/jack_circle.png');
+  background-size:100px 100px;
+}
+.tall_img
+{
+  background-image:url('assets/scout_circle.png');
+  background-size:100px 100px;
+}
+.short_txt
+{
+  padding-left:20px;
+  text-align:left;
+}
+.tall_txt
+{
+  padding-right:20px;
+  text-align:right;
+}
+
+.experiment
+{
+  width:100%;
+}
+.experiment_content
+{
+  width:1024px;
+}
+
 .experiment /* outer_width: 260*2 + 258 */
 {
   margin:0px auto;
@@ -60,64 +96,15 @@ body
 {
   font-weight:bold;
 }
-.experiment_content /* outer_width:256+2(border) */
-{
-  width:258px;
-  float:left;
-  overflow:visible;
-}
 .stage_container /* outer_width:256+2(border) */
 {
   width:258px;
   overflow:visible;
   user-select:none;
 }
-.shadow
-{
-  position:absolute;
-  left:0px;
-  width:256px;
-  height:20px;
-  display:block;
-  pointer-events:none;
-  user-select:none;
-}
-.reset
-{
-  position:absolute;
-  height:30px;
-  width:100px;
-  text-align:center;
-  line-height:28px;
-  user-select:none;
-  border:1px solid #EEEEEE;
-}
-.popup
-{
-  position:absolute;
-  top:50px;
-  left:250px;
-  width:200px;
-  height:50px;
-  background-color:white;
-  border:1px solid black;
-  visibility:hidden;
-  padding:10px;
-}
-.description
-{
-  width:540px;
-  text-align:center;
-  margin:0px auto 10px auto;
-  font-style:italic;
-}
 .keyword
 {
   font-style:italic;
-}
-.expired
-{
-  text-decoration:line-through;
 }
 </style>
 <script type='text/javascript' src='src/config.js'></script>
@@ -166,21 +153,12 @@ function size_prefix(w,h,prefix)
   $(prefix+"experiment_content").style.height = (h+52)+"px";
   $(prefix+"stage_container").style.width  = (w+2)+"px";
   $(prefix+"stage_container").style.height = (h)+"px";
-  $(prefix+"shadow").style.top = (h)+"px";
-  //$(prefix+"shadow").style.width = w+"px";
-  $(prefix+"reset").style.top = (h+20)+"px";
-  $(prefix+"reset").style.left = Math.round(w/2-50)+"px";
-  $(prefix+"reset").addEventListener("click", function() { games[prefix].reset(); });
-  //$(prefix+"popup") //don't really need to do anything...
 }
 function goExperiment()
 {
   var prefix = "";
   var w = 640;
   var h = 320;
-  //$("debug_div").style.width  = w+"px";
-  //$("debug_div").style.height = h+"px";
-  //d = new Debugger({source:$("debug_div")});
 
   var special = SPECIAL_NONE;
   var grid_x = 0;
@@ -535,26 +513,45 @@ window.addEventListener("load",begin,false);
 </head>
 <body>
 
-<div class="content">
-  <div class="title">
-    <h1>Antibiotic Resistance!</h1>
+<div id="header" style="height:400px; width:100%; background-image:url('assets/bacteria-header.jpg'); background-position:center; background-size:100%;">
+  <div style="width:1024px; margin:0px auto;">
+    <div style="padding:50px;">
+      <div style="font-size:60px; color:#FFFFFF;">ANTIBIOTIC<br/>RESISTANCE.</div>
+      <div style="color:#FFFFFF;"><img src="assets/icon-rocket-white.png" style="width:50px;"></img>AN INTERACTIVE EXPLORABLE</div>
+    </div>
   </div>
+</div>
 
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;What is <span class="keyword">antibiotic resistance</span>, why is it bad, and what can we do about it. Let's create a <span class="keyword">model</span> of bacteria to help us explore these questions, and hopefully find some answers. We'll start with three simple rules.<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
+<div class="convo">
+  <div class="convo_content">
 
-  <div class="description">
-    Click to add.
+    <div class="chat short">
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">BLARB</div>
+    </div>
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">BLARB</div><div class="chat_img tall_img"></div>
+    </div>
+
+    <div class="chat short">
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">How can antibiotics be dangerous? I thought they made you better!</div>
+    </div>
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">Antibiotic resistance!</div><div class="chat_img tall_img"></div>
+    </div>
+
+    <div class="chat short">
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">But what <i>is</i> antibiotic resistance?<br />Why is antibiotic resistance bad? What can we do about it?</div>
+    </div>
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">Tell you what, let's create a model to help us explore these questions.<br />Even though bacteria come in many shapes, in our model, they can be represented by squares.</div><div class="chat_img tall_img"></div>
+    </div>
+
   </div>
-  <div class="experiment">
-    <div class="rules rules_left">
+</div>
+
+<div class="experiment">
+  <div class="experiment_content">
+    <div class="rules">
       <br />
       <br />
       <br />
@@ -563,33 +560,26 @@ window.addEventListener("load",begin,false);
       <span class="rule new">- Bacteria sometimes reproduce</span><br />
       <span class="rule new">- Bacteria eventually die</span><br />
     </div>
-    <div class="experiment_content" id="basic_experiment_content">
-      <div class="stage_container" id="basic_stage_container"> </div>
-      <img class="shadow" id="basic_shadow" src="assets/shadow.png" />
-      <div class="reset" id="basic_reset"/>Reset</div>
-      <div class="popup" id="basic_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
+    <div class="stage_container" id="basic_stage_container"> </div>
   </div>
+</div>
 
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;That looks vaguely bacterium-esque... To make this little simulation more interesting, we'll next add <span class="keyword">inheritance</span> and <span class="keyword">mutation</span>.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Every <span class="keyword">attribute</span> of a bacterium (its shape, size, behavior) is encoded into its <span class="keyword">DNA</span>. This <span class="keyword">DNA</span> gets passed onto its children, giving the kid the same set of <span class="keyword">attributes</span> as its parent. Sometimes, the <span class="keyword">DNA</span> replication goes less than perfect, resulting in differences in the new bacterium's <span class="keyword">attributes</span>- sometimes small, and sometimes drastic.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;We'll add <i>lightness</i> (as an arbitrary <span class="keyword">attribute</span>) to our model, and ensure it gets inherited during reproduction. But we'll also allow small <span class="keyword">mutations</span> in the reproductive process, and thus changes in lightness, to occur.<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
+<div class="convo">
+  <div class="convo_content">
 
-  <div class="description">
-    Biodiversity!
+    <div class="chat short">
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">BLARB</div>
+    </div>
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">BLARB</div><div class="chat_img tall_img"></div>
+    </div>
+
   </div>
-  <div class="experiment">
-    <div class="rules rules_left">
+</div>
+
+<div class="experiment">
+  <div class="experiment_content">
+    <div class="rules">
       <br />
       In this Model:<br />
       <span class="rule">- Bacteria are squares</span><br />
@@ -599,35 +589,26 @@ window.addEventListener("load",begin,false);
       <span class="rule new">- Bacteria inherit thier attributes from their parents</span><br />
       <span class="rule new">- Bacteria sometimes mutate in their inherited attributes</span><br />
     </div>
-    <div class="experiment_content"  id="biodiversity_experiment_content">
-      <div class="stage_container" id="biodiversity_stage_container"> </div>
-      <img class="shadow" id="biodiversity_shadow" src="assets/shadow.png" />
-      <div class="reset" id="biodiversity_reset"/>Reset</div>
-      <div class="popup" id="biodiversity_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
+    <div class="stage_container" id="biodiversity_stage_container"> </div>
   </div>
+</div>
 
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;You can watch how <span class="keyword">mutations</span> lead to small communities similar in lightness.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotic resistance</span> -like lightness- is just another <span class="keywrod">attribute</span>, and thus follows the same set of rules regarding its propagation. It is a bit more interesting, however, in that within certain environments, it can play an important role in the bacterium's ability to reproduce.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">Antibiotics</span> are substances known to have bacterium-killing properties. In turn, <span class="keyword">antibiotic resistance</span> is a bacterium's general ability to survive in spite of the presence of such substances.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;If a bacterium cannot survive, it cannot reproduce. Let's look how this might affect attribute propagation differently than in our previous model.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;We'll update the simulation to use "lightness" as a stand-in for <span class="keyword">antibiotic resistance</span> (the darker the bacterium, the more resistant it is to antibiotics) and add the ability to apply <span class="keyword">antibiotics</span> to the population with a button.<br /><br />
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
+<div class="convo">
+  <div class="convo_content">
 
-  <div class="description">
-    Press the button to apply antibiotics.
+    <div class="chat short">
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">BLARB</div>
+    </div>
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">BLARB</div><div class="chat_img tall_img"></div>
+    </div>
+
   </div>
-  <div class="experiment">
-    <div class="rules rules_left">
+</div>
+
+<div class="experiment">
+  <div class="experiment_content">
+    <div class="rules">
       <br />
       In this Model:<br />
       <span class="rule">- Bacteria are squares</span><br />
@@ -638,117 +619,9 @@ window.addEventListener("load",begin,false);
       <span class="rule">- Bacteria sometimes mutate in their inherited properties</span><br />
       <span class="rule new">- Bacteria with greater antibiotic resistance are harder to kill</span><br />
     </div>
-    <div class="experiment_content"  id="killbutton_experiment_content">
-      <div class="stage_container" id="killbutton_stage_container"> </div>
-      <img class="shadow" id="killbutton_shadow" src="assets/shadow.png" />
-      <div class="reset" id="killbutton_reset"/>Reset</div>
-      <div class="popup" id="killbutton_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
+    <div class="stage_container" id="killbutton_stage_container"> </div>
   </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Experiment with applying antibiotics at different intervals. Play around with how long you wait before starting to apply it, and how ofter you apply it once you start. See if you can create an un-killable colony of bacteria.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;So what's happening here? Why are they getting stronger in some cases, and being eliminated in others?<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;When you apply antibiotics, you're preventing any bacteria killed from further reproducing. Because those with weak resistances are the most likely to die, the only left to reproduce (and pass on their attributes) are the strong ones!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;The ideas presented here are surprisingly deep and complex. They might raise more questions than answers...<br /><br />
-      <br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<b>How accurate are our models?</b><br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;That is an excellent question! Always be cautious to accept conclusions drawn from simplified models. Simple models are useful in exploring an idea to gain a more intuitive understanding- but they're no replacement for the scientific method!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Some key gaps in our models:<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;- Colonies of bacteria are in reality MUCH bigger. At any given time, our bodies hold <i>trillions</i> of individual bacterium!<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;- The mutation rate is in reality MUCH slower. DNA is incredibly complex. For a random error in its duplication to result in anything useful, a lot of lucky factors need to fall into place.<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;- "Super unkillable bacteria" aren't created in a single body. Because useful mutation happens so slowly, this process of evolution happens across many many generations, through infections across many different individuals.<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;- We didn't take into account many other factors at play in bacterial infection. (The body's natural defenses against infection, the presense of "good bacteria", etc...)<br />
-      <br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;<b>So, should I use antibiotics or not?</b><br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;Another excellent question- one that can only really be answered by a medically trained doctor. That said, we can go through some of the considerations a doctor will need to take in deciding whether antibiotics are right for you.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;- Some infections, and thus illnesses, are <i>non-bacterial</i> (they can instead be viral, fungal, parasitic, etc...). That means that antibiotics will do nothing to help!<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;- The human body naturally has a pretty darned good line of defense against infection. In most cases, the added help of antibiotics is unneeded.<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;- In the case that your body <i>does</i> need help, the dosage needs to be considered very carefully.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;We saw that there is a danger in killing <i>most</i> of the bacteria vs killing <i>all</i> of them. Does this mean we should take a very large amount whenever we might need it? <b>No!</b><br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;- Our body contains mostly <i>good</i> bacteria- bacteria helpful in digestion and other bodily functions. Unfortunately, antibiotics just "kill bacteria"- they don't care about which ones we want to keep!<br />
-      &nbsp;&nbsp;&nbsp;&nbsp;- On the other hand, if we take too little, we risk leaving only the strongest left to further infect our bodies, and other people around us.<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;This is the tricky balance best left to doctors. If there's one thing you can do- it's <i>listen to them</i>!<br /><br />
-      &nbsp;&nbsp;&nbsp;&nbsp;If they prescribe for you to take a weeks worth of pills, make sure you take them for the whole week. Even if you're feeling better before you're done! You might start to feel better, but the strongest of the bacteria could still be making their last stand. Your doctor is your best bet at safely eliminating all of them!<br />
-      <br /><br />
-
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
-
-  <div class="blurb">
-    <div class="margin margin_left">
-    </div>
-    <div class="paragraph">
-      &nbsp;&nbsp;&nbsp;&nbsp;Ok. Enough lecturing. If you want to play with some of the ideas above (what would the model do if there were more bacteria? If they mutated faster? If they mutated more slowly?), here's a playground.<br /><br />
-      <br /><br />
-
-    </div>
-    <div class="margin margin_right">
-    </div>
-  </div>
-  <div class="description">
-    Set the rules for the model to the left. Then hit go to see what happens!
-    <br />
-    <b>Disclaimer: This portion of the explorable is placeholder. Some of the buttons won't work, aren't labeled, or don't exist. Feel free to play around anyway!</b>
-  </div>
-  <div class="experiment">
-    <div class="rules rules_left">
-      <br />
-      <br />
-      <br />
-      In this Model: <br />
-      <span class="rule">Grid Cols: <input id="experiment_grid_cols" type="number" value="10"></input></span><br />
-      <span class="rule">Grid Rows: <input id="experiment_grid_rows" type="number" value="10"></input></span><br />
-      <span class="rule">Attribute:
-        <input id="experiment_attribute_color_rgb" type="radio" name="attribute" value="color_rgb" checked="checked"></input>
-        <input id="experiment_attribute_color_hsl" type="radio" name="attribute" value="color_hsl"></input>
-        <input id="experiment_attribute_antibio" type="radio" name="attribute" value="antibio"></input>
-      </span><br />
-      <span class="rule">Sim Speed: <input id="experiment_sim_speed" type="number" value="1"></input></span><br />
-      <span class="rule">Dose Slider: <input id="experiment_allow_dose_slider" type="checkbox"></input></span><br />
-      <span class="rule">Dose Button: <input id="experiment_allow_dose_button" type="checkbox"></input></span><br />
-      <span class="rule">Chip damage: <input id="experiment_dose_chip_damage" type="checkbox"></input></span><br />
-      <span class="rule">Init Badb: <input id="experiment_init_badb" type="checkbox" checked="checked"></input></span><br />
-      <span class="rule">Init Goodb: <input id="experiment_init_good" type="checkbox"></input></span><br />
-      <span class="rule">Init Body: <input id="experiment_init_body" type="checkbox"></input></span><br />
-      <span class="rule">Big Swab: <input id="experiment_big_swab" type="checkbox"></input></span><br />
-      <span class="rule">Click Func:
-        <input id="experiment_click_func_none" type="radio" name="click_func" value="none" checked="checked"></input>
-        <input id="experiment_click_func_badb" type="radio" name="click_func" value="badb"></input>
-        <input id="experiment_click_func_good" type="radio" name="click_func" value="good"></input>
-        <input id="experiment_click_func_body" type="radio" name="click_func" value="body"></input>
-        <input id="experiment_click_func_kill" type="radio" name="click_func" value="kill"></input>
-      </span><br />
-      <span class="rule">Hover Func:
-        <input id="experiment_hover_func_none" type="radio" name="hover_func" value="none" checked="checked"></input>
-        <input id="experiment_hover_func_badb" type="radio" name="hover_func" value="badb"></input>
-        <input id="experiment_hover_func_good" type="radio" name="hover_func" value="good"></input>
-        <input id="experiment_hover_func_body" type="radio" name="hover_func" value="body"></input>
-        <input id="experiment_hover_func_kill" type="radio" name="hover_func" value="kill"></input>
-      </span><br />
-      <span class="rule">Mutate Random: <input id="experiment_mutate_random" type="checkbox"></input></span><br />
-      <span class="rule">Mutate rate: <input id="experiment_mutate_rate" type="number" value="1"></input></span><br />
-      <span class="rule">Mutate distance: <input id="experiment_mutate_distance" type="number" value="1"></input></span><br />
-      <span class="rule">Reproduce: <input id="experiment_reproduce" type="checkbox" checked="checked"></input></span><br />
-      <span class="rule">Age: <input id="experiment_age" type="checkbox" checked="checked"></input></span><br />
-      <span class="rule">Go! <input id="experiment_go" type="button" onclick="goExperiment()"></input></span><br />
-    </div>
-    <div class="experiment_content"  id="experiment_experiment_content">
-      <div class="stage_container" id="experiment_stage_container"> </div>
-      <img class="shadow" id="experiment_shadow" src="assets/shadow.png" />
-      <div class="reset" id="experiment_reset"/>Reset</div>
-      <div class="popup" id="experiment_popup"/>Wow! Watch those bacteria go!</div>
-    </div>
-    <div class="rules rules_right">
-    </div>
-  </div>
+</div>
 
 </div>
 
