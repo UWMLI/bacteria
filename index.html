@@ -46,25 +46,30 @@ body,div
 #brand {
   float: left;
   height: 100%;
+  box-sizing: border-box;
 }
 
 #brand img {
   height: 88%;
   padding-left: 10px;
   padding-top: 7px;
+  box-sizing: border-box;
 }
 
 #hamburger {
   float: right;
   height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 #hamburger img {
-  height: 100%;
   padding-top: 15px;
   padding-bottom: 15px;
   padding-right: 15px;
-  height:25px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 #header h1 {
@@ -245,6 +250,10 @@ body,div
   width: 250px;
   transition-property: right;
   transition-duration: 0.25s;
+  box-sizing: border-box;
+  font-family: Open Sans;
+  letter-spacing: 2px;
+  font-size: 16px;
 }
 
 .menu-open #menu {
@@ -357,7 +366,7 @@ p#menu-x {
 {
   width:512px;
   float:left;
-  overflow:visible;
+  overflow:hidden;
   user-select:none;
 }
 .keyword
@@ -871,12 +880,12 @@ window.addEventListener("load",begin,false);
     </a>
   </p>
   <p>
-    <a href="http://theyardgames.org" class="raw-link">
+    <a href="/" class="raw-link">
       home
     </a>
   </p>
   <p>
-    <a href="http://theyardgames.org/about/" class="raw-link">
+    <a href="/about" class="raw-link">
       about the yard
     </a>
   </p>
