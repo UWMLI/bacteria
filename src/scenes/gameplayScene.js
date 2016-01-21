@@ -758,10 +758,21 @@ var GamePlayScene = function(game, stage, config, popup_div)
       canv.context.beginPath();
       canv.context.moveTo(self.x,self.y+self.h);
       canv.context.lineTo(self.x,self.y);
+      canv.context.moveTo(self.x+self.w,self.y);
+      if(config.ave_display_width+config.split_display_width+config.tricolor_display_width+config.hsl_display_width == 0)
+        canv.context.lineTo(self.x+self.w,self.y+self.h);
+      canv.context.stroke();
+  /*
+  // outline border
+      canv.context.strokeStyle = LIGHT_COLOR;
+      canv.context.beginPath();
+      canv.context.moveTo(self.x,self.y+self.h);
+      canv.context.lineTo(self.x,self.y);
       canv.context.lineTo(self.x+self.w,self.y);
       if(config.ave_display_width+config.split_display_width+config.tricolor_display_width+config.hsl_display_width == 0)
         canv.context.lineTo(self.x+self.w,self.y+self.h);
       canv.context.stroke();
+  */
     }
 
     self.tick = function()

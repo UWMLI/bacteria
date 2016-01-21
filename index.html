@@ -73,18 +73,14 @@ body
 .experiment_content
 {
   width:1024px;
+  margin:0px auto;
 }
 
-.experiment /* outer_width: 260*2 + 258 */
+.rules
 {
-  margin:0px auto;
-  width:798px;
-}
-.rules /* outer_width: 270 */
-{
-  width:250px;
-  padding:10px;
-  min-height:10px;
+  width:512px;
+  height:512px;
+  position:relative;
   float:left;
   font-size:16px;
 }
@@ -96,9 +92,20 @@ body
 {
   font-weight:bold;
 }
-.stage_container /* outer_width:256+2(border) */
+.tall_full
 {
-  width:258px;
+  width:130px;
+  height:200px;
+  margin:0px auto;
+  position:absolute;
+  bottom:0px;
+  background-image:url('assets/scout.png');
+  background-size:130px 200px;
+}
+.stage_container
+{
+  width:512px;
+  float:left;
   overflow:visible;
   user-select:none;
 }
@@ -149,146 +156,8 @@ var games = {};
 
 function size_prefix(w,h,prefix)
 {
-  $(prefix+"experiment_content").style.width  = (w+2)+"px";
-  $(prefix+"experiment_content").style.height = (h+52)+"px";
-  $(prefix+"stage_container").style.width  = (w+2)+"px";
-  $(prefix+"stage_container").style.height = (h)+"px";
-}
-function goExperiment()
-{
-  var prefix = "";
-  var w = 640;
-  var h = 320;
-
-  var special = SPECIAL_NONE;
-  var grid_x = 0;
-  var grid_y = 0;
-  var grid_w = -1;
-  var grid_h = -1;
-  var grid_cols = parseInt($("experiment_grid_cols").value);
-  var grid_rows = parseInt($("experiment_grid_rows").value);
-  var colored_rgb = $("experiment_attribute_color_rgb").checked;
-  var default_r = 0.5;
-  var default_g = 0.5;
-  var default_b = 0.5;
-  var colored_hsl = $("experiment_attribute_color_hsl").checked;
-  var default_h = 150;
-  var default_s = 1;
-  var default_l = 0.7;
-  var colorblind = false;
-  var sim_speed = parseFloat($("experiment_sim_speed").value);
-  var badb_sim_speed = 1;
-  var allow_sim_speed_slider = false;
-  var sim_speed_min = 1;
-  var sim_speed_max = 2;
-  var hover_to_play = true;
-  var display_pause = true;
-  var allow_dose_slider = $("experiment_allow_dose_slider").checked;
-  var allow_dose_button = $("experiment_allow_dose_button").checked;
-  var dose_chip_damage = $("experiment_dose_chip_damage").checked;
-  var allow_smile = false;
-  var allow_reset = true;
-  var prompt_reset_on_empty = false;
-  var allow_contaminate = false;
-  var default_badb_resist = 0.;
-  var init_badb = $("experiment_init_badb").checked;
-  var reinit_badb = false;
-  var default_good_resist = 0.;
-  var allow_good = true;
-  var init_good = $("experiment_init_good").checked;
-  var reinit_good = false;
-  var allow_body = true;
-  var init_body = $("experiment_init_body").checked;
-  var reinit_body = false;
-  var swab_size = $("experiment_big_swab").checked ? 2 : 1;
-  var click_function = $("experiment_click_func_none").checked ? CLICK_FUNC_NONE : $("experiment_click_func_badb").checked ? CLICK_FUNC_BADB : $("experiment_click_func_good").checked ? CLICK_FUNC_GOOD : $("experiment_click_func_body").checked ? CLICK_FUNC_BODY : $("experiment_click_func_kill").checked ? CLICK_FUNC_KILL : CLICK_FUNC_NONE;
-  var hover_function = $("experiment_hover_func_none").checked ? CLICK_FUNC_NONE : $("experiment_hover_func_badb").checked ? CLICK_FUNC_BADB : $("experiment_hover_func_good").checked ? CLICK_FUNC_GOOD : $("experiment_hover_func_body").checked ? CLICK_FUNC_BODY : $("experiment_hover_func_kill").checked ? CLICK_FUNC_KILL : CLICK_FUNC_NONE;
-  var show_hover = true;
-  var prerequisite_fill_for_interaction = 0.;
-  var prompt_prerequisite_unmet = false;
-  var mutate_random_assign = $("experiment_mutate_random").checked;
-  var mutate_rate = parseFloat($("experiment_mutate_rate").value);
-  var mutate_distance = parseFloat($("experiment_mutate_distance").value);
-  var bias_mutate = false;
-  var reproduce = $("experiment_reproduce").checked;
-  var age = $("experiment_age").checked;
-  var ave_display_width = (!colored_rgb && !colored_hsl) ? 10 : 0;
-  var split_display_width = (!colored_rgb && !colored_hsl && init_badb && init_good) ? 10 : 0;
-  var tricolor_display_width = colored_rgb ? 10 : 0;
-  var hsl_display_width = colored_hsl ? 10 : 0;
-
-
-  prefix = "experiment_";
-  var expcontainer = $(prefix+"stage_container");
-  while(expcontainer.firstChild) expcontainer.removeChild(expcontainer.firstChild);
-
-  w = 256 + ave_display_width + split_display_width + tricolor_display_width + hsl_display_width;
-  grid_w = 256; //hardcoded...
-  h = 256;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:special,
-      grid_x:grid_x,
-      grid_y:grid_y,
-      grid_w:grid_w,
-      grid_h:grid_h,
-      grid_cols:grid_cols,
-      grid_rows:grid_rows,
-      colored_rgb:colored_rgb,
-      default_r:default_r,
-      default_g:default_g,
-      default_b:default_b,
-      colored_hsl:colored_hsl,
-      default_h:default_h,
-      default_s:default_s,
-      default_l:default_l,
-      colorblind:colorblind,
-      sim_speed:sim_speed,
-      badb_sim_speed:badb_sim_speed,
-      allow_sim_speed_slider:allow_sim_speed_slider,
-      sim_speed_min:sim_speed_min,
-      sim_speed_max:sim_speed_max,
-      hover_to_play:hover_to_play,
-      display_pause:display_pause,
-      allow_dose_slider:allow_dose_slider,
-      allow_dose_button:allow_dose_button,
-      dose_chip_damage:dose_chip_damage,
-      allow_smile:allow_smile,
-      allow_reset:allow_reset,
-      prompt_reset_on_empty:prompt_reset_on_empty,
-      allow_contaminate:allow_contaminate,
-      default_badb_resist:default_badb_resist,
-      init_badb:init_badb,
-      reinit_badb:reinit_badb,
-      default_good_resist:default_good_resist,
-      allow_good:allow_good,
-      init_good:init_good,
-      reinit_good:reinit_good,
-      allow_body:allow_body,
-      init_body:init_body,
-      reinit_body:reinit_body,
-      swab_size:swab_size,
-      click_function:click_function,
-      hover_function:hover_function,
-      show_hover:show_hover,
-      prerequisite_fill_for_interaction:prerequisite_fill_for_interaction,
-      prompt_prerequisite_unmet:prompt_prerequisite_unmet,
-      mutate_random_assign:mutate_random_assign,
-      mutate_rate:mutate_rate,
-      mutate_distance:mutate_distance,
-      bias_mutate:bias_mutate,
-      reproduce:reproduce,
-      age:age,
-      ave_display_width:ave_display_width,
-      split_display_width:split_display_width,
-      tricolor_display_width:tricolor_display_width,
-      hsl_display_width:hsl_display_width,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
+  $(prefix+"stage_container").style.width  = w+"px";
+  $(prefix+"stage_container").style.height = h+"px";
 }
 
 function begin()
@@ -301,8 +170,8 @@ function begin()
   //d = new Debugger({source:$("debug_div")});
 
   prefix = "basic_";
-  w = 256;
-  h = 256;
+  w = 512;
+  h = 512;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
@@ -369,8 +238,8 @@ function begin()
   g.begin();
 
   prefix = "biodiversity_";
-  w = 256;
-  h = 256;
+  w = 512;
+  h = 512;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
@@ -437,8 +306,8 @@ function begin()
   g.begin();
 
   prefix = "killbutton_";
-  w = 356;
-  h = 256;
+  w = 512;
+  h = 512;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
@@ -446,7 +315,7 @@ function begin()
       special:SPECIAL_NONE,
       grid_x:0,
       grid_y:0,
-      grid_w:256,
+      grid_w:502,
       grid_h:-1,
       grid_cols:10,
       grid_rows:10,
@@ -503,8 +372,6 @@ function begin()
   });
   games[prefix] = g;
   g.begin();
-
-  goExperiment();
 }
 window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
 window.addEventListener("load",begin,false);
@@ -524,13 +391,6 @@ window.addEventListener("load",begin,false);
 
 <div class="convo">
   <div class="convo_content">
-
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">BLARB</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">BLARB</div><div class="chat_img tall_img"></div>
-    </div>
 
     <div class="chat short">
       <div class="chat_img short_img"></div><div class="chat_txt short_txt">How can antibiotics be dangerous? I thought they made you better!</div>
@@ -555,10 +415,12 @@ window.addEventListener("load",begin,false);
       <br />
       <br />
       <br />
-      In this Model:<br />
-      <span class="rule new">- Bacteria are squares</span><br />
-      <span class="rule new">- Bacteria sometimes reproduce</span><br />
-      <span class="rule new">- Bacteria eventually die</span><br />
+      <b>Neat. This simple model is based on these key ideas:</b><br />
+      <br />
+      <span class="rule">- Bacteria sometimes reproduce, dividing to make more.</span><br />
+      <br />
+      <span class="rule">- Bacteria eventually die.</span><br />
+      <div class="tall_full"></div>
     </div>
     <div class="stage_container" id="basic_stage_container"> </div>
   </div>
@@ -568,10 +430,16 @@ window.addEventListener("load",begin,false);
   <div class="convo_content">
 
     <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">BLARB</div>
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">I don't think our model seems very realistic. How can we make our model more realistic?</div>
     </div>
     <div class="chat tall">
-      <div class="chat_txt tall_txt">BLARB</div><div class="chat_img tall_img"></div>
+      <div class="chat_txt tall_txt">Good point. We'll add the concepts of inheritance and mutation to our model. Every trait, or characteristic, of a bacterium (such as its shape, size, and behavior) is encoded in its genetic material - its DNA. Most bacteria reproduce simply by dividing in two, with copies of its DNA in each new cell. Sometimes the process of DNA replication doesn't make a perfect copy, and the DNA is not quite identical. This results in differences between the new bacterium's traits and those of the parent - sometimes small, and sometimes drastic. These differences are called mutations.</div><div class="chat_img tall_img"></div>
+    </div>
+    <div class="chat short">
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">What will that look like in our model?</div>
+    </div>
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">Hmm... what trait can we use to model how mutations occur and are inherited? Aha! We can use a slight color difference to model a mutation. In our model, we'll let some bacteria mutate by changing color value - the lightness or darkness of the color. We'll allow the new color to be inherited during reproduction.</div><div class="chat_img tall_img"></div>
     </div>
 
   </div>
@@ -581,13 +449,22 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content">
     <div class="rules">
       <br />
-      In this Model:<br />
-      <span class="rule">- Bacteria are squares</span><br />
-      <span class="rule">- Bacteria sometimes multiply</span><br />
-      <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule new">- Bacteria exhibit the attribute "lightness"</span><br />
-      <span class="rule new">- Bacteria inherit thier attributes from their parents</span><br />
-      <span class="rule new">- Bacteria sometimes mutate in their inherited attributes</span><br />
+      <br />
+      <br />
+      <b>Biodiversity!</b>
+      <br />
+      Our new model is based on these key ideas:<br />
+      <br />
+      <span class="rule">- Bacteria sometimes reproduce, dividing to make more.</span><br />
+      <br />
+      <span class="rule">- Bacteria eventually die.</span><br />
+      <br />
+      <span class="rule new">- Bacteria offspring inherit the traits of the parent.</span><br />
+      <br />
+      <span class="rule new">- Mutations in bacteria DNA can occur.</span><br />
+      <br />
+      <span class="rule new">- Mutations can be inherited by a bacterium's offspring.</span><br />
+      <div class="tall_full"></div>
     </div>
     <div class="stage_container" id="biodiversity_stage_container"> </div>
   </div>
@@ -596,11 +473,20 @@ window.addEventListener("load",begin,false);
 <div class="convo">
   <div class="convo_content">
 
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">Notice how, in our model, mutations lead to small communities of bacteria similar in color value - this looks like lighter patches and darker patches.</div><div class="chat_img tall_img"></div>
+    </div>
     <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">BLARB</div>
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">Wait, how is this related to antibiotic resistance?</div>
     </div>
     <div class="chat tall">
-      <div class="chat_txt tall_txt">BLARB</div><div class="chat_img tall_img"></div>
+      <div class="chat_txt tall_txt">Antibiotics are substances known to have bacterium-killing properties. A bacterium develops antibiotic resistance when mutations combine to make it hard to kill. When a bacterium has antibiotic resistance, it is more likely to survive even when antibiotic substances are present.<br /><br />Antibiotic resistance is an inheritable trait. If a bacterium cannot survive, it cannot reproduce. And if a bacterium has antibiotic resistance, it can survive to reproduce, passing this trait on to its offspring! Of course, not all of the new bacteria will have antibiotic resistance. Some will have additional mutations that weaken resistance. What do you think will happen to these weaker bacteria when additional doses of antibiotic are applied?</div><div class="chat_img tall_img"></div>
+    </div>
+    <div class="chat short">
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">Yikes. I don't know. Can we use our model to find out?</div>
+    </div>
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">Sure, let's add the trait of antibiotic resistance to our model! We'll update the simulation to use color value to represent antibiotic resistance - the darker the bacterium, the more resistant it is to antibiotics. Then, we'll add antibiotics to the population with a button.</div><div class="chat_img tall_img"></div>
     </div>
 
   </div>
@@ -610,18 +496,51 @@ window.addEventListener("load",begin,false);
   <div class="experiment_content">
     <div class="rules">
       <br />
-      In this Model:<br />
-      <span class="rule">- Bacteria are squares</span><br />
-      <span class="rule">- Bacteria sometimes multiply</span><br />
-      <span class="rule">- Bacteria eventually die</span><br />
-      <span class="rule new">- Bacteria exhibit the <span class="keyword">attribute</span> "antibiotic resistance"</span><br />
-      <span class="rule">- Bacteria inherit thier attributes from their parents</span><br />
-      <span class="rule">- Bacteria sometimes mutate in their inherited properties</span><br />
-      <span class="rule new">- Bacteria with greater antibiotic resistance are harder to kill</span><br />
+      <br />
+      <br />
+      <b>This model is based on these key ideas:</b><br />
+      <br />
+      <span class="rule">- Bacteria sometimes reproduce, dividing to make more.</span><br />
+      <br />
+      <span class="rule">- Bacteria eventually die.</span><br />
+      <br />
+      <span class="rule new">- Bacteria offspring inherit the traits of the parent.</span><br />
+      <br />
+      <span class="rule">- Mutations can be inherited by a bacterium's offspring.</span><br />
+      <br />
+      <span class="rule">- Bacteria can have the trait "antibiotic resistance".</span><br />
+      <br />
+      <span class="rule new">- Bacteria with greater antibiotic resistance are harder to kill.</span><br />
+      <br />
+      <span class="rule new">- Bacteria can pass on their antibiotic resistance to offspring.</span><br />
+      <div class="tall_full"></div>
     </div>
     <div class="stage_container" id="killbutton_stage_container"> </div>
   </div>
 </div>
+
+<div class="convo">
+  <div class="convo_content">
+
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">Notice how, in our model, mutations lead to small communities of bacteria similar in color value - this looks like lighter patches and darker patches.</div><div class="chat_img tall_img"></div>
+    </div>
+    <div class="chat short">
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">Wait, how is this related to antibiotic resistance?</div>
+    </div>
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">Antibiotics are substances known to have bacterium-killing properties. A bacterium develops antibiotic resistance when mutations combine to make it hard to kill. When a bacterium has antibiotic resistance, it is more likely to survive even when antibiotic substances are present.<br /><br />Antibiotic resistance is an inheritable trait. If a bacterium cannot survive, it cannot reproduce. And if a bacterium has antibiotic resistance, it can survive to reproduce, passing this trait on to its offspring! Of course, not all of the new bacteria will have antibiotic resistance. Some will have additional mutations that weaken resistance. What do you think will happen to these weaker bacteria when additional doses of antibiotic are applied?</div><div class="chat_img tall_img"></div>
+    </div>
+    <div class="chat short">
+      <div class="chat_img short_img"></div><div class="chat_txt short_txt">Yikes. I don't know. Can we use our model to find out?</div>
+    </div>
+    <div class="chat tall">
+      <div class="chat_txt tall_txt">Sure, let's add the trait of antibiotic resistance to our model! We'll update the simulation to use color value to represent antibiotic resistance - the darker the bacterium, the more resistant it is to antibiotics. Then, we'll add antibiotics to the population with a button.</div><div class="chat_img tall_img"></div>
+    </div>
+
+  </div>
+</div>
+
 
 </div>
 
