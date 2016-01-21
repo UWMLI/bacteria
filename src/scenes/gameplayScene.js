@@ -1498,6 +1498,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
     }
   };
 
+  var hacked_plus_image = new Image();
+  hacked_plus_image.src = "assets/plus.png";
   self.draw = function()
   {
     if(config.special == SPECIAL_NONE)
@@ -1505,6 +1507,16 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var canv = stage.drawCanv;
       //canv.context.fillStyle = "#888888";
       //canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+
+      var n_nodes = self.grid.n_badb + self.grid.n_good + self.grid.n_body ;
+      if(n_nodes == 0)
+      {
+        canv.context.drawImage(hacked_plus_image,canv.canvas.width/2-20,canv.canvas.height/2-20-30,40,40);
+        canv.context.font = "20px Open Sans";
+        canv.context.fillStyle = "#000000";
+        canv.context.textAlign = "center";
+        canv.context.fillText("CLICK TO ADD BACTERIA",canv.canvas.width/2,canv.canvas.height/2+30);
+      }
 
       self.grid.draw(canv);
 
@@ -1527,8 +1539,20 @@ var GamePlayScene = function(game, stage, config, popup_div)
       }
       else if(config.allow_dose_button)
       {
-        canv.context.strokeStyle = "#00FF00";
-        self.dose_button.draw(canv);
+        canv.context.font = "20px Open Sans";
+        canv.context.fillStyle = "#000000";
+        canv.context.textAlign = "left";
+        canv.context.fillText("DOSE ANTIBIOTIC",self.dose_button.x+self.dose_button.w+5,self.dose_button.y+self.dose_button.h-2);
+        canv.context.strokeStyle = "#000000";
+        canv.context.beginPath();
+        canv.context.arc(self.dose_button.x+self.dose_button.w/2,self.dose_button.y+self.dose_button.h/2-3,self.dose_button.w/2,0,2*Math.PI);
+        canv.context.stroke();
+        if(self.dose_button.down)
+        {
+          canv.context.fillStyle = "#000000";
+          canv.context.fill();
+        }
+
       }
       if(config.allow_smile)
       {
