@@ -595,7 +595,7 @@ function begin()
   g.begin();
 
   prefix = "killbutton_";
-  w = 512;
+  w = 612;
   h = 512;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
@@ -604,7 +604,7 @@ function begin()
       special:SPECIAL_NONE,
       grid_x:0,
       grid_y:0,
-      grid_w:430,
+      grid_w:512,
       grid_h:-1,
       grid_cols:30,
       grid_rows:30,
@@ -752,9 +752,8 @@ window.addEventListener("load",begin,false);
 
 <div class="experiment">
   <div class="experiment_content">
-    <div class="rules">
-      <br />
-      <br />
+    <div class="stage_container" id="biodiversity_stage_container"> </div>
+    <div class="rules" style="padding-left:30px; width:482px;"><!-- explicit width+padding because can't have inline style relative to class style -->
       <br />
       <b>Biodiversity!</b>
       <br />
@@ -769,9 +768,8 @@ window.addEventListener("load",begin,false);
       <span class="rule">- Mutations in bacteria DNA can occur.</span><br />
       <br />
       <span class="rule">- Mutations can be inherited by a bacterium's offspring.</span><br />
-      <div class="tall_full"></div>
+      <div class="tall_full" style="left:100px;"></div>
     </div>
-    <div class="stage_container" id="biodiversity_stage_container"> </div>
   </div>
 </div>
 
@@ -799,7 +797,8 @@ window.addEventListener("load",begin,false);
 
 <div class="experiment">
   <div class="experiment_content">
-    <div class="rules rules-tall">
+    <div class="stage_container" id="killbutton_stage_container"> </div>
+    <div class="rules" style="width:412px;"> <!-- explicit width, because stage is slightly bigger in this one -->
       <br />
       <br />
       <br />
@@ -819,7 +818,6 @@ window.addEventListener("load",begin,false);
       <br />
       <span class="rule">- Bacteria can pass on their antibiotic resistance to offspring.</span><br />
     </div>
-    <div class="stage_container" id="killbutton_stage_container"> </div>
   </div>
 </div>
 
@@ -881,7 +879,21 @@ window.addEventListener("load",begin,false);
   </div>
 </div>
 
+<div id="footer">
+<p>
+<a href="http://fielddaylab.org/"><img src="assets/field-day.png"></a>
+</p>
+<p>
+A Field Day Experiment
+</p>
+</div>
 
+<div id="footer2">
+<p>
+<a href="http://www.wisc.edu/"><img src="assets/UW-logo.png"></a>
+<a href="http://wid.wisc.edu/"><img src="assets/wid-logo.png"></a>
+<a href="http://dpi.wi.gov/"><img src="assets/dpilogo-white.png"></a>
+</p>
 </div>
 
 <div id="menu">

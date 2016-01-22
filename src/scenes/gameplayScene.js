@@ -1247,6 +1247,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.dose_slider;
   self.dose_button;
 
+  self.reset_button;
+
   self.ticks_outside;
   self.ticks_unpaused;
   self.ticks_initialized;
@@ -1311,6 +1313,12 @@ var GamePlayScene = function(game, stage, config, popup_div)
         self.dose_amt = 0;
         self.dosing_prog = 0;
         self.dosing_prog_rate = 1;
+      }
+
+      if(config.allow_reset)
+      {
+        self.reset_button = new ButtonBox(self.grid.x+self.grid.w-100,c.canvas.height-30,90,20,function(){ self.reset(); })
+        self.presser.register(self.reset_button);
       }
 
       if(config.allow_smile)
@@ -1511,11 +1519,11 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var n_nodes = self.grid.n_badb + self.grid.n_good + self.grid.n_body ;
       if(n_nodes == 0)
       {
-        canv.context.drawImage(hacked_plus_image,canv.canvas.width/2-20,canv.canvas.height/2-20-30,40,40);
+        canv.context.drawImage(hacked_plus_image,self.grid.w/2-20,self.grid.h/2-20-30,40,40);
         canv.context.font = "20px Open Sans";
         canv.context.fillStyle = "#000000";
         canv.context.textAlign = "center";
-        canv.context.fillText("CLICK TO ADD BACTERIA",canv.canvas.width/2,canv.canvas.height/2+30);
+        canv.context.fillText("CLICK TO ADD BACTERIA",self.grid.w/2,self.grid.h/2+30);
       }
 
       self.grid.draw(canv);
@@ -1542,7 +1550,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.font = "20px Open Sans";
         canv.context.fillStyle = "#000000";
         canv.context.textAlign = "left";
-        canv.context.fillText("DOSE ANTIBIOTIC",self.dose_button.x+self.dose_button.w+5,self.dose_button.y+self.dose_button.h-2);
+        canv.context.fillText("dose antibiotic",self.dose_button.x+self.dose_button.w+5,self.dose_button.y+self.dose_button.h-2);
         canv.context.strokeStyle = "#000000";
         canv.context.beginPath();
         canv.context.arc(self.dose_button.x+self.dose_button.w/2,self.dose_button.y+self.dose_button.h/2-3,self.dose_button.w/2,0,2*Math.PI);
@@ -1552,7 +1560,15 @@ var GamePlayScene = function(game, stage, config, popup_div)
           canv.context.fillStyle = "#000000";
           canv.context.fill();
         }
-
+      }
+      if(config.allow_reset)
+      {
+        canv.context.font = "20px Open Sans";
+        canv.context.fillStyle = "#000000";
+        canv.context.textAlign = "right";
+        canv.context.fillText("reset",self.reset_button.x+self.reset_button.w,self.reset_button.y+self.reset_button.h-2);
+        canv.context.strokeStyle = "#000000";
+        canv.context.textAlign = "left";
       }
       if(config.allow_smile)
       {
