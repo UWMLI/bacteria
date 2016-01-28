@@ -1438,8 +1438,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(self.grid.hovering) self.ticks_outside = 0;
       else                   self.ticks_outside++;
 
-      if(config.hover_to_play && self.ticks_outside > 10) self.ticks_unpaused = 0;
-      else                                                self.ticks_unpaused++;
+      if((config.hover_to_play && platform == "PC") && self.ticks_outside > 10) self.ticks_unpaused = 0;
+      else                                                                      self.ticks_unpaused++;
 
       var n_nodes = self.grid.n_badb + self.grid.n_good + self.grid.n_body ;
       if(config.prerequisite_fill_for_interaction == 0 || n_nodes == 0 || n_nodes >= config.prerequisite_fill_for_interaction*self.grid.rows*self.grid.cols)
