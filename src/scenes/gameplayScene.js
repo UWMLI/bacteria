@@ -349,8 +349,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       // graph
 
-      var w = canv.canvas.width;
-      var h = canv.canvas.height;
+      var w = canv.width;
+      var h = canv.height;
       canv.context.beginPath();
       canv.context.moveTo(0,h/2);
       for(var i = 0; i < w; i++)
@@ -1269,8 +1269,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
       self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
-      if(config.grid_w == -1) config.grid_w = c.canvas.width;
-      if(config.grid_h == -1) config.grid_h = c.canvas.height;
+      if(config.grid_w == -1) config.grid_w = c.width;
+      if(config.grid_h == -1) config.grid_h = c.height;
       self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows, self);
       self.reset();
       self.hoverer.register(self.grid);
@@ -1279,9 +1279,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.external_biot_resist = 0.1;
       if(config.allow_contaminate)
       {
-        self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.ave_badb_biot_resist; })
+        self.sneeze_button = new ButtonBox(c.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.ave_badb_biot_resist; })
         self.presser.register(self.sneeze_button);
-        self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
+        self.catch_button = new ButtonBox(c.width-30,40,20,20,function(){
           self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
           self.grid.nodeAt(9,10).biot_resist = self.external_biot_resist;
         })
@@ -1290,24 +1290,24 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(config.allow_sim_speed_slider)
       {
-        self.simspeed_slider = new SmoothSliderBox(10,c.canvas.height-30,100,20,config.sim_speed_min,config.sim_speed_max,config.sim_speed,function(v){ config.sim_speed = v; });
+        self.simspeed_slider = new SmoothSliderBox(10,c.height-30,100,20,config.sim_speed_min,config.sim_speed_max,config.sim_speed,function(v){ config.sim_speed = v; });
         self.dragger.register(self.simspeed_slider);
       }
 
       if(config.allow_dose_slider)
       {
-        self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
+        self.dose_button = new ButtonBox(10,c.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
         self.presser.register(self.dose_button);
 
         self.dose_amt = 0.;
         self.dosing_prog = 0;
         self.dosing_prog_rate = 0.01;
-        self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
+        self.dose_slider = new SmoothSliderBox(40,c.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
         self.dragger.register(self.dose_slider);
       }
       else if(config.allow_dose_button)
       {
-        self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
+        self.dose_button = new ButtonBox(10,c.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
         self.presser.register(self.dose_button);
 
         self.dose_amt = 0;
@@ -1317,39 +1317,39 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(config.allow_reset)
       {
-        self.reset_button = new ButtonBox(self.grid.x+self.grid.w-100,c.canvas.height-30,90,20,function(){ self.reset(); })
+        self.reset_button = new ButtonBox(self.grid.x+self.grid.w-100,c.height-30,90,20,function(){ self.reset(); })
         self.presser.register(self.reset_button);
       }
 
       if(config.allow_smile)
       {
-        self.smiley = new Smiley(40+100+10,c.canvas.height-30,20,20);
+        self.smiley = new Smiley(40+100+10,c.height-30,20,20);
       }
 
       if(config.ave_display_width > 0)
       {
-        self.ave_disp = new AveDisplay(self.grid.w,0,config.ave_display_width,c.canvas.height,self.grid);
+        self.ave_disp = new AveDisplay(self.grid.w,0,config.ave_display_width,c.height,self.grid);
       }
 
       if(config.split_display_width > 0)
       {
-        self.split_disp = new SplitDisplay(self.grid.w,0,config.split_display_width,c.canvas.height,self.grid);
+        self.split_disp = new SplitDisplay(self.grid.w,0,config.split_display_width,c.height,self.grid);
       }
 
       if(config.tricolor_display_width > 0)
       {
-        self.tricolor_disp = new TricolorDisplay(self.grid.w,0,config.tricolor_display_width,c.canvas.height,self.grid);
+        self.tricolor_disp = new TricolorDisplay(self.grid.w,0,config.tricolor_display_width,c.height,self.grid);
       }
 
       if(config.hsl_display_width > 0)
       {
-        self.hsl_disp = new HSLDisplay(self.grid.w,0,config.hsl_display_width,c.canvas.height,self.grid);
+        self.hsl_disp = new HSLDisplay(self.grid.w,0,config.hsl_display_width,c.height,self.grid);
       }
 
       self.colorblind_mode = false;
       if(config.colorblind)
       {
-        self.colorblind_button = new ButtonBox(c.canvas.width-30,c.canvas.height-30,20,20,function(){ self.colorblind_mode = !self.colorblind_mode; })
+        self.colorblind_button = new ButtonBox(c.width-30,c.height-30,20,20,function(){ self.colorblind_mode = !self.colorblind_mode; })
         self.presser.register(self.colorblind_button);
       }
 
@@ -1514,7 +1514,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
     {
       var canv = stage.drawCanv;
       //canv.context.fillStyle = "#888888";
-      //canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+      //canv.context.fillRect(0,0,canv.width,canv.height);
 
       var n_nodes = self.grid.n_badb + self.grid.n_good + self.grid.n_body ;
       if(n_nodes == 0)
@@ -1642,13 +1642,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
         {
           canv.context.fillStyle = DARK_COLOR;
           canv.context.font = "12px Helvetica Neue";
-          canv.context.fillText("Waiting for population to grow...",Math.round(self.grid.w/2-100),Math.round(canv.canvas.height-50));
+          canv.context.fillText("Waiting for population to grow...",Math.round(self.grid.w/2-100),Math.round(canv.height-50));
         }
         else if(config.prompt_prerequisite_unmet && self.ticks_initialized < 30)
         {
           canv.context.fillStyle = DARK_COLOR;
           canv.context.font = "12px Helvetica Neue";
-          canv.context.fillText("Begin!",Math.round(self.grid.w/2-100),Math.round(canv.canvas.height-50));
+          canv.context.fillText("Begin!",Math.round(self.grid.w/2-100),Math.round(canv.height-50));
         }
       }
 
@@ -1656,13 +1656,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         canv.context.fillStyle = DARK_COLOR;
         canv.context.font = "12px Helvetica Neue";
-        canv.context.fillText("Reset to add bacteria "+String.fromCharCode(8595),Math.round(self.grid.w/2-60),Math.round(canv.canvas.height-50));
+        canv.context.fillText("Reset to add bacteria "+String.fromCharCode(8595),Math.round(self.grid.w/2-60),Math.round(canv.height-50));
       }
 
       /*
       //for more visible debugging overlay
       canv.context.fillStyle = "#FFFFFF";
-      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height/2);
+      canv.context.fillRect(0,0,canv.width,canv.height/2);
       */
     }
   };
