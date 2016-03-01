@@ -241,7 +241,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
           canv.context.fillStyle = "#AA4499";
           if(stroke)
           {
-            canv.context.strokeRect(x,y,w,h);
+            //canv.context.strokeRect(x,y,w,h);
           }
           else
           {
@@ -257,9 +257,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
             }
             else
             {
-              var r = Math.floor((1-resist_drawn)*128);
-              canv.context.fillStyle = "rgba("+(128+r)+","+r+","+r+",1)";
-              canv.context.fillRect(x,y,w,h);
+              canv.context.drawImage(bact_grad[Math.floor(resist_drawn*(bact_grad.length-1))],x,y,w,h);
             }
           }
           break;
@@ -762,17 +760,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(config.ave_display_width+config.split_display_width+config.tricolor_display_width+config.hsl_display_width == 0)
         canv.context.lineTo(self.x+self.w,self.y+self.h);
       canv.context.stroke();
-  /*
-  // outline border
-      canv.context.strokeStyle = LIGHT_COLOR;
-      canv.context.beginPath();
-      canv.context.moveTo(self.x,self.y+self.h);
-      canv.context.lineTo(self.x,self.y);
-      canv.context.lineTo(self.x+self.w,self.y);
-      if(config.ave_display_width+config.split_display_width+config.tricolor_display_width+config.hsl_display_width == 0)
-        canv.context.lineTo(self.x+self.w,self.y+self.h);
-      canv.context.stroke();
-  */
     }
 
     self.tick = function()
@@ -1260,6 +1247,14 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.colorblind_mode;
   self.colorblind_button;
 
+  var bact_grad;
+  var bluh = 0;
+
+  var hacked_bact_back_image = new Image();
+  hacked_bact_back_image.src = "assets/bact_bottom.png";
+  var hacked_bact_front_image = new Image();
+  hacked_bact_front_image.src = "assets/bact_top.png";
+
   self.ready = function()
   {
     if(config.special == SPECIAL_NONE)
@@ -1356,8 +1351,50 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.ticks_outside = 100000; //"it's been outside forever"
       self.ticks_unpaused = 0;
       self.ticks_initialized = 0;
+
+      setTimeout(function()
+      {
+        var s = 320;
+        var tmp = GenIcon(s,s);
+        bact_grad = [];
+        var i = 0;
+        bact_grad[i] = genDopeBacteria(tmp,s,"#1383B1","#84CBEC"); i++;
+        bact_grad[i] = genDopeBacteria(tmp,s,"#1878A2","#88BFDC"); i++;
+        bact_grad[i] = genDopeBacteria(tmp,s,"#2B5D7F","#959EB1"); i++;
+        bact_grad[i] = genDopeBacteria(tmp,s,"#3F4761","#A0828B"); i++;
+        bact_grad[i] = genDopeBacteria(tmp,s,"#4A3C52","#A77378"); i++;
+        bact_grad[i] = genDopeBacteria(tmp,s,"#5B2C3C","#AD605F"); i++;
+        bact_grad[i] = genDopeBacteria(tmp,s,"#642531","#B25551"); i++;
+        bact_grad[i] = genDopeBacteria(tmp,s,"#7A1017","#BE3C31"); i++;
+        bact_grad[i] = genDopeBacteria(tmp,s,"#870309","#C52C20"); i++;
+      },100);
     }
   };
+
+  function genDopeBacteria(tmp,s,fg,bg)
+  {
+    var icon = GenIcon(s,s);
+
+    tmp.context.clearRect(0,0,s,s);
+    tmp.context.fillStyle = bg;
+    tmp.context.fillRect(0,0,s,s);
+    tmp.context.globalCompositeOperation = "destination-atop";
+    tmp.context.drawImage(hacked_bact_back_image,0,0,s,s);
+
+    icon.context.drawImage(hacked_bact_back_image,0,0,s,s);
+    icon.context.drawImage(tmp,0,0,s,s);
+
+    tmp.context.clearRect(0,0,s,s);
+    tmp.context.fillStyle = fg;
+    tmp.context.fillRect(0,0,s,s);
+    tmp.context.globalCompositeOperation = "destination-atop";
+    tmp.context.drawImage(hacked_bact_front_image,0,0,s,s);
+
+    icon.context.drawImage(hacked_bact_front_image,0,0,s,s);
+    icon.context.drawImage(tmp,0,0,s,s);
+
+    return icon;
+  }
 
   self.reset = function()
   {
