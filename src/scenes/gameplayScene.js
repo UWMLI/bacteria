@@ -1354,7 +1354,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       setTimeout(function()
       {
-        var s = 320;
+        var s = 20;
         var tmp = GenIcon(s,s);
         bact_grad = [];
         var i = 0;
