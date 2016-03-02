@@ -1352,22 +1352,19 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.ticks_unpaused = 0;
       self.ticks_initialized = 0;
 
-      setTimeout(function()
-      {
-        var s = 20;
-        var tmp = GenIcon(s,s);
-        bact_grad = [];
-        var i = 0;
-        bact_grad[i] = genDopeBacteria(tmp,s,"#1383B1","#84CBEC"); i++;
-        bact_grad[i] = genDopeBacteria(tmp,s,"#1878A2","#88BFDC"); i++;
-        bact_grad[i] = genDopeBacteria(tmp,s,"#2B5D7F","#959EB1"); i++;
-        bact_grad[i] = genDopeBacteria(tmp,s,"#3F4761","#A0828B"); i++;
-        bact_grad[i] = genDopeBacteria(tmp,s,"#4A3C52","#A77378"); i++;
-        bact_grad[i] = genDopeBacteria(tmp,s,"#5B2C3C","#AD605F"); i++;
-        bact_grad[i] = genDopeBacteria(tmp,s,"#642531","#B25551"); i++;
-        bact_grad[i] = genDopeBacteria(tmp,s,"#7A1017","#BE3C31"); i++;
-        bact_grad[i] = genDopeBacteria(tmp,s,"#870309","#C52C20"); i++;
-      },100);
+      var s = 20;
+      var tmp = GenIcon(s,s);
+      bact_grad = [];
+      var i = 0;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#1383B1","#84CBEC"); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#1878A2","#88BFDC"); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#2B5D7F","#959EB1"); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#3F4761","#A0828B"); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#4A3C52","#A77378"); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#5B2C3C","#AD605F"); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#642531","#B25551"); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#7A1017","#BE3C31"); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#870309","#C52C20"); i++;
     }
   };
 
