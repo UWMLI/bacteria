@@ -1486,6 +1486,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       else                       self.ticks_initialized++;
 
       self.presser.flush();
+      if(self.ticks_outside > 10) return false;
       if(self.ticks_unpaused > 0)
       {
         self.dragger.flush();
@@ -1541,6 +1542,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         //if(self.grid.n_badb + self.grid.n_good + self.grid.n_body > self.grid.rows*self.grid.cols*0.6) popup_div.style.visibility = "visible";
       }
     }
+    return true;
   };
 
   var hacked_plus_image = new Image();
@@ -1702,6 +1704,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       canv.context.fillRect(0,0,canv.width,canv.height/2);
       */
     }
+    return true;
   };
 
   self.cleanup = function()
