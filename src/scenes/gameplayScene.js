@@ -1254,6 +1254,12 @@ var GamePlayScene = function(game, stage, config, popup_div)
   hacked_bact_back_image.src = "assets/bact_bottom.png";
   var hacked_bact_front_image = new Image();
   hacked_bact_front_image.src = "assets/bact_top.png";
+  var hacked_bact_face_images = [];
+  for(var i = 0; i < 8; i++)
+  {
+    hacked_bact_face_images[i] = new Image();
+    hacked_bact_face_images[i].src = "assets/face_"+i+".png";
+  }
 
   self.ready = function()
   {
@@ -1356,19 +1362,19 @@ var GamePlayScene = function(game, stage, config, popup_div)
       var tmp = GenIcon(s,s);
       bact_grad = [];
       var i = 0;
-      bact_grad[i] = genDopeBacteria(tmp,s,"#1383B1","#84CBEC"); i++;
-      bact_grad[i] = genDopeBacteria(tmp,s,"#1878A2","#88BFDC"); i++;
-      bact_grad[i] = genDopeBacteria(tmp,s,"#2B5D7F","#959EB1"); i++;
-      bact_grad[i] = genDopeBacteria(tmp,s,"#3F4761","#A0828B"); i++;
-      bact_grad[i] = genDopeBacteria(tmp,s,"#4A3C52","#A77378"); i++;
-      bact_grad[i] = genDopeBacteria(tmp,s,"#5B2C3C","#AD605F"); i++;
-      bact_grad[i] = genDopeBacteria(tmp,s,"#642531","#B25551"); i++;
-      bact_grad[i] = genDopeBacteria(tmp,s,"#7A1017","#BE3C31"); i++;
-      bact_grad[i] = genDopeBacteria(tmp,s,"#870309","#C52C20"); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#1383B1","#84CBEC",0); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#1878A2","#88BFDC",0); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#2B5D7F","#959EB1",1); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#3F4761","#A0828B",2); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#4A3C52","#A77378",3); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#5B2C3C","#AD605F",4); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#642531","#B25551",5); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#7A1017","#BE3C31",6); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#870309","#C52C20",7); i++;
     }
   };
 
-  function genDopeBacteria(tmp,s,fg,bg)
+  function genDopeBacteria(tmp,s,fg,bg,face)
   {
     var icon = GenIcon(s,s);
 
@@ -1389,6 +1395,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
     icon.context.drawImage(hacked_bact_front_image,0,0,s,s);
     icon.context.drawImage(tmp,0,0,s,s);
+
+    icon.context.drawImage(hacked_bact_face_images[face],0,s/5,s,s*3/5);
 
     return icon;
   }
