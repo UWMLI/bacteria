@@ -393,16 +393,6 @@ body,div
   margin: 50px 30px;
 }
 
-.play-button {
-  color: white;
-  background-color: rgb(61,183,221);
-  padding: 10px 30px;
-  font-size: 25px;
-  letter-spacing: 5px;
-  border-radius: 999px;
-  box-shadow: 0px 5px rgb(50,135,165);
-}
-
 .raw-link {
   text-decoration: none;
   color: inherit;
