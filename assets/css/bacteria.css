@@ -49,6 +49,23 @@ body,div
   padding-top: 7px;
 }
 
+#jumbotron {
+  width: 100%;
+  height: 50vh;
+  min-height: 40vw;
+  position: relative;
+  background: url(../img/bacteria-header.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.jumbtron-container {
+  width: 100%;
+  height: 100%;
+  background:rgba(35,35,35,0.2);
+}
+
 #jumbotron h1 {
   font-family: "stumpone", helvetica, sans-serif;
   color:#fff;
@@ -75,6 +92,33 @@ body,div
   font-size: 20px;
 }
 
+@media (max-width: 550px) {
+  .jumbotron-content {
+    text-align: center;
+    padding-left: 0;
+  }
+  #jumbotron h1 {
+    font-size: 50px;
+    line-height:60px;
+  }
+
+  .jumbotron-content .subheader h2 {
+    font-size:16px;
+    letter-spacing: 3px;
+  }
+
+  .jumbotron-content .subheader img {
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  #jumbotron {
+    min-height:350px;
+  }
+}
+
 .vertical-center {
   position: relative;
   top: 50%;
@@ -83,13 +127,207 @@ body,div
   transform: translateY(-50%);
 }
 
-.game-section {
-  width: 70vw;
-  height: 70vw;
+.section-header img {
+  width: 130px;
+  height: 130px;
+}
+
+.interactive {
   background:url(../img/bacteria-bg.jpg);
   background-size: cover;
+}
+
+.section-header h3 {
+  color: #af4333;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.comic {
+  width: 80vw;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  margin-top: 5vw;
+}
+
+.comic-pane {
+  width:40vw;
+  height: 40vw;
+  display: block;
+}
+
+.comic1 .comic-pane {
+  background: url(../img/Bacteria-comic1.jpg) no-repeat;
+  background-size: 80vw 120vw;
+}
+
+.comic2 .comic-pane {
+  background: url(../img/Bacteria-comic2.jpg) no-repeat;
+  background-size: 80vw 120vw;
+}
+
+.comic .pane1 {
+  background-position: 0px 0px;
+}
+
+.comic .pane2 {
+  background-position: -40vw 0vw;
+}
+
+.comic .pane3 {
+  background-position: 0vw -40vw;
+}
+
+.comic .pane4 {
+  background-position: -40vw -40vw;
+}
+
+.comic .pane5 {
+  background-position: 0vw -80vw;
+}
+
+.comic .pane6 {
+  background-position: -40vw -80vw;
+}
+
+.comic img{
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 800px) {
+  .comic-pane {
+    width: 80vw;
+    height:80vw;
+    background-size: 160vw 240vw !important;
+  }
+
+  .comic .pane1 {
+    background-position: 0px 0px;
+  }
+
+  .comic .pane2 {
+    background-position: -80vw 0vw;
+  }
+
+  .comic .pane3 {
+    background-position: 0vw -80vw;
+  }
+
+  .comic .pane4 {
+    background-position: -80vw -80vw;
+  }
+
+  .comic .pane5 {
+    background-position: 0vw -160vw;
+  }
+
+  .comic .pane6 {
+    background-position: -80vw -160vw;
+  }
+}
+
+
+.comic-dialogue {
+  float:left;
+  width: 30vw;
+  height: 50vw;
+  background:rgba(40,40,40,0.4);
+}
+
+.game-section {
+  width: 70vw;
+  height: 50vw;
   float: right;
  }
+
+ .comic-text {
+  width: 80%;
+  height: auto;
+  padding: 2vw;
+  text-align: center;
+  border-radius: 20px;
+  background-color: #fff;
+  margin: 0 auto;
+  margin-top: 4vw;
+  overflow: visible;
+ }
+
+ .comic-character {
+    width: auto;
+    height: 30vw;
+    margin: 0 auto;
+    display: block;
+    margin-top:3vw;
+ }
+
+ .comic-text::after {
+  content: "";
+  width: 0;
+  height: 0;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #fff;
+  position: absolute;
+  left: 50%;
+  bottom: -15px;
+  margin-left: -15px;
+ }
+
+ .comic-text p {
+  font-size:14px;
+  line-height:20px;
+ }
+
+ @media (max-width: 1000px) {
+  .comic-text p {
+    font-size: 12px;
+    line-height:18px;
+  }
+}
+
+ @media (max-width: 900px) {
+
+  .comic-dialogue {
+    width: 100vw;
+    height: auto;
+    min-height:100px;
+    background: transparent;
+  }
+
+  .comic-text {
+    float: right;
+    width: 60vw;
+    height: auto;
+    margin-right: 5vw;
+  }
+
+  .comic-text::after {
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-right: 20px solid #fff;
+    left:-15px;
+    top:50%;
+    margin-top:-20px;
+  }
+
+  .comic-character {
+    float: left;
+    width: 20vw;
+    height: auto;
+    margin-left: 5vw;
+  }
+
+
+  .game-section {
+    width: 100vw;
+    height: 65vw;
+    float: none;
+  }
+}
 
 #play-games {
   position: absolute;
