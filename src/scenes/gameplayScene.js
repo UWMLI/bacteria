@@ -241,7 +241,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
           canv.context.fillStyle = "#AA4499";
           if(stroke)
           {
-            canv.context.strokeRect(x,y,w,h);
+            //canv.context.strokeRect(x,y,w,h);
           }
           else
           {
@@ -257,9 +257,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
             }
             else
             {
-              var r = Math.floor((1-resist_drawn)*128);
-              canv.context.fillStyle = "rgba("+(128+r)+","+r+","+r+",1)";
-              canv.context.fillRect(x,y,w,h);
+              canv.context.drawImage(bact_grad[Math.floor(resist_drawn*(bact_grad.length-1))],x,y,w,h);
             }
           }
           break;
@@ -349,8 +347,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       // graph
 
-      var w = canv.canvas.width;
-      var h = canv.canvas.height;
+      var w = canv.width;
+      var h = canv.height;
       canv.context.beginPath();
       canv.context.moveTo(0,h/2);
       for(var i = 0; i < w; i++)
@@ -762,17 +760,6 @@ var GamePlayScene = function(game, stage, config, popup_div)
       if(config.ave_display_width+config.split_display_width+config.tricolor_display_width+config.hsl_display_width == 0)
         canv.context.lineTo(self.x+self.w,self.y+self.h);
       canv.context.stroke();
-  /*
-  // outline border
-      canv.context.strokeStyle = LIGHT_COLOR;
-      canv.context.beginPath();
-      canv.context.moveTo(self.x,self.y+self.h);
-      canv.context.lineTo(self.x,self.y);
-      canv.context.lineTo(self.x+self.w,self.y);
-      if(config.ave_display_width+config.split_display_width+config.tricolor_display_width+config.hsl_display_width == 0)
-        canv.context.lineTo(self.x+self.w,self.y+self.h);
-      canv.context.stroke();
-  */
     }
 
     self.tick = function()
@@ -1247,6 +1234,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.dose_slider;
   self.dose_button;
 
+  self.reset_button;
+
   self.ticks_outside;
   self.ticks_unpaused;
   self.ticks_initialized;
@@ -1258,6 +1247,20 @@ var GamePlayScene = function(game, stage, config, popup_div)
   self.colorblind_mode;
   self.colorblind_button;
 
+  var bact_grad;
+  var bluh = 0;
+
+  var hacked_bact_back_image = new Image();
+  hacked_bact_back_image.src = "assets/bact_bottom.png";
+  var hacked_bact_front_image = new Image();
+  hacked_bact_front_image.src = "assets/bact_top.png";
+  var hacked_bact_face_images = [];
+  for(var i = 0; i < 8; i++)
+  {
+    hacked_bact_face_images[i] = new Image();
+    hacked_bact_face_images[i].src = "assets/face_"+i+".png";
+  }
+
   self.ready = function()
   {
     if(config.special == SPECIAL_NONE)
@@ -1267,8 +1270,8 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
       self.dragger = new Dragger({source:stage.dispCanv.canvas});
 
-      if(config.grid_w == -1) config.grid_w = c.canvas.width;
-      if(config.grid_h == -1) config.grid_h = c.canvas.height;
+      if(config.grid_w == -1) config.grid_w = c.width;
+      if(config.grid_h == -1) config.grid_h = c.height;
       self.grid = new Grid(config.grid_x,config.grid_y,config.grid_w,config.grid_h,config.grid_cols,config.grid_rows, self);
       self.reset();
       self.hoverer.register(self.grid);
@@ -1277,9 +1280,9 @@ var GamePlayScene = function(game, stage, config, popup_div)
       self.external_biot_resist = 0.1;
       if(config.allow_contaminate)
       {
-        self.sneeze_button = new ButtonBox(c.canvas.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.ave_badb_biot_resist; })
+        self.sneeze_button = new ButtonBox(c.width-30,10,20,20,function(){ self.external_biot_resist = self.grid.ave_badb_biot_resist; })
         self.presser.register(self.sneeze_button);
-        self.catch_button = new ButtonBox(c.canvas.width-30,40,20,20,function(){
+        self.catch_button = new ButtonBox(c.width-30,40,20,20,function(){
           self.grid.nodeAt(9,10).setType(NODE_TYPE_BADB);
           self.grid.nodeAt(9,10).biot_resist = self.external_biot_resist;
         })
@@ -1288,24 +1291,24 @@ var GamePlayScene = function(game, stage, config, popup_div)
 
       if(config.allow_sim_speed_slider)
       {
-        self.simspeed_slider = new SmoothSliderBox(10,c.canvas.height-30,100,20,config.sim_speed_min,config.sim_speed_max,config.sim_speed,function(v){ config.sim_speed = v; });
+        self.simspeed_slider = new SmoothSliderBox(10,c.height-30,100,20,config.sim_speed_min,config.sim_speed_max,config.sim_speed,function(v){ config.sim_speed = v; });
         self.dragger.register(self.simspeed_slider);
       }
 
       if(config.allow_dose_slider)
       {
-        self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
+        self.dose_button = new ButtonBox(10,c.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
         self.presser.register(self.dose_button);
 
         self.dose_amt = 0.;
         self.dosing_prog = 0;
         self.dosing_prog_rate = 0.01;
-        self.dose_slider = new SmoothSliderBox(40,c.canvas.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
+        self.dose_slider = new SmoothSliderBox(40,c.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
         self.dragger.register(self.dose_slider);
       }
       else if(config.allow_dose_button)
       {
-        self.dose_button = new ButtonBox(10,c.canvas.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
+        self.dose_button = new ButtonBox(10,c.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
         self.presser.register(self.dose_button);
 
         self.dose_amt = 0;
@@ -1313,43 +1316,90 @@ var GamePlayScene = function(game, stage, config, popup_div)
         self.dosing_prog_rate = 1;
       }
 
+      if(config.allow_reset)
+      {
+        self.reset_button = new ButtonBox(self.grid.x+self.grid.w-100,c.height-30,90,20,function(){ self.reset(); })
+        self.presser.register(self.reset_button);
+      }
+
       if(config.allow_smile)
       {
-        self.smiley = new Smiley(40+100+10,c.canvas.height-30,20,20);
+        self.smiley = new Smiley(40+100+10,c.height-30,20,20);
       }
 
       if(config.ave_display_width > 0)
       {
-        self.ave_disp = new AveDisplay(self.grid.w,0,config.ave_display_width,c.canvas.height,self.grid);
+        self.ave_disp = new AveDisplay(self.grid.w,0,config.ave_display_width,c.height,self.grid);
       }
 
       if(config.split_display_width > 0)
       {
-        self.split_disp = new SplitDisplay(self.grid.w,0,config.split_display_width,c.canvas.height,self.grid);
+        self.split_disp = new SplitDisplay(self.grid.w,0,config.split_display_width,c.height,self.grid);
       }
 
       if(config.tricolor_display_width > 0)
       {
-        self.tricolor_disp = new TricolorDisplay(self.grid.w,0,config.tricolor_display_width,c.canvas.height,self.grid);
+        self.tricolor_disp = new TricolorDisplay(self.grid.w,0,config.tricolor_display_width,c.height,self.grid);
       }
 
       if(config.hsl_display_width > 0)
       {
-        self.hsl_disp = new HSLDisplay(self.grid.w,0,config.hsl_display_width,c.canvas.height,self.grid);
+        self.hsl_disp = new HSLDisplay(self.grid.w,0,config.hsl_display_width,c.height,self.grid);
       }
 
       self.colorblind_mode = false;
       if(config.colorblind)
       {
-        self.colorblind_button = new ButtonBox(c.canvas.width-30,c.canvas.height-30,20,20,function(){ self.colorblind_mode = !self.colorblind_mode; })
+        self.colorblind_button = new ButtonBox(c.width-30,c.height-30,20,20,function(){ self.colorblind_mode = !self.colorblind_mode; })
         self.presser.register(self.colorblind_button);
       }
 
       self.ticks_outside = 100000; //"it's been outside forever"
       self.ticks_unpaused = 0;
       self.ticks_initialized = 0;
+
+      var s = 20;
+      var tmp = GenIcon(s,s);
+      bact_grad = [];
+      var i = 0;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#1383B1","#84CBEC",0); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#1878A2","#88BFDC",0); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#2B5D7F","#959EB1",1); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#3F4761","#A0828B",2); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#4A3C52","#A77378",3); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#5B2C3C","#AD605F",4); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#642531","#B25551",5); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#7A1017","#BE3C31",6); i++;
+      bact_grad[i] = genDopeBacteria(tmp,s,"#870309","#C52C20",7); i++;
     }
   };
+
+  function genDopeBacteria(tmp,s,fg,bg,face)
+  {
+    var icon = GenIcon(s,s);
+
+    tmp.context.clearRect(0,0,s,s);
+    tmp.context.fillStyle = bg;
+    tmp.context.fillRect(0,0,s,s);
+    tmp.context.globalCompositeOperation = "destination-atop";
+    tmp.context.drawImage(hacked_bact_back_image,0,0,s,s);
+
+    icon.context.drawImage(hacked_bact_back_image,0,0,s,s);
+    icon.context.drawImage(tmp,0,0,s,s);
+
+    tmp.context.clearRect(0,0,s,s);
+    tmp.context.fillStyle = fg;
+    tmp.context.fillRect(0,0,s,s);
+    tmp.context.globalCompositeOperation = "destination-atop";
+    tmp.context.drawImage(hacked_bact_front_image,0,0,s,s);
+
+    icon.context.drawImage(hacked_bact_front_image,0,0,s,s);
+    icon.context.drawImage(tmp,0,0,s,s);
+
+    icon.context.drawImage(hacked_bact_face_images[face],0,s/5,s,s*3/5);
+
+    return icon;
+  }
 
   self.reset = function()
   {
@@ -1427,11 +1477,21 @@ var GamePlayScene = function(game, stage, config, popup_div)
     {
       self.hoverer.flush();
 
-      if(self.grid.hovering) self.ticks_outside = 0;
-      else                   self.ticks_outside++;
+      if(platform == "PC") {
+        // Disable the game when mouse is not hovering over it
+        if(self.grid.hovering) self.ticks_outside = 0;
+        else                   self.ticks_outside++;
+      }
+      else if(platform == "MOBILE") {
+        // Instead of mouse hover, disable the game when off screen
+        var rect = self.hoverer.source.getBoundingClientRect();
+        var onScreen = rect.top < window.innerHeight && 0 < rect.top + rect.height;
+        if(onScreen) self.ticks_outside = 0;
+        else         self.ticks_outside++;
+      }
 
-      if(config.hover_to_play && self.ticks_outside > 10) self.ticks_unpaused = 0;
-      else                                                self.ticks_unpaused++;
+      if((config.hover_to_play) && self.ticks_outside > 10) self.ticks_unpaused = 0;
+      else                                                  self.ticks_unpaused++;
 
       var n_nodes = self.grid.n_badb + self.grid.n_good + self.grid.n_body ;
       if(config.prerequisite_fill_for_interaction == 0 || n_nodes == 0 || n_nodes >= config.prerequisite_fill_for_interaction*self.grid.rows*self.grid.cols)
@@ -1441,6 +1501,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
       else                       self.ticks_initialized++;
 
       self.presser.flush();
+      if(self.ticks_outside > 10) return false;
       if(self.ticks_unpaused > 0)
       {
         self.dragger.flush();
@@ -1496,6 +1557,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         //if(self.grid.n_badb + self.grid.n_good + self.grid.n_body > self.grid.rows*self.grid.cols*0.6) popup_div.style.visibility = "visible";
       }
     }
+    return true;
   };
 
   var hacked_plus_image = new Image();
@@ -1506,16 +1568,16 @@ var GamePlayScene = function(game, stage, config, popup_div)
     {
       var canv = stage.drawCanv;
       //canv.context.fillStyle = "#888888";
-      //canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
+      //canv.context.fillRect(0,0,canv.width,canv.height);
 
       var n_nodes = self.grid.n_badb + self.grid.n_good + self.grid.n_body ;
       if(n_nodes == 0)
       {
-        canv.context.drawImage(hacked_plus_image,canv.canvas.width/2-20,canv.canvas.height/2-20-30,40,40);
+        canv.context.drawImage(hacked_plus_image,self.grid.w/2-20,self.grid.h/2-20-30,40,40);
         canv.context.font = "20px Open Sans";
         canv.context.fillStyle = "#000000";
         canv.context.textAlign = "center";
-        canv.context.fillText("CLICK TO ADD BACTERIA",canv.canvas.width/2,canv.canvas.height/2+30);
+        canv.context.fillText("CLICK TO ADD BACTERIA",self.grid.w/2,self.grid.h/2+30);
       }
 
       self.grid.draw(canv);
@@ -1542,7 +1604,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
         canv.context.font = "20px Open Sans";
         canv.context.fillStyle = "#000000";
         canv.context.textAlign = "left";
-        canv.context.fillText("DOSE ANTIBIOTIC",self.dose_button.x+self.dose_button.w+5,self.dose_button.y+self.dose_button.h-2);
+        canv.context.fillText("dose antibiotic",self.dose_button.x+self.dose_button.w+5,self.dose_button.y+self.dose_button.h-2);
         canv.context.strokeStyle = "#000000";
         canv.context.beginPath();
         canv.context.arc(self.dose_button.x+self.dose_button.w/2,self.dose_button.y+self.dose_button.h/2-3,self.dose_button.w/2,0,2*Math.PI);
@@ -1552,7 +1614,15 @@ var GamePlayScene = function(game, stage, config, popup_div)
           canv.context.fillStyle = "#000000";
           canv.context.fill();
         }
-
+      }
+      if(config.allow_reset)
+      {
+        canv.context.font = "20px Open Sans";
+        canv.context.fillStyle = "#000000";
+        canv.context.textAlign = "right";
+        canv.context.fillText("reset",self.reset_button.x+self.reset_button.w,self.reset_button.y+self.reset_button.h-2);
+        canv.context.strokeStyle = "#000000";
+        canv.context.textAlign = "left";
       }
       if(config.allow_smile)
       {
@@ -1626,13 +1696,13 @@ var GamePlayScene = function(game, stage, config, popup_div)
         {
           canv.context.fillStyle = DARK_COLOR;
           canv.context.font = "12px Helvetica Neue";
-          canv.context.fillText("Waiting for population to grow...",Math.round(self.grid.w/2-100),Math.round(canv.canvas.height-50));
+          canv.context.fillText("Waiting for population to grow...",Math.round(self.grid.w/2-100),Math.round(canv.height-50));
         }
         else if(config.prompt_prerequisite_unmet && self.ticks_initialized < 30)
         {
           canv.context.fillStyle = DARK_COLOR;
           canv.context.font = "12px Helvetica Neue";
-          canv.context.fillText("Begin!",Math.round(self.grid.w/2-100),Math.round(canv.canvas.height-50));
+          canv.context.fillText("Begin!",Math.round(self.grid.w/2-100),Math.round(canv.height-50));
         }
       }
 
@@ -1640,15 +1710,16 @@ var GamePlayScene = function(game, stage, config, popup_div)
       {
         canv.context.fillStyle = DARK_COLOR;
         canv.context.font = "12px Helvetica Neue";
-        canv.context.fillText("Reset to add bacteria "+String.fromCharCode(8595),Math.round(self.grid.w/2-60),Math.round(canv.canvas.height-50));
+        canv.context.fillText("Reset to add bacteria "+String.fromCharCode(8595),Math.round(self.grid.w/2-60),Math.round(canv.height-50));
       }
 
       /*
       //for more visible debugging overlay
       canv.context.fillStyle = "#FFFFFF";
-      canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height/2);
+      canv.context.fillRect(0,0,canv.width,canv.height/2);
       */
     }
+    return true;
   };
 
   self.cleanup = function()

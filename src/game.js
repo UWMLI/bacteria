@@ -26,13 +26,21 @@ var Game = function(init)
     scenes[currentScene].reset();
   }
 
+  var req_clear = true;
+  var new_req_clear = true;
+  var drawn = 0;
   var tick = function()
   {
     requestAnimFrame(tick,stage.dispCanv.canvas);
-    stage.clear();
-    scenes[currentScene].tick();
-    scenes[currentScene].draw();
-    stage.draw(); //blits from offscreen canvas to on screen one
+    if(req_clear || drawn < 100) stage.clear();
+    new_req_clear = scenes[currentScene].tick();
+    if(req_clear || drawn < 100)
+    {
+      scenes[currentScene].draw();
+      stage.draw(); //blits from offscreen canvas to on screen one
+      if(currentScene == 2) drawn++;
+    }
+    req_clear = new_req_clear;
   };
 
   self.nextScene = function()

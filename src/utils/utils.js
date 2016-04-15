@@ -28,8 +28,23 @@ function doSetPosOnEvent(evt)
   }
   else if(evt.touches != undefined && evt.touches[0] != undefined)
   {
-    evt.doX = evt.touches[0].pageX-evt.touches[0].target.offsetLeft;
-    evt.doY = evt.touches[0].pageY-evt.touches[0].target.offsetTop;
+    var t = evt.touches[0].target;
+
+    var box = t.getBoundingClientRect();
+    var body = document.body;
+    var docEl = document.documentElement;
+
+    var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+    var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+
+    var clientTop = docEl.clientTop || body.clientTop || 0;
+    var clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+    var top  = box.top +  scrollTop - clientTop;
+    var left = box.left + scrollLeft - clientLeft;
+
+    evt.doX = evt.touches[0].pageX-left;
+    evt.doY = evt.touches[0].pageY-top;
   }
   else if(evt.layerX != undefined && evt.originalTarget != undefined)
   {
@@ -174,5 +189,18 @@ var RGB2Hex = function(rgb)
 var dec2Hex = function(n)
 {
   return n.toString(16);
+}
+
+var GenIcon = function(w,h)
+{
+  var icon = document.createElement('canvas');
+  icon.width = w || 10;
+  icon.height = h || 10;
+  icon.context = icon.getContext('2d');
+  icon.context.fillStyle = "#000000";
+  icon.context.strokeStyle = "#000000";
+  icon.context.textAlign = "center";
+
+  return icon;
 }
 

@@ -160,7 +160,7 @@ function begin()
   g.begin();
 
   prefix = "killbutton_";
-  w = 512;
+  w = 612;
   h = 512;
   size_prefix(w,h,prefix);
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
@@ -169,7 +169,7 @@ function begin()
       special:SPECIAL_NONE,
       grid_x:0,
       grid_y:0,
-      grid_w:430,
+      grid_w:512,
       grid_h:-1,
       grid_cols:30,
       grid_rows:30,
@@ -227,5 +227,5 @@ function begin()
   games[prefix] = g;
   g.begin();
 }
-window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
+//window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
 window.addEventListener("load",begin,false);
