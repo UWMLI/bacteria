@@ -1,6 +1,28 @@
 <!doctype html>
 <html>
 <head>
+<link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-touch-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-touch-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-touch-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-touch-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon-180x180.png">
+<link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="favicon/android-chrome-192x192.png" sizes="192x192">
+<link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="favicon/manifest.json">
+<link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="msapplication-TileImage" content="/mstile-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<meta charset="UTF-8">
+<title>Field Day Lab - The Yard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'><script type='text/javascript' src='src/config.js'></script>
 <meta charset="UTF-8">
 <title>Bacteria! - The Yard</title>
 <script>
@@ -13,396 +35,7 @@
   ga('send', 'pageview');
 
 </script>
-<style type='text/css'>
-body,div
-{
-  position:relative;
-  overflow:auto;
-  margin:0px;
-  padding:0px;
-  font-family:Open Sans;
-  font-size:18px;
-}
-
-@font-face {
-  font-family: 'stumpone';
-  src: url('assets/fonts/stump_one-webfont.eot');
-  src: url('assets/fonts/stump_one-webfont.eot?#iefix') format('embedded-opentype'),
-       url('assets/fonts/stump_one-webfont.woff2') format('woff2'),
-       url('assets/fonts/stump_one-webfont.woff') format('woff'),
-       url('assets/fonts/stump_one-webfont.ttf') format('truetype'),
-       url('assets/fonts/stump_one-webfont.svg#stumpone') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
-.clearfix:after {
-  content: ".";
-  visibility: hidden;
-  display: block;
-  height: 0;
-  clear: both;
-}
-
-#navbar {
-  color: white;
-  width: 100%;
-  height: 50px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-
-#brand {
-  float: left;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-#brand img {
-  height: 88%;
-  padding-left: 10px;
-  padding-top: 7px;
-  box-sizing: border-box;
-}
-
-#hamburger {
-  float: right;
-  height: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-#hamburger img {
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-right: 15px;
-  height: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-#header h1 {
-  font-family: "stumpone", helvetica, sans-serif;
-  color:#fff;
-  font-size:70px;
-  letter-spacing:5px;
-  line-height:80px;
-}
-
-#play-games {
-  position: absolute;
-  color: rgb(61,183,221);
-  background-color: white;
-  padding: 15px;
-  width: 240px;
-  margin: 0 auto;
-  bottom: 50px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 20px;
-  border-radius: 9999px;
-}
-
-.section {
-  text-align: center;
-  padding: 80px 10vw;
-}
-
-.section-logo {
-  width: 70px;
-}
-
-.section h2 {
-  margin: 25px;
-}
-
-@media (max-width: 800px) {
-  .section {
-    padding: 15px;
-  }
-}
-
-.game-image img {
-  width: 100%;
-}
-.games {
-  border-bottom: 1px solid #ccc;
-  padding: 0;
-  margin: 0;
-}
-@media (min-width: 801px) {
-  .game-half {
-    float: left;
-    width: 50%;
-  }
-  .game-left {
-    border-right: 1px solid #ccc;
-  }
-}
-@media (max-width: 800px) {
-  .game {
-    width: 100%;
-  }
-}
-.game-desc {
-  text-align: center;
-  padding: 30px;
-}
-.game-desc p {
-  margin: 50px 30px;
-}
-
-.play-button {
-  color: white;
-  background-color: rgb(61,183,221);
-  padding: 10px 30px;
-  font-size: 25px;
-  letter-spacing: 5px;
-  border-radius: 999px;
-  box-shadow: 0px 5px rgb(50,135,165);
-}
-
-.raw-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-@media (min-width: 801px) {
-  .narrow-para {
-    padding-left: 200px;
-    padding-right: 200px;
-  }
-}
-
-#about {
-  background-color: rgb(246,246,243);
-  padding: 80px;
-  margin: 0;
-}
-@media (max-width: 800px) {
-  #about {
-    padding: 30px;
-  }
-}
-
-@media (min-width: 801px) {
-  #about-picture {
-    float: right;
-  }
-  #about-picture img {
-    width: 300px;
-    margin: 40px;
-  }
-}
-@media (max-width: 800px) {
-  #about-picture {
-    width: 100%;
-    text-align: center;
-  }
-  #about-picture img {
-    max-width: 100%;
-    max-height: 300px;
-  }
-}
-
-#about-text p {
-  margin-top: 40px;
-}
-
-.learn-more {
-  background-color: rgb(79,79,79);
-  color: white;
-  padding: 10px 40px;
-  border-radius: 999px;
-}
-
-#footer {
-  background-color: rgb(50,50,50);
-  color: white;
-  margin: 0;
-  padding: 10px;
-  text-align: center;
-  font-size: 12px;
-}
-
-#footer img {
-  width: 100px;
-}
-
-#footer2 {
-  background-color: rgb(35,35,35);
-  color: white;
-  margin: 0;
-  padding: 10px;
-  text-align: center;
-  font-size: 12px;
-}
-
-#footer2 img {
-  height: 40px;
-}
-
-#footer2 a {
-  margin: 10px;
-}
-
-#menu {
-  z-index: 2;
-  position: fixed;
-  top: 0;
-  right: -290px;
-  height: 100%;
-  background-color: rgb(34,40,48);
-  color: white;
-  padding: 0 20px;
-  width: 250px;
-  transition-property: right;
-  transition-duration: 0.25s;
-  box-sizing: border-box;
-  font-family: Open Sans;
-  letter-spacing: 2px;
-  font-size: 16px;
-}
-
-.menu-open #menu {
-  right: 0;
-}
-
-p#menu-x {
-  text-align: left !important;
-}
-
-#menu-x img {
-  width: 25px;
-}
-
-#menu p {
-  text-align: center;
-}
-
-.convo
-{
-  width:100%;
-  background-color:#FBF0EE;
-}
-.convo_content
-{
-  width:824px;
-  margin:0px auto;
-  padding-top:40px;
-  padding-bottom:40px;
-}
-
-.chat
-{
-  width:100%;
-  padding-top:2px;
-  padding-bottom:40px;
-}
-.chat_img
-{
-  width:100px;
-  height:100px;
-  float:left;
-}
-.chat_txt
-{
-  padding-top:20px;
-  float:left;
-  width:704px;
-  letter-spacing: 1px;
-  margin-top:15px;
-  font-size:14px;
-  line-height:25px;
-}
-
-.short_img
-{
-  background-image:url('assets/jack_circle.png');
-  background-size:100px 100px;
-}
-.tall_img
-{
-  background-image:url('assets/scout_circle.png');
-  background-size:100px 100px;
-}
-.short_txt
-{
-  padding-left:20px;
-  text-align:left;
-}
-.tall_txt
-{
-  padding-right:20px;
-  text-align:right;
-}
-
-.experiment
-{
-  width:100%;
-}
-.experiment_content
-{
-  width:1024px;
-  margin:0px auto;
-}
-
-.rules
-{
-  width:512px;
-  height:512px;
-  position:relative;
-  float:left;
-  font-size:16px;
-}
-
-.rule
-{
-  font-style:italic;
-}
-.tall_full
-{
-  width:130px;
-  height:200px;
-  margin:0px auto;
-  position:absolute;
-  bottom:0px;
-  background-image:url('assets/scout.png');
-  background-size:130px 200px;
-}
-.stage_container
-{
-  width:512px;
-  float:left;
-  overflow:hidden;
-  user-select:none;
-}
-.keyword
-{
-  font-style:italic;
-}
-
-.menu-open #menu {
-  right: 0;
-}
-
-p#menu-x {
-  text-align: left !important;
-}
-
-#menu-x img {
-  width: 25px;
-}
-
-#menu p {
-  text-align: center;
-}
-
-</style>
-<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<script type='text/javascript' src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
 <script type='text/javascript' src='src/config.js'></script>
 <script type='text/javascript' src='src/utils/utils.js'></script>
 <script type='text/javascript' src='src/utils/webgl-utils.js'></script>
@@ -431,253 +64,23 @@ p#menu-x {
 <script type="text/javascript" src="src/scenes/loadingScene.js"></script>
 <script type="text/javascript" src="src/scenes/testScene.js"></script>
 <script type="text/javascript" src="src/scenes/gameplayScene.js"></script>
-
-<script type="text/javascript">
-function $(id)
-{
-  return document.getElementById(id);
-}
-
-var d;
-var g;
-var g_basic;
-var games = {};
-
-function size_prefix(w,h,prefix)
-{
-  $(prefix+"stage_container").style.width  = w+"px";
-  $(prefix+"stage_container").style.height = h+"px";
-}
-
-function begin()
-{
-  var prefix = "";
-  var w = 640;
-  var h = 320;
-  //$("debug_div").style.width  = w+"px";
-  //$("debug_div").style.height = h+"px";
-  //d = new Debugger({source:$("debug_div")});
-
-  prefix = "basic_";
-  w = 512;
-  h = 512;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:-1,
-      grid_h:-1,
-      grid_cols:30,
-      grid_rows:30,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:false,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      allow_sim_speed_slider:false,
-      sim_speed_min:1,
-      sim_speed_max:2,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose_slider:false,
-      allow_dose_button:false,
-      dose_chip_damage:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:false,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_BADB,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      prerequisite_fill_for_interaction:0.,
-      prompt_prerequisite_unmet:false,
-      mutate_random_assign:false,
-      mutate_rate:0,
-      mutate_distance:0,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "biodiversity_";
-  w = 512;
-  h = 512;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:-1,
-      grid_h:-1,
-      grid_cols:30,
-      grid_rows:30,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:false,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      allow_sim_speed_slider:false,
-      sim_speed_min:1,
-      sim_speed_max:2,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose_slider:false,
-      allow_dose_button:false,
-      dose_chip_damage:false,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:false,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_BADB,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      prerequisite_fill_for_interaction:0.,
-      prompt_prerequisite_unmet:false,
-      mutate_random_assign:false,
-      mutate_rate:1,
-      mutate_distance:0.2,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-
-  prefix = "killbutton_";
-  w = 612;
-  h = 512;
-  size_prefix(w,h,prefix);
-  g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
-    config:
-    {
-      special:SPECIAL_NONE,
-      grid_x:0,
-      grid_y:0,
-      grid_w:512,
-      grid_h:-1,
-      grid_cols:30,
-      grid_rows:30,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:false,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      allow_sim_speed_slider:false,
-      sim_speed_min:1,
-      sim_speed_max:2,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose_slider:false,
-      allow_dose_button:true,
-      dose_chip_damage:true,
-      allow_smile:false,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:false,
-      default_badb_resist:0.,
-      init_badb:false,
-      reinit_badb:false,
-      default_good_resist:0.,
-      allow_good:false,
-      init_good:false,
-      reinit_good:false,
-      allow_body:false,
-      init_body:false,
-      reinit_body:false,
-      swab_size:1,
-      click_function:CLICK_FUNC_BADB,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      prerequisite_fill_for_interaction:0.,
-      prompt_prerequisite_unmet:false,
-      mutate_random_assign:false,
-      mutate_rate:1,
-      mutate_distance:0.2,
-      bias_mutate:false,
-      reproduce:true,
-      age:true,
-      ave_display_width:10,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:0,
-    }
-  });
-  games[prefix] = g;
-  g.begin();
-}
-//window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
-window.addEventListener("load",begin,false);
-</script>
-
+<script type="text/javascript" src="src/scripts.js"></script>
+<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/bacteria.css">
+<script src="assets/ajs/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 </head>
 <body>
 
 <div id="navbar">
   <a href="/">
     <div id="brand">
-      <img src="assets/brand.png">
+      <img src="assets/img/brand.png">
     </div>
   </a>
   <a href="#" onClick="event.preventDefault(); document.body.className = 'menu-open';">
     <div id="hamburger">
-      <img src="assets/hamburger.png">
+      <img src="assets/img/hamburger.png">
     </div>
   </a>
 </div>
@@ -685,221 +88,125 @@ window.addEventListener("load",begin,false);
 <div class="navbar-space">
 </div>
 
-<div id="header" style="height:500px; width:100%; background-image:url('assets/bacteria-header.jpg'); background-position:center; background-size:100%;">
-  <div style="width:1024px; margin:0px auto;">
-    <div style="padding:50px; margin-top:50px;">
-      <h1>ANTIBIOTIC<br/>RESISTANCE.</h1>
-      <div style="color:#FFFFFF; position:relative;"><img src="assets/icon-rocket-white.png" style="width:50px;"></img>AN INTERACTIVE EXPLORABLE</span></div>
+<div id="jumbotron">
+  <div class="jumbtron-container">
+    <div class="jumbotron-content vertical-center">
+      <div class="subheader">
+        <h1>ANTIBIOTIC<br/>RESISTANCE.</h1>
+        <div><img src="assets/img/icon-rocket-white.png" style="width:50px;"></img><h2>An interactive Explorable</h2></span></div>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="convo">
-  <div class="convo_content">
-
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">How can antibiotics be dangerous? I thought they made you better!</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Antibiotic resistance!</div><div class="chat_img tall_img"></div>
-    </div>
-
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">But what <i>is</i> antibiotic resistance?<br />Why is antibiotic resistance bad? What can we do about it?</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Tell you what, let's create a model to help us explore these questions.<br />Even though bacteria come in many shapes, in our model, they can be represented by squares.</div><div class="chat_img tall_img"></div>
-    </div>
-
+<div class="comic comic1">
+  <div class="row comic-row">
+    <div class="col-sm-6 comic-pane pane1"></div>
+    <div class="col-sm-6 comic-pane pane2"></div>
+  </div>
+  <div class="row comic-row">
+    <div class="col-sm-6 comic-pane pane3"></div>
+    <div class="col-sm-6 comic-pane pane4"></div>
+  </div>
+  <div class="row comic-row">
+    <div class="col-sm-6 comic-pane pane5"></div>
+    <div class="col-sm-6 comic-pane pane6"></div>
   </div>
 </div>
 
-<div class="experiment">
-  <div class="experiment_content">
-    <div class="rules">
-      <br />
-      <br />
-      <br />
-      <b>Neat. This simple model is based on these key ideas:</b><br />
-      <br />
-      <span class="rule">- Bacteria sometimes reproduce, dividing to make more.</span><br />
-      <br />
-      <span class="rule">- Bacteria eventually die.</span><br />
-      <div class="tall_full"></div>
+<div class="section section-header">
+  <img src="assets/img/header-1.jpg">
+  <h3>Doctors Orders</h3>
+</div>
+
+<div class="interactive">
+  <div class="comic-dialogue">
+    <div class="comic-text">
+      <p>Bacteria are just itty bitty living organisms that live and die like this</p>
     </div>
+    <img src="assets/img/scout.png" class="comic-character"></img>
+  </div>
+  <div class="game-section">
     <div class="stage_container" id="basic_stage_container"> </div>
   </div>
 </div>
 
-<div class="convo">
-  <div class="convo_content">
+<div class="section section-header">
+  <img src="assets/img/header-2.jpg">
+  <h3>Mutation Station</h3>
+</div>
 
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">I don't think our model seems very realistic. How can we make our model more realistic?</div>
+<div class="interactive">
+  <div class="comic-dialogue">
+    <div class="comic-text">
+      <p>To make it even more complicated, bacteria reproduce. While the new bacteria are usually the same, sometime they mutate and change to become stronger or weaker like this.</p>
     </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Good point. We'll add the concepts of inheritance and mutation to our model. Every trait, or characteristic, of a bacterium (such as its shape, size, and behavior) is encoded in its genetic material - its DNA. Most bacteria reproduce simply by dividing in two, with copies of its DNA in each new cell. Sometimes the process of DNA replication doesn't make a perfect copy, and the DNA is not quite identical. This results in differences between the new bacterium's traits and those of the parent - sometimes small, and sometimes drastic. These differences are called mutations.</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">What will that look like in our model?</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Hmm... what trait can we use to model how mutations occur and are inherited? Aha! We can use a slight color difference to model a mutation. In our model, we'll let some bacteria mutate by changing color value - the lightness or darkness of the color. We'll allow the new color to be inherited during reproduction.</div><div class="chat_img tall_img"></div>
-    </div>
-
+    <img src="assets/img/scout.png" class="comic-character"></img>
+  </div>
+  <div class="game-section">
+    <div class="stage_container" id="basic_stage_container"> </div>
   </div>
 </div>
 
-<div class="experiment">
-  <div class="experiment_content">
-    <div class="stage_container" id="biodiversity_stage_container"> </div>
-    <div class="rules" style="padding-left:30px; width:482px;"><!-- explicit width+padding because can't have inline style relative to class style -->
-      <br />
-      <b>Biodiversity!</b>
-      <br />
-      Our new model is based on these key ideas:<br />
-      <br />
-      <span class="rule">- Bacteria sometimes reproduce, dividing to make more.</span><br />
-      <br />
-      <span class="rule">- Bacteria eventually die.</span><br />
-      <br />
-      <span class="rule">- Bacteria offspring inherit the traits of the parent.</span><br />
-      <br />
-      <span class="rule">- Mutations in bacteria DNA can occur.</span><br />
-      <br />
-      <span class="rule">- Mutations can be inherited by a bacterium's offspring.</span><br />
-      <div class="tall_full" style="left:100px;"></div>
+<div class="section section-header">
+  <img src="assets/img/header-3.jpg">
+  <h3>Bacterial Resistance</h3>
+</div>
+
+<div class="interactive">
+  <div class="comic-dialogue">
+    <div class="comic-text">
+      <p>The stronger the bacteria the more resistant they will be to that medicine. For really strong bacteria you would have to give mega strong antibiotics that would actually make you really sick. If you give a weak kind of medicine you would kill the weaker bacteria and be left with only the really resistant ones. Check this out and see if you can figure out how to kill all these bacteria.</p>
     </div>
+    <img src="assets/img/scout.png" class="comic-character"></img>
+  </div>
+  <div class="game-section">
+    <div class="stage_container" id="basic_stage_container"> </div>
   </div>
 </div>
 
-<div class="convo">
-  <div class="convo_content">
-
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Notice how, in our model, mutations lead to small communities of bacteria similar in color value - this looks like lighter patches and darker patches.</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">Wait, how is this related to antibiotic resistance?</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Antibiotics are substances known to have bacterium-killing properties. A bacterium develops antibiotic resistance when mutations combine to make it hard to kill. When a bacterium has antibiotic resistance, it is more likely to survive even when antibiotic substances are present.<br /><br />Antibiotic resistance is an inheritable trait. If a bacterium cannot survive, it cannot reproduce. And if a bacterium has antibiotic resistance, it can survive to reproduce, passing this trait on to its offspring! Of course, not all of the new bacteria will have antibiotic resistance. Some will have additional mutations that weaken resistance. What do you think will happen to these weaker bacteria when additional doses of antibiotic are applied?</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">Yikes. I don't know. Can we use our model to find out?</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Sure, let's add the trait of antibiotic resistance to our model! We'll update the simulation to use color value to represent antibiotic resistance - the darker the bacterium, the more resistant it is to antibiotics. Then, we'll add antibiotics to the population with a button.</div><div class="chat_img tall_img"></div>
-    </div>
-
+<div class="comic comic2">
+  <div class="row comic-row">
+    <div class="col-sm-6 comic-pane pane1"></div>
+    <div class="col-sm-6 comic-pane pane2"></div>
+  </div>
+  <div class="row comic-row">
+    <div class="col-sm-6 comic-pane pane3"></div>
+    <div class="col-sm-6 comic-pane pane4"></div>
+  </div>
+  <div class="row comic-row">
+    <div class="col-sm-6 comic-pane pane5"></div>
+    <div class="col-sm-6 comic-pane pane6"></div>
   </div>
 </div>
-
-<div class="experiment">
-  <div class="experiment_content">
-    <div class="stage_container" id="killbutton_stage_container"> </div>
-    <div class="rules" style="width:412px;"> <!-- explicit width, because stage is slightly bigger in this one -->
-      <br />
-      <br />
-      <br />
-      <b>This model is based on these key ideas:</b><br />
-      <br />
-      <span class="rule">- Bacteria sometimes reproduce, dividing to make more.</span><br />
-      <br />
-      <span class="rule">- Bacteria eventually die.</span><br />
-      <br />
-      <span class="rule">- Bacteria offspring inherit the traits of the parent.</span><br />
-      <br />
-      <span class="rule">- Mutations can be inherited by a bacterium's offspring.</span><br />
-      <br />
-      <span class="rule">- Bacteria can have the trait "antibiotic resistance".</span><br />
-      <br />
-      <span class="rule">- Bacteria with greater antibiotic resistance are harder to kill.</span><br />
-      <br />
-      <span class="rule">- Bacteria can pass on their antibiotic resistance to offspring.</span><br />
-    </div>
-  </div>
+<div class="centered section">
+  <p>
+    <a href="http://theyardgames.org" class="raw-link">
+      <span class="play-button">Back to Games!</span>
+    </a>
+  </p>
 </div>
-
-<div class="convo">
-  <div class="convo_content">
-
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">We can watch what happens to find out how adding antibiotics to the bacteria population affect the antibiotic resistance of the population. Look carefully. Timing is important! Experiment with applying the antibiotic at different time intervals. Change how long you wait before starting to apply the antibiotic, and how often you apply it once you start. See if you can create an unkillable colony of bacteria.</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">So, what's happening here? Why are the bacteria getting stronger in some cases, and being totally eliminated in others?</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">When you apply an antibiotic, you're preventing the reproduction of any bacteria that are killed. Because bacteria with less antibiotic resistance are the most likely to die, the only ones left to reproduce (and pass on their traits) are the strong ones—the ones with the most antibiotic resistance!</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Now that you understand more about antibiotic resistance, what do you still wonder about? What new questions do you have?</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat short">
-<div class="chat_img short_img"></div>      <div class="chat_txt short_txt">Umm... How accurate was our model?</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">That is an excellent question! Always be cautious to accept conclusions drawn from simplified models. Simple models are useful in exploring an idea to gain a more intuitive understanding- but they're no replacement for the scientific method!<br/><br/>Some key gaps in our model:<br/>- In reality, colonies of bacteria are MUCH bigger than in our model. At any given time, our bodies hold trillions of individual bacterium!<br />- In reality, the mutation rate is MUCH slower. DNA is incredibly complex. For a random error in its duplication to result in anything useful, a lot of lucky factors need to fall into place.<br/>- "Super unkillable bacteria" aren't created in a single body. Because useful mutations occur so rarely, the process of developing such strong resistance happens over many, many generations, through infections in many different individuals.<br/>- Our model didn't take into account many other factors at play in a bacterial infection, such as the body's natural defenses against infection, the presence of "good bacteria", and so on.</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat short">
-<div class="chat_img short_img"></div>      <div class="chat_txt short_txt">So, should I use antibiotics or not?</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Another excellent question - one that can only really be answered by a doctor. But, here are some of the issues a doctor will consider when deciding whether to prescribe antibiotics and how much antibiotic is needed.</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Some diseases are caused by viruses, fungi, parasites, and other infectious pathogens. That means that antibiotics - which only kill bacteria - will do nothing to help!</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">The human body naturally has strong defenses against infection. In most cases, the added help of antibiotics is unneeded.</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">In the case that your body does need help, the dosage needs to be considered very carefully.</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">Why?</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">Well, we saw that there is a danger in killing most of the bacteria but not all of them.</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat short">
-      <div class="chat_img short_img"></div><div class="chat_txt short_txt">Does this mean we should take a very large amount of antibiotics whenever we might need it?</div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">No! Our bodies contain mostly good bacteria - bacteria we need for digestion and other bodily functions. Unfortunately, antibiotics kill all kinds of bacteria - they don't care about which ones help and which ones hurt!</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">On the other hand, if we take too low a dose of an antibiotic, we risk leaving only the strongest to further infect our bodies and the other people around us.</div><div class="chat_img tall_img"></div>
-    </div>
-    <div class="chat tall">
-      <div class="chat_txt tall_txt">This is the tricky balance best left to doctors. If there's one thing you can do - it's listen to them! If they prescribe a week's worth of pills, make sure you take them for the whole week, even if you're feeling better! You might start to feel better, but the strongest of the bacteria could still be making their last stand.</div><div class="chat_img tall_img"></div>
-    </div>
-
-  </div>
-</div>
-
 <div id="footer">
-<p>
-<a href="http://fielddaylab.org/"><img src="assets/field-day.png"></a>
-</p>
-<p>
-A Field Day Experiment
-</p>
+  <p>
+    <a href="http://fielddaylab.org/"><img src="assets/img/field-day.png"></a>
+  </p>
+  <p>
+    A Field Day Experiment
+  </p>
 </div>
 
 <div id="footer2">
-<p>
-<a href="http://www.wisc.edu/"><img src="assets/UW-logo.png"></a>
-<a href="http://wid.wisc.edu/"><img src="assets/wid-logo.png"></a>
-<a href="http://dpi.wi.gov/"><img src="assets/dpilogo-white.png"></a>
-</p>
+  <p>
+    <a href="http://www.wisc.edu/"><img src="assets/img/UW-logo.png"></a>
+    <a href="http://wid.wisc.edu/"><img src="assets/img/wid-logo.png"></a>
+    <a href="http://dpi.wi.gov/"><img src="assets/img/dpilogo-white.png"></a>
+  </p>
 </div>
 
 <div id="menu">
   <p id="menu-x">
     <a href="#" onClick="event.preventDefault(); document.body.className = '';">
-      <img src="assets/x.png">
+      <img src="assets/img/x.png">
     </a>
   </p>
   <p>
@@ -913,7 +220,8 @@ A Field Day Experiment
     </a>
   </p>
 </div>
-
 </body>
 </html>
+
+
 

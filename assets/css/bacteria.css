@@ -1,0 +1,626 @@
+body,div
+{
+  position:relative;
+  overflow:auto;
+  margin:0px;
+  padding:0px;
+  font-family:Open Sans;
+  font-size:18px;
+}
+
+@font-face {
+  font-family: 'stumpone';
+  src: url('../fonts/stump_one-webfont.eot');
+  src: url('../fonts/stump_one-webfont.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/stump_one-webfont.woff2') format('woff2'),
+       url('../fonts/stump_one-webfont.woff') format('woff'),
+       url('../fonts/stump_one-webfont.ttf') format('truetype'),
+       url('../fonts/stump_one-webfont.svg#stumpone') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.clearfix:after {
+  content: ".";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+#navbar {
+  color: white;
+  width: 100%;
+  height: 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+#brand {
+  float: left;
+  height: 100%;
+}
+
+#brand img {
+  height: 88%;
+  padding-left: 10px;
+  padding-top: 7px;
+}
+
+#jumbotron {
+  width: 100%;
+  height: 50vh;
+  min-height: 40vw;
+  position: relative;
+  background: url(../img/bacteria-header.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.jumbtron-container {
+  width: 100%;
+  height: 100%;
+  background:rgba(35,35,35,0.2);
+}
+
+#jumbotron h1 {
+  font-family: "stumpone", helvetica, sans-serif;
+  color:#fff;
+  font-size:70px;
+  letter-spacing:5px;
+  line-height:80px;
+}
+
+.jumbotron-content {
+  padding-left: 8vw;
+}
+
+.jumbotron-content .subheader img {
+  vertical-align: middle;
+}
+
+.jumbotron-content .subheader h2{
+  color: #fff;
+  text-transform: uppercase;
+  display: inline;
+  vertical-align: middle;
+  margin: 10px;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+@media (max-width: 550px) {
+  .jumbotron-content {
+    text-align: center;
+    padding-left: 0;
+  }
+  #jumbotron h1 {
+    font-size: 50px;
+    line-height:60px;
+  }
+
+  .jumbotron-content .subheader h2 {
+    font-size:16px;
+    letter-spacing: 3px;
+  }
+
+  .jumbotron-content .subheader img {
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  #jumbotron {
+    min-height:350px;
+  }
+}
+
+.vertical-center {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.section-header img {
+  width: 130px;
+  height: 130px;
+}
+
+.interactive {
+  background:url(../img/bacteria-bg.jpg);
+  background-size: cover;
+}
+
+.section-header h3 {
+  color: #af4333;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.comic {
+  width: 80vw;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  margin-top: 5vw;
+}
+
+.comic-pane {
+  width:40vw;
+  height: 40vw;
+  display: block;
+}
+
+.comic1 .comic-pane {
+  background: url(../img/Bacteria-comic1.jpg) no-repeat;
+  background-size: 80vw 120vw;
+}
+
+.comic2 .comic-pane {
+  background: url(../img/Bacteria-comic2.jpg) no-repeat;
+  background-size: 80vw 120vw;
+}
+
+.comic .pane1 {
+  background-position: 0px 0px;
+}
+
+.comic .pane2 {
+  background-position: -40vw 0vw;
+}
+
+.comic .pane3 {
+  background-position: 0vw -40vw;
+}
+
+.comic .pane4 {
+  background-position: -40vw -40vw;
+}
+
+.comic .pane5 {
+  background-position: 0vw -80vw;
+}
+
+.comic .pane6 {
+  background-position: -40vw -80vw;
+}
+
+.comic img{
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 800px) {
+  .comic-pane {
+    width: 80vw;
+    height:80vw;
+    background-size: 160vw 240vw !important;
+  }
+
+  .comic .pane1 {
+    background-position: 0px 0px;
+  }
+
+  .comic .pane2 {
+    background-position: -80vw 0vw;
+  }
+
+  .comic .pane3 {
+    background-position: 0vw -80vw;
+  }
+
+  .comic .pane4 {
+    background-position: -80vw -80vw;
+  }
+
+  .comic .pane5 {
+    background-position: 0vw -160vw;
+  }
+
+  .comic .pane6 {
+    background-position: -80vw -160vw;
+  }
+}
+
+
+.comic-dialogue {
+  float:left;
+  width: 30vw;
+  height: 50vw;
+  background:rgba(40,40,40,0.4);
+}
+
+.game-section {
+  width: 70vw;
+  height: 50vw;
+  float: right;
+ }
+
+ .comic-text {
+  width: 80%;
+  height: auto;
+  padding: 2vw;
+  text-align: center;
+  border-radius: 20px;
+  background-color: #fff;
+  margin: 0 auto;
+  margin-top: 4vw;
+  overflow: visible;
+ }
+
+ .comic-character {
+    width: auto;
+    height: 30vw;
+    margin: 0 auto;
+    display: block;
+    margin-top:3vw;
+ }
+
+ .comic-text::after {
+  content: "";
+  width: 0;
+  height: 0;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #fff;
+  position: absolute;
+  left: 50%;
+  bottom: -15px;
+  margin-left: -15px;
+ }
+
+ .comic-text p {
+  font-size:14px;
+  line-height:20px;
+ }
+
+ @media (max-width: 1000px) {
+  .comic-text p {
+    font-size: 12px;
+    line-height:18px;
+  }
+}
+
+ @media (max-width: 900px) {
+
+  .comic-dialogue {
+    width: 100vw;
+    height: auto;
+    min-height:100px;
+    background: transparent;
+  }
+
+  .comic-text {
+    float: right;
+    width: 60vw;
+    height: auto;
+    margin-right: 5vw;
+  }
+
+  .comic-text::after {
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-right: 20px solid #fff;
+    left:-15px;
+    top:50%;
+    margin-top:-20px;
+  }
+
+  .comic-character {
+    float: left;
+    width: 20vw;
+    height: auto;
+    margin-left: 5vw;
+  }
+
+
+  .game-section {
+    width: 100vw;
+    height: 65vw;
+    float: none;
+  }
+}
+
+#play-games {
+  position: absolute;
+  color: rgb(61,183,221);
+  background-color: white;
+  padding: 15px;
+  width: 240px;
+  margin: 0 auto;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 20px;
+  border-radius: 9999px;
+}
+
+.section {
+  text-align: center;
+  padding: 80px 10vw;
+}
+
+.section-logo {
+  width: 70px;
+}
+
+.section h2 {
+  margin: 25px;
+}
+
+@media (max-width: 800px) {
+  .section {
+    padding: 15px;
+  }
+}
+
+.game-image img {
+  width: 100%;
+}
+.games {
+  border-bottom: 1px solid #ccc;
+  padding: 0;
+  margin: 0;
+}
+@media (min-width: 801px) {
+  .game-half {
+    float: left;
+    width: 50%;
+  }
+  .game-left {
+    border-right: 1px solid #ccc;
+  }
+}
+@media (max-width: 800px) {
+  .game {
+    width: 100%;
+  }
+}
+.game-desc {
+  text-align: center;
+  padding: 30px;
+}
+.game-desc p {
+  margin: 50px 30px;
+}
+
+.raw-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+@media (min-width: 801px) {
+  .narrow-para {
+    padding-left: 200px;
+    padding-right: 200px;
+  }
+}
+
+#about {
+  background-color: rgb(246,246,243);
+  padding: 80px;
+  margin: 0;
+}
+@media (max-width: 800px) {
+  #about {
+    padding: 30px;
+  }
+}
+
+@media (min-width: 801px) {
+  #about-picture {
+    float: right;
+  }
+  #about-picture img {
+    width: 300px;
+    margin: 40px;
+  }
+}
+@media (max-width: 800px) {
+  #about-picture {
+    width: 100%;
+    text-align: center;
+  }
+  #about-picture img {
+    max-width: 100%;
+    max-height: 300px;
+  }
+}
+
+#about-text p {
+  margin-top: 40px;
+}
+
+.learn-more {
+  background-color: rgb(79,79,79);
+  color: white;
+  padding: 10px 40px;
+  border-radius: 999px;
+}
+
+#footer {
+  background-color: rgb(50,50,50);
+  color: white;
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+}
+
+#footer img {
+  width: 100px;
+}
+
+#footer2 {
+  background-color: rgb(35,35,35);
+  color: white;
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+}
+
+#footer2 img {
+  height: 40px;
+}
+
+#footer2 a {
+  margin: 10px;
+}
+
+#menu {
+  z-index: 2;
+  position: fixed;
+  top: 0;
+  right: -290px;
+  height: 100%;
+  background-color: rgb(34,40,48);
+  color: white;
+  padding: 0 20px;
+  width: 250px;
+  transition-property: right;
+  transition-duration: 0.25s;
+}
+
+.menu-open #menu {
+  right: 0;
+}
+
+p#menu-x {
+  text-align: left !important;
+}
+
+#menu-x img {
+  width: 25px;
+}
+
+#menu p {
+  text-align: center;
+}
+
+.convo
+{
+  width:100%;
+  background-color:#FBF0EE;
+}
+.convo_content
+{
+  width:824px;
+  margin:0px auto;
+  padding-top:40px;
+  padding-bottom:40px;
+}
+
+.chat
+{
+  width:100%;
+  padding-top:2px;
+  padding-bottom:40px;
+}
+.chat_img
+{
+  width:100px;
+  height:100px;
+  float:left;
+}
+.chat_txt
+{
+  padding-top:20px;
+  float:left;
+  width:704px;
+  letter-spacing: 1px;
+  margin-top:15px;
+  font-size:14px;
+  line-height:25px;
+}
+
+.short_img
+{
+  background-image:url('assets/jack_circle.png');
+  background-size:100px 100px;
+}
+.tall_img
+{
+  background-image:url('assets/scout_circle.png');
+  background-size:100px 100px;
+}
+.short_txt
+{
+  padding-left:20px;
+  text-align:left;
+}
+.tall_txt
+{
+  padding-right:20px;
+  text-align:right;
+}
+
+.experiment
+{
+  width:100%;
+}
+.experiment_content
+{
+  width:1024px;
+  margin:0px auto;
+}
+
+.rules
+{
+  width:512px;
+  height:512px;
+  position:relative;
+  float:left;
+  font-size:16px;
+}
+
+.rule
+{
+  font-style:italic;
+}
+.tall_full
+{
+  width:130px;
+  height:200px;
+  margin:0px auto;
+  position:absolute;
+  bottom:0px;
+  background-image:url('assets/scout.png');
+  background-size:130px 200px;
+}
+.stage_container
+{
+  width:512px;
+  float:left;
+  overflow:visible;
+  user-select:none;
+}
+.keyword
+{
+  font-style:italic;
+}
+
+.menu-open #menu {
+  right: 0;
+}
+
+p#menu-x {
+  text-align: left !important;
+}
+
+#menu-x img {
+  width: 25px;
+}
+
+#menu p {
+  text-align: center;
+}
