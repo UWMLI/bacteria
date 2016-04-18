@@ -1561,7 +1561,7 @@ var GamePlayScene = function(game, stage, config, popup_div)
   };
 
   var hacked_plus_image = new Image();
-  hacked_plus_image.src = "assets/plus.png";
+  hacked_plus_image.src = "assets/img/plus.png";
   self.draw = function()
   {
     if(config.special == SPECIAL_NONE)
