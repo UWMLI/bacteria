@@ -135,7 +135,6 @@ p {
 #hamburger {
   float: right;
   height: 100%;
-  overflow: hidden;
 }
 
 #hamburger img {

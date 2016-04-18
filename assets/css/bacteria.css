@@ -114,10 +114,6 @@ body,div
     margin-bottom: 20px;
   }
 
-  .jumbotron-content .subheader div {
-    padding: 10px;
-  }
-
   #jumbotron {
     min-height:350px;
   }
@@ -153,10 +149,6 @@ body,div
   margin: 0 auto;
   display: block;
   margin-top: 5vw;
-}
-
-.comic-row {
-  margin: 0;
 }
 
 .comic-pane {
