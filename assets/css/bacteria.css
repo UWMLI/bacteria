@@ -82,6 +82,10 @@ body,div
   vertical-align: middle;
 }
 
+.jumbotron-content .subheader div {
+  padding: 10px;
+}
+
 .jumbotron-content .subheader h2{
   color: #fff;
   text-transform: uppercase;
@@ -234,10 +238,11 @@ body,div
   width: 30vw;
   height: 50vw;
   background:rgba(40,40,40,0.4);
+  overflow-y: hidden;
 }
 
 .game-section {
-  width: 70vw;
+  width: calc(70vw - 20px);
   height: 50vw;
   float: right;
  }
