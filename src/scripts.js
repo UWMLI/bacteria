@@ -1,17 +1,19 @@
-function $(id)
-{
-  return document.getElementById(id);
-}
-
 var d;
 var g;
 var g_basic;
 var games = {};
 
-function size_prefix(w,h,prefix)
+function size_prefix(prefix)
 {
-  $(prefix+"stage_container").style.width  = w+"px";
-  $(prefix+"stage_container").style.height = h+"px";
+  var parent = $('#'+prefix+"stage_container").parent();
+  var w = parent.width() - 10;
+  var h = parent.height() - 10;
+  console.log(parent);
+
+  $('#'+prefix+"stage_container").css('width', w+"px");
+  $('#'+prefix+"stage_container").css('height', h+"px");
+
+  return [w, h];
 }
 
 function begin()
@@ -19,14 +21,15 @@ function begin()
   var prefix = "";
   var w = 640;
   var h = 320;
-  //$("debug_div").style.width  = w+"px";
-  //$("debug_div").style.height = h+"px";
-  //d = new Debugger({source:$("debug_div")});
+  var wh;
+  //$("#debug_div").css('width', w+"px");
+  //$("#debug_div").css('height', h+"px");
+  //d = new Debugger({source:$("#debug_div")[0]});
 
   prefix = "basic_";
-  w = 512;
-  h = 512;
-  size_prefix(w,h,prefix);
+  wh = size_prefix(prefix);
+  w = wh[0];
+  h = wh[1];
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
@@ -35,8 +38,8 @@ function begin()
       grid_y:0,
       grid_w:-1,
       grid_h:-1,
-      grid_cols:30,
-      grid_rows:30,
+      grid_cols:Math.floor(w/17),
+      grid_rows:Math.floor(h/17),
       colored_rgb:false,
       default_r:0.5,
       default_g:0.5,
@@ -92,9 +95,9 @@ function begin()
   g.begin();
 
   prefix = "biodiversity_";
-  w = 512;
-  h = 512;
-  size_prefix(w,h,prefix);
+  wh = size_prefix(prefix);
+  w = wh[0];
+  h = wh[1];
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
@@ -103,8 +106,8 @@ function begin()
       grid_y:0,
       grid_w:-1,
       grid_h:-1,
-      grid_cols:30,
-      grid_rows:30,
+      grid_cols:Math.floor(w/17),
+      grid_rows:Math.floor(h/17),
       colored_rgb:false,
       default_r:0.5,
       default_g:0.5,
@@ -160,19 +163,19 @@ function begin()
   g.begin();
 
   prefix = "killbutton_";
-  w = 612;
-  h = 512;
-  size_prefix(w,h,prefix);
+  wh = size_prefix(prefix);
+  w = wh[0];
+  h = wh[1];
   g = new Game({width:w,height:h,container:prefix+"stage_container",popup:prefix+"popup",
     config:
     {
       special:SPECIAL_NONE,
       grid_x:0,
       grid_y:0,
-      grid_w:512,
+      grid_w:w-100,
       grid_h:-1,
-      grid_cols:30,
-      grid_rows:30,
+      grid_cols:Math.floor((w - 100)/17),
+      grid_rows:Math.floor(h/17),
       colored_rgb:false,
       default_r:0.5,
       default_g:0.5,
