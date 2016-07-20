@@ -612,6 +612,7 @@ var GamePlayScene = function(game, stage)
     self.node_buffs = [self.nodes_a,self.nodes_b];
     self.node_buff = 0;
 
+    self.n_nodes = 0;
     self.n_badb = 0; self.ave_badb_biot_resist = 0;
     self.n_good = 0; self.ave_badb_biot_resist = 0;
     self.n_body = 0; self.ave_badb_biot_resist = 0;
@@ -781,6 +782,7 @@ var GamePlayScene = function(game, stage)
         }
         else self.n_body = 0;
       }
+      self.n_nodes = self.n_badb + self.n_good + self.n_body;
     }
 
     self.nodeAt = function(col,row)
@@ -820,209 +822,16 @@ var GamePlayScene = function(game, stage)
       }
     }
 
-    self.draw = function()
-    {
-      var nodes = self.node_buffs[self.node_buff];
-      ctx.lineWidth = nodes[0].w/8;
-      for(var i = 0; i < nodes.length; i++)
-        nodes[i].draw(dc,false,true);
-      ctx.lineWidth = 2;
-      if(!init.colorblind || !scene.colorblind_mode)
-      {
-        for(var i = 0; i < nodes.length; i++)
-          nodes[i].draw(dc,false,false);
-      }
-      else
-      {
-        for(var i = 0; i < nodes.length; i++)
-        {
-          if(init.colored_hsl && nodes[i].h > 90 && nodes[i].h < 150)
-            nodes[i].draw(dc,true,false);
-          else if(init.colored_rgb && nodes[i].g > nodes[i].r && nodes[i].g > nodes[i].b)
-            nodes[i].draw(dc,true,false);
-          else
-            nodes[i].draw(dc,false,false);
-        }
-      }
-
-      ctx.strokeStyle = "#0000FF";
-      if(init.show_hover && self.hovering_node && scene.prerequisite_met)
-      {
-        if(init.swab_size == 1)
-        {
-          ctx.strokeRect(self.hovering_node.x,self.hovering_node.y,self.hovering_node.w,self.hovering_node.height);
-        }
-        else
-        {
-          ctx.strokeRect(self.hovering_node.x-self.hovering_node.w,self.hovering_node.y,self.hovering_node.w*3,self.hovering_node.height);
-          ctx.strokeRect(self.hovering_node.x,self.hovering_node.y-self.hovering_node.height,self.hovering_node.w,self.hovering_node.height*3);
-        }
-      }
-
-      ctx.strokeStyle = LIGHT_COLOR;
-      ctx.beginPath();
-      ctx.moveTo(self.x,self.y+self.h);
-      ctx.lineTo(self.x,self.y);
-      ctx.moveTo(self.x+self.w,self.y);
-      if(init.ave_display_width+init.split_display_width+init.tricolor_display_width+init.hsl_display_width == 0)
-        ctx.lineTo(self.x+self.w,self.y+self.h);
-      ctx.stroke();
-
-      var n_nodes = self.n_badb + self.n_good + self.n_body ;
-      if(n_nodes == 0)
-      {
-        ctx.drawImage(plus_img,self.w/2-20,self.h/2-20-30,40,40);
-        ctx.font = "20px Open Sans";
-        ctx.fillStyle = "#000000";
-        ctx.textAlign = "center";
-        ctx.fillText("CLICK TO ADD BACTERIA",self.w/2,self.h/2+30);
-      }
-
-      if(init.allow_sim_speed_slider)
-      {
-        self.simspeed_slider.draw(dc);
-      }
-      if(init.allow_dose_slider)
-      {
-        ctx.strokeStyle = "#00FF00";
-        self.dose_button.draw(dc);
-        ctx.strokeStyle = "#00FF00";
-        self.dose_slider.draw(dc);
-
-        //fill slider with color exterminating
-        var r = floor((1-self.dose_amt)*255);
-        ctx.fillStyle = "rgba("+r+","+r+","+r+",1)";
-        var switch_x = self.dose_slider.slit_x+(((self.dose_slider.val-self.dose_slider.min_val)/(self.dose_slider.max_val-self.dose_slider.min_val))*self.dose_slider.slit_w);
-        ctx.fillRect(switch_x-(self.dose_slider.w/20)+0.5,self.dose_slider.y+0.5,(self.dose_slider.w/10),self.dose_slider.h);
-      }
-      else if(init.allow_dose_button)
-      {
-        ctx.font = "20px Open Sans";
-        ctx.fillStyle = "#000000";
-        ctx.textAlign = "left";
-        ctx.fillText("dose antibiotic",self.dose_button.x+self.dose_button.w+5,self.dose_button.y+self.dose_button.h-2);
-        ctx.strokeStyle = "#000000";
-        ctx.beginPath();
-        ctx.arc(self.dose_button.x+self.dose_button.w/2,self.dose_button.y+self.dose_button.h/2-3,self.dose_button.w/2,0,2*pi);
-        ctx.stroke();
-        if(self.dose_button.down)
-        {
-          ctx.fillStyle = "#000000";
-          ctx.fill();
-        }
-      }
-      if(init.allow_reset)
-      {
-        ctx.font = "20px Open Sans";
-        ctx.fillStyle = "#000000";
-        ctx.textAlign = "right";
-        ctx.fillText("reset",self.reset_button.x+self.reset_button.w,self.reset_button.y+self.reset_button.h-2);
-        ctx.strokeStyle = "#000000";
-        ctx.textAlign = "left";
-      }
-      if(init.ave_display_width > 0)
-      {
-        self.ave_disp.draw(dc);
-      }
-      if(init.split_display_width > 0)
-      {
-        self.split_disp.draw(dc);
-      }
-      if(init.tricolor_display_width > 0)
-      {
-        self.tricolor_disp.draw(dc);
-      }
-      if(init.hsl_display_width > 0)
-      {
-        self.hsl_disp.draw(dc);
-      }
-
-      if(init.allow_contaminate)
-      {
-        self.sneeze_button.draw(dc);
-        self.catch_button.draw(dc);
-      }
-
-      if(init.allow_dose_slider && self.dosing_prog)
-      {
-        ctx.strokeStyle = "#00FF00";
-        ctx.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
-      }
-
-      if(init.colorblind)
-      {
-        self.colorblind_button.draw(dc);
-      }
-
-      if(init.display_pause && self.ticks_playing == 0)
-      {
-        ctx.fillStyle = "rgba(255,255,255,0.5)";
-        ctx.fillRect(self.x,self.y,self.w,self.h);
-
-        var w = self.w;
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = DARK_COLOR;
-        ctx.fillRect(w-28,10,8,20);
-        ctx.strokeRect(w-28,10,8,20);
-        ctx.fillRect(w-18,10,8,20);
-        ctx.strokeRect(w-18,10,8,20);
-      }
-      else
-      {
-        if(init.display_pause && self.ticks_playing < 30)
-        {
-          var w = self.w;
-          ctx.fillStyle = "white";
-          ctx.strokeStyle = DARK_COLOR;
-          ctx.beginPath();
-          ctx.moveTo(w-10, 20);
-          ctx.lineTo(w-25, 30);
-          ctx.lineTo(w-25, 10);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-        }
-
-        if(init.prompt_prerequisite_unmet && self.ticks_initialized == 0)
-        {
-          ctx.fillStyle = DARK_COLOR;
-          ctx.font = "12px Helvetica Neue";
-          ctx.fillText("Waiting for population to grow...",round(self.w/2-100),round(dc.height-50));
-        }
-        else if(init.prompt_prerequisite_unmet && self.ticks_initialized < 30)
-        {
-          ctx.fillStyle = DARK_COLOR;
-          ctx.font = "12px Helvetica Neue";
-          ctx.fillText("Begin!",round(self.w/2-100),round(dc.height-50));
-        }
-      }
-
-      if(init.prompt_reset_on_empty && (self.n_badb + self.n_good + self.n_body) == 0)
-      {
-        ctx.fillStyle = DARK_COLOR;
-        ctx.font = "12px Helvetica Neue";
-        ctx.fillText("Reset to add bacteria "+String.fromCharCode(8595),round(self.w/2-60),round(dc.height-50));
-      }
-
-      /*
-      //for more visible debugging overlay
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillRect(0,0,dc.width,dc.height/2);
-      */
-    }
-
     self.tick = function()
     {
       //gauge whether appropriate to continue
-      if(platform == "PC")
+      if(platform == "PC") //based on hover
       {
-        // Disable the game when mouse is not hovering over it
         if(self.hovering) self.ticks_outside = 0;
         else              self.ticks_outside++;
       }
-      else if(platform == "MOBILE")
+      else if(platform == "MOBILE") //based on screen pos
       {
-        // Instead of mouse hover, disable the game when off screen
         var rect = hoverer.source.getBoundingClientRect();
         var onScreen = rect.top < window.innerHeight && 0 < rect.top + rect.height;
         if(onScreen) self.ticks_outside = 0;
@@ -1035,246 +844,18 @@ var GamePlayScene = function(game, stage)
       var old_nodes = self.node_buffs[self.node_buff];
       self.node_buff = (self.node_buff+1)%2;
       var new_nodes = self.node_buffs[self.node_buff];
-
-      //clone buff
-      for(var i = 0; i < new_nodes.length; i++)
-      {
-        new_nodes[i].cloneMutables(old_nodes[i]);
-        new_nodes[i].tick();
-      }
-
-      //tick nodes
-      self.n_badb = 0; self.ave_badb_biot_resist = 0;
-      self.n_good = 0; self.ave_badb_biot_resist = 0;
-      self.n_body = 0; self.ave_badb_biot_resist = 0;
-      self.n_r = 0;
-      self.n_g = 0;
-      self.n_b = 0;
-      for(var i = 0; i < new_nodes.length; i++)
-      {
-        var n = new_nodes[i];
-             if(n.type == NODE_TYPE_BADB) { if(init.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_badb++; self.ave_badb_biot_resist += n.biot_resist; }
-        else if(n.type == NODE_TYPE_GOOD) { if(init.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_good++; self.ave_good_biot_resist += n.biot_resist; }
-        else if(n.type == NODE_TYPE_BODY) { self.n_body++; self.ave_body_biot_resist += n.biot_resist; }
-      }
-      if(self.n_badb > 0) self.ave_badb_biot_resist /= self.n_badb;
-      if(self.n_good > 0) self.ave_good_biot_resist /= self.n_good;
-      if(self.n_body > 0) self.ave_body_biot_resist /= self.n_body;
-
-      var n_nodes = self.n_badb + self.n_good + self.n_body ;
-      if(init.prerequisite_fill_for_interaction == 0 || n_nodes == 0 || n_nodes >= init.prerequisite_fill_for_interaction*self.rows*self.cols)
-        self.prerequisite_met = true;
-
-      if(!self.prerequisite_met) self.ticks_initialized = 0;
-      else                       self.ticks_initialized++;
-
-      //point to correct node in new buff
+      //correct pointers for new buff
       if(self.hovering_node) self.hovering_node = self.nodeAt(self.hovering_node.col,self.hovering_node.row);
       if(self.dragging_node) self.dragging_node = self.nodeAt(self.dragging_node.col,self.dragging_node.row);
 
-      if(self.hovering_node && self.prerequisite_met)
-      {
-        var n;
-        switch(init.hover_function)
-        {
-          case CLICK_FUNC_KILL:
-            self.hovering_node.setType(NODE_TYPE_NONE);
-            self.hovering_node.parent_node = undefined;
-            if(init.swab_size > 1)
-            {
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
-            }
-            break;
-          case CLICK_FUNC_DAMG:
-            self.hovering_node.health -= 0.3;
-            if(self.hovering_node.health <= 0)
-            {
-              self.hovering_node.setType(NODE_TYPE_NONE);
-              self.hovering_node.parent_node = undefined;
-            }
-            if(init.swab_size > 1)
-            {
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.health -= 0.2; if(n.health <= 0) { n.setType(NODE_TYPE_NONE); n.parent_node = undefined; }
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.health -= 0.2; if(n.health <= 0) { n.setType(NODE_TYPE_NONE); n.parent_node = undefined; }
-              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.health -= 0.2; if(n.health <= 0) { n.setType(NODE_TYPE_NONE); n.parent_node = undefined; }
-              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.health -= 0.2; if(n.health <= 0) { n.setType(NODE_TYPE_NONE); n.parent_node = undefined; }
-            }
-            break;
-          case CLICK_FUNC_BADB:
-            self.hovering_node.setType(NODE_TYPE_BADB);
-            if(init.colored_hsl)
-            {
-              self.hovering_node.h = init.default_h;
-              HSL2RGB(self.hovering_node,self.hovering_node);
-            }
-            else if(init.colored_rgb)
-            {
-              self.hovering_node.r = init.default_r;
-              self.hovering_node.g = init.default_g;
-              self.hovering_node.b = init.default_b;
-            }
-            self.hovering_node.biot_resist = init.default_badb_resist;
-            self.hovering_node.parent_node = undefined;
-            if(init.swab_size > 1)
-            {
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
-            }
-            break;
-          case CLICK_FUNC_GOOD:
-            self.hovering_node.setType(NODE_TYPE_GOOD);
-            if(init.colored_hsl)
-            {
-              self.hovering_node.h = init.default_h;
-              HSL2RGB(self.hovering_node,self.hovering_node);
-            }
-            else if(init.colored_rgb)
-            {
-              self.hovering_node.r = init.default_r;
-              self.hovering_node.g = init.default_g;
-              self.hovering_node.b = init.default_b;
-            }
-            self.hovering_node.biot_resist = init.default_good_resist;
-            self.hovering_node.parent_node = undefined;
-            if(init.swab_size > 1)
-            {
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
-            }
-            break;
-          case CLICK_FUNC_BODY:
-            self.hovering_node.setType(NODE_TYPE_BODY);
-            if(init.colored_hsl)
-            {
-              self.hovering_node.h = init.default_h;
-              HSL2RGB(self.hovering_node,self.hovering_node);
-            }
-            else if(init.colored_rgb)
-            {
-              self.hovering_node.r = init.default_r;
-              self.hovering_node.g = init.default_g;
-              self.hovering_node.b = init.default_b;
-            }
-            self.hovering_node.parent_node = undefined;
-            if(init.swab_size > 1)
-            {
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
-              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
-            }
-            break;
-          case CLICK_FUNC_NONE:
-          default:
-            break;
-        }
-      }
+      //clone buff
+      for(var i = 0; i < new_nodes.length; i++)
+        new_nodes[i].cloneMutables(old_nodes[i]);
+      //tick buff
+      for(var i = 0; i < new_nodes.length; i++)
+        new_nodes[i].tick();
 
-      if(self.dragging_node && self.prerequisite_met)
-      {
-        switch(init.click_function)
-        {
-          case CLICK_FUNC_KILL:
-            self.dragging_node.setType(NODE_TYPE_NONE);
-            self.dragging_node.parent_node = undefined;
-            if(init.swab_size > 1)
-            {
-              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row+1); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col-1,self.dragging_node.row); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col+1,self.dragging_node.row); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
-            }
-            break;
-          case CLICK_FUNC_DAMG:
-            self.dragging_node.health -= 0.1;
-            if(self.dragging_node.health <= 0)
-            {
-              self.dragging_node.setType(NODE_TYPE_NONE);
-              self.dragging_node.parent_node = undefined;
-            }
-            break;
-          case CLICK_FUNC_BADB:
-            self.dragging_node.setType(NODE_TYPE_BADB);
-            if(init.colored_hsl)
-            {
-              self.dragging_node.h = init.default_h;
-              HSL2RGB(self.dragging_node,self.dragging_node);
-            }
-            else if(init.colored_rgb)
-            {
-              self.dragging_node.r = init.default_r;
-              self.dragging_node.g = init.default_g;
-              self.dragging_node.b = init.default_b;
-            }
-            self.dragging_node.biot_resist = init.default_badb_resist;
-            self.dragging_node.parent_node = undefined;
-            if(init.swab_size > 1)
-            {
-              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row+1); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col-1,self.dragging_node.row); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col+1,self.dragging_node.row); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
-            }
-            break;
-          case CLICK_FUNC_GOOD:
-            self.dragging_node.setType(NODE_TYPE_GOOD);
-            if(init.colored_hsl)
-            {
-              self.dragging_node.h = init.default_h;
-              HSL2RGB(self.dragging_node,self.dragging_node);
-            }
-            else if(init.colored_rgb)
-            {
-              self.dragging_node.r = init.default_r;
-              self.dragging_node.g = init.default_g;
-              self.dragging_node.b = init.default_b;
-            }
-            self.dragging_node.biot_resist = init.default_good_resist;
-            self.dragging_node.parent_node = undefined;
-            if(init.swab_size > 1)
-            {
-              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row+1); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col-1,self.dragging_node.row); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col+1,self.dragging_node.row); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
-            }
-            break;
-          case CLICK_FUNC_BODY:
-            self.dragging_node.setType(NODE_TYPE_BODY);
-            if(init.colored_hsl)
-            {
-              self.dragging_node.h = init.default_h;
-              HSL2RGB(self.dragging_node,self.dragging_node);
-            }
-            else if(init.colored_rgb)
-            {
-              self.dragging_node.r = init.default_r;
-              self.dragging_node.g = init.default_g;
-              self.dragging_node.b = init.default_b;
-            }
-            self.dragging_node.parent_node = undefined;
-            if(init.swab_size > 1)
-            {
-              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row+1); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col-1,self.dragging_node.row); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
-              n = self.nodeAt(self.dragging_node.col+1,self.dragging_node.row); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
-            }
-            break;
-          case CLICK_FUNC_NONE:
-          default:
-            break;
-        }
-      }
-
-      //update in-node grid changes
+      //tick full grid (inter-node)
       for(var r = 0; r < self.rows; r++)
       {
         for(var c = 0; c < self.cols; c++)
@@ -1417,7 +998,7 @@ var GamePlayScene = function(game, stage)
         }
       }
 
-      //update outer-node movements
+      //tick full grid (outer-node)
       for(var r = 0; r < self.rows; r++)
       {
         for(var c = 0; c < self.cols; c++)
@@ -1437,8 +1018,6 @@ var GamePlayScene = function(game, stage)
               break;
           }
 
-
-
           if(on.type == NODE_TYPE_BODY && !on.body_resist)
           {
             nn = new_nodes[self.ifor(c-1,r)]; if(nn.type == NODE_TYPE_BADB) { reprod = 1; nn.setType(NODE_TYPE_BODY); }
@@ -1450,42 +1029,446 @@ var GamePlayScene = function(game, stage)
         }
       }
 
-      if(self.ticks_playing > 0)
+      //tick aux stuff
+      if(init.allow_dose_slider && self.dosing_prog)
       {
-        if(init.allow_dose_slider && self.dosing_prog)
-        {
-          self.dose(self.dosing_prog);
-          self.dosing_prog += self.dosing_prog_rate;
-          if(self.dosing_prog > self.dose_amt)
-            self.dosing_prog = 0;
-        }
-        else if(init.allow_dose_button && self.dosing_prog)
-        {
-          self.dose(self.dosing_prog);
+        self.dose(self.dosing_prog);
+        self.dosing_prog += self.dosing_prog_rate;
+        if(self.dosing_prog > self.dose_amt)
           self.dosing_prog = 0;
-        }
+      }
+      else if(init.allow_dose_button && self.dosing_prog)
+      {
+        self.dose(self.dosing_prog);
+        self.dosing_prog = 0;
+      }
+      if(init.allow_sim_speed_slider) self.simspeed_slider.tick();
+      if(init.allow_dose_slider)      self.dose_slider.tick();
+      if(init.reinit_badb && self.n_badb == 0)
+      {
+        self.nodeAt(floor(self.cols/3),floor(self.rows/3)).setType(NODE_TYPE_BADB);
+        self.nodeAt(floor(self.cols/3),floor(self.rows/3)).biot_resist = init.default_badb_resist;
+      }
+      if(init.reinit_good && self.n_good == 0)
+      {
+        self.nodeAt(floor(self.cols/3*2),floor(self.rows/3)).setType(NODE_TYPE_GOOD);
+        self.nodeAt(floor(self.cols/3*2),floor(self.rows/3)).biot_resist = init.default_good_resist;
+      }
+      if(init.allow_body && init.reinit_body && self.n_body == 0)
+      {
+        self.nodeAt(floor(self.cols/2),floor(self.rows/3*2)).setType(NODE_TYPE_BODY);
+      }
 
-        if(init.allow_sim_speed_slider) self.simspeed_slider.tick();
-        if(init.allow_dose_slider)      self.dose_slider.tick();
-        if(init.reinit_badb && self.n_badb == 0)
+      //gather stats
+      self.n_nodes = 0;
+      self.n_badb = 0; self.ave_badb_biot_resist = 0;
+      self.n_good = 0; self.ave_badb_biot_resist = 0;
+      self.n_body = 0; self.ave_badb_biot_resist = 0;
+      self.n_r = 0;
+      self.n_g = 0;
+      self.n_b = 0;
+      for(var i = 0; i < new_nodes.length; i++)
+      {
+        var n = new_nodes[i];
+             if(n.type == NODE_TYPE_BADB) { if(init.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_badb++; self.ave_badb_biot_resist += n.biot_resist; }
+        else if(n.type == NODE_TYPE_GOOD) { if(init.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_good++; self.ave_good_biot_resist += n.biot_resist; }
+        else if(n.type == NODE_TYPE_BODY) { self.n_body++; self.ave_body_biot_resist += n.biot_resist; }
+      }
+      self.n_nodes = self.n_badb + self.n_good + self.n_body;
+      if(self.n_badb > 0) self.ave_badb_biot_resist /= self.n_badb;
+      if(self.n_good > 0) self.ave_good_biot_resist /= self.n_good;
+      if(self.n_body > 0) self.ave_body_biot_resist /= self.n_body;
+
+      if(init.prerequisite_fill_for_interaction == 0 || self.n_nodes == 0 || self.n_nodes >= init.prerequisite_fill_for_interaction*self.rows*self.cols)
+        self.prerequisite_met = true;
+      if(self.prerequisite_met) self.ticks_initialized++;
+      else                      self.ticks_initialized = 0;
+
+      //handle hovering
+      if(self.hovering_node && self.prerequisite_met)
+      {
+        var n;
+        switch(init.hover_function)
         {
-          self.nodeAt(floor(self.cols/3),floor(self.rows/3)).setType(NODE_TYPE_BADB);
-          self.nodeAt(floor(self.cols/3),floor(self.rows/3)).biot_resist = init.default_badb_resist;
-        }
-        if(init.reinit_good && self.n_good == 0)
-        {
-          self.nodeAt(floor(self.cols/3*2),floor(self.rows/3)).setType(NODE_TYPE_GOOD);
-          self.nodeAt(floor(self.cols/3*2),floor(self.rows/3)).biot_resist = init.default_good_resist;
-        }
-        if(init.allow_body && init.reinit_body && self.n_body == 0)
-        {
-          self.nodeAt(floor(self.cols/2),floor(self.rows/3*2)).setType(NODE_TYPE_BODY);
+          case CLICK_FUNC_KILL:
+            self.hovering_node.setType(NODE_TYPE_NONE);
+            self.hovering_node.parent_node = undefined;
+            if(init.swab_size > 1)
+            {
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
+            }
+            break;
+          case CLICK_FUNC_DAMG:
+            self.hovering_node.health -= 0.3;
+            if(self.hovering_node.health <= 0)
+            {
+              self.hovering_node.setType(NODE_TYPE_NONE);
+              self.hovering_node.parent_node = undefined;
+            }
+            if(init.swab_size > 1)
+            {
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.health -= 0.2; if(n.health <= 0) { n.setType(NODE_TYPE_NONE); n.parent_node = undefined; }
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.health -= 0.2; if(n.health <= 0) { n.setType(NODE_TYPE_NONE); n.parent_node = undefined; }
+              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.health -= 0.2; if(n.health <= 0) { n.setType(NODE_TYPE_NONE); n.parent_node = undefined; }
+              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.health -= 0.2; if(n.health <= 0) { n.setType(NODE_TYPE_NONE); n.parent_node = undefined; }
+            }
+            break;
+          case CLICK_FUNC_BADB:
+            self.hovering_node.setType(NODE_TYPE_BADB);
+            if(init.colored_hsl)
+            {
+              self.hovering_node.h = init.default_h;
+              HSL2RGB(self.hovering_node,self.hovering_node);
+            }
+            else if(init.colored_rgb)
+            {
+              self.hovering_node.r = init.default_r;
+              self.hovering_node.g = init.default_g;
+              self.hovering_node.b = init.default_b;
+            }
+            self.hovering_node.biot_resist = init.default_badb_resist;
+            self.hovering_node.parent_node = undefined;
+            if(init.swab_size > 1)
+            {
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
+            }
+            break;
+          case CLICK_FUNC_GOOD:
+            self.hovering_node.setType(NODE_TYPE_GOOD);
+            if(init.colored_hsl)
+            {
+              self.hovering_node.h = init.default_h;
+              HSL2RGB(self.hovering_node,self.hovering_node);
+            }
+            else if(init.colored_rgb)
+            {
+              self.hovering_node.r = init.default_r;
+              self.hovering_node.g = init.default_g;
+              self.hovering_node.b = init.default_b;
+            }
+            self.hovering_node.biot_resist = init.default_good_resist;
+            self.hovering_node.parent_node = undefined;
+            if(init.swab_size > 1)
+            {
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
+            }
+            break;
+          case CLICK_FUNC_BODY:
+            self.hovering_node.setType(NODE_TYPE_BODY);
+            if(init.colored_hsl)
+            {
+              self.hovering_node.h = init.default_h;
+              HSL2RGB(self.hovering_node,self.hovering_node);
+            }
+            else if(init.colored_rgb)
+            {
+              self.hovering_node.r = init.default_r;
+              self.hovering_node.g = init.default_g;
+              self.hovering_node.b = init.default_b;
+            }
+            self.hovering_node.parent_node = undefined;
+            if(init.swab_size > 1)
+            {
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row-1); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col,self.hovering_node.row+1); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col-1,self.hovering_node.row); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
+              n = self.nodeAt(self.hovering_node.col+1,self.hovering_node.row); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
+            }
+            break;
+          case CLICK_FUNC_NONE:
+          default:
+            break;
         }
       }
-      return true;
 
+      //handle dragging
+      if(self.dragging_node && self.prerequisite_met)
+      {
+        switch(init.click_function)
+        {
+          case CLICK_FUNC_KILL:
+            self.dragging_node.setType(NODE_TYPE_NONE);
+            self.dragging_node.parent_node = undefined;
+            if(init.swab_size > 1)
+            {
+              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row+1); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col-1,self.dragging_node.row); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col+1,self.dragging_node.row); n.setType(NODE_TYPE_NONE); n.parent_node = undefined;
+            }
+            break;
+          case CLICK_FUNC_DAMG:
+            self.dragging_node.health -= 0.1;
+            if(self.dragging_node.health <= 0)
+            {
+              self.dragging_node.setType(NODE_TYPE_NONE);
+              self.dragging_node.parent_node = undefined;
+            }
+            break;
+          case CLICK_FUNC_BADB:
+            self.dragging_node.setType(NODE_TYPE_BADB);
+            if(init.colored_hsl)
+            {
+              self.dragging_node.h = init.default_h;
+              HSL2RGB(self.dragging_node,self.dragging_node);
+            }
+            else if(init.colored_rgb)
+            {
+              self.dragging_node.r = init.default_r;
+              self.dragging_node.g = init.default_g;
+              self.dragging_node.b = init.default_b;
+            }
+            self.dragging_node.biot_resist = init.default_badb_resist;
+            self.dragging_node.parent_node = undefined;
+            if(init.swab_size > 1)
+            {
+              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row+1); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col-1,self.dragging_node.row); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col+1,self.dragging_node.row); n.setType(NODE_TYPE_BADB); n.biot_resist = init.default_badb_resist; n.parent_node = undefined;
+            }
+            break;
+          case CLICK_FUNC_GOOD:
+            self.dragging_node.setType(NODE_TYPE_GOOD);
+            if(init.colored_hsl)
+            {
+              self.dragging_node.h = init.default_h;
+              HSL2RGB(self.dragging_node,self.dragging_node);
+            }
+            else if(init.colored_rgb)
+            {
+              self.dragging_node.r = init.default_r;
+              self.dragging_node.g = init.default_g;
+              self.dragging_node.b = init.default_b;
+            }
+            self.dragging_node.biot_resist = init.default_good_resist;
+            self.dragging_node.parent_node = undefined;
+            if(init.swab_size > 1)
+            {
+              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row+1); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col-1,self.dragging_node.row); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col+1,self.dragging_node.row); n.setType(NODE_TYPE_GOOD); n.biot_resist = init.default_good_resist; n.parent_node = undefined;
+            }
+            break;
+          case CLICK_FUNC_BODY:
+            self.dragging_node.setType(NODE_TYPE_BODY);
+            if(init.colored_hsl)
+            {
+              self.dragging_node.h = init.default_h;
+              HSL2RGB(self.dragging_node,self.dragging_node);
+            }
+            else if(init.colored_rgb)
+            {
+              self.dragging_node.r = init.default_r;
+              self.dragging_node.g = init.default_g;
+              self.dragging_node.b = init.default_b;
+            }
+            self.dragging_node.parent_node = undefined;
+            if(init.swab_size > 1)
+            {
+              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row-1); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col,self.dragging_node.row+1); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col-1,self.dragging_node.row); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
+              n = self.nodeAt(self.dragging_node.col+1,self.dragging_node.row); n.setType(NODE_TYPE_BODY); n.parent_node = undefined;
+            }
+            break;
+          case CLICK_FUNC_NONE:
+          default:
+            break;
+        }
+      }
     }
 
+    self.draw = function()
+    {
+      var nodes = self.node_buffs[self.node_buff];
+      ctx.lineWidth = nodes[0].w/8;
+      for(var i = 0; i < nodes.length; i++)
+        nodes[i].draw(dc,false,true);
+      ctx.lineWidth = 2;
+      if(!init.colorblind || !scene.colorblind_mode)
+      {
+        for(var i = 0; i < nodes.length; i++)
+          nodes[i].draw(dc,false,false);
+      }
+      else
+      {
+        for(var i = 0; i < nodes.length; i++)
+        {
+          if(init.colored_hsl && nodes[i].h > 90 && nodes[i].h < 150)
+            nodes[i].draw(dc,true,false);
+          else if(init.colored_rgb && nodes[i].g > nodes[i].r && nodes[i].g > nodes[i].b)
+            nodes[i].draw(dc,true,false);
+          else
+            nodes[i].draw(dc,false,false);
+        }
+      }
+
+      ctx.strokeStyle = "#0000FF";
+      if(init.show_hover && self.hovering_node && scene.prerequisite_met)
+      {
+        if(init.swab_size == 1)
+        {
+          ctx.strokeRect(self.hovering_node.x,self.hovering_node.y,self.hovering_node.w,self.hovering_node.height);
+        }
+        else
+        {
+          ctx.strokeRect(self.hovering_node.x-self.hovering_node.w,self.hovering_node.y,self.hovering_node.w*3,self.hovering_node.height);
+          ctx.strokeRect(self.hovering_node.x,self.hovering_node.y-self.hovering_node.height,self.hovering_node.w,self.hovering_node.height*3);
+        }
+      }
+
+      if(self.n_nodes == 0)
+      {
+        ctx.drawImage(plus_img,self.w/2-20,self.h/2-20-30,40,40);
+        ctx.font = "20px Open Sans";
+        ctx.fillStyle = "#000000";
+        ctx.textAlign = "center";
+        ctx.fillText("CLICK TO ADD BACTERIA",self.w/2,self.h/2+30);
+      }
+
+      if(init.allow_sim_speed_slider)
+      {
+        self.simspeed_slider.draw(dc);
+      }
+      if(init.allow_dose_slider)
+      {
+        ctx.strokeStyle = "#00FF00";
+        self.dose_button.draw(dc);
+        ctx.strokeStyle = "#00FF00";
+        self.dose_slider.draw(dc);
+
+        //fill slider with color exterminating
+        var r = floor((1-self.dose_amt)*255);
+        ctx.fillStyle = "rgba("+r+","+r+","+r+",1)";
+        var switch_x = self.dose_slider.slit_x+(((self.dose_slider.val-self.dose_slider.min_val)/(self.dose_slider.max_val-self.dose_slider.min_val))*self.dose_slider.slit_w);
+        ctx.fillRect(switch_x-(self.dose_slider.w/20)+0.5,self.dose_slider.y+0.5,(self.dose_slider.w/10),self.dose_slider.h);
+      }
+      else if(init.allow_dose_button)
+      {
+        ctx.font = "20px Open Sans";
+        ctx.fillStyle = "#000000";
+        ctx.textAlign = "left";
+        ctx.fillText("dose antibiotic",self.dose_button.x+self.dose_button.w+5,self.dose_button.y+self.dose_button.h-2);
+        ctx.strokeStyle = "#000000";
+        ctx.beginPath();
+        ctx.arc(self.dose_button.x+self.dose_button.w/2,self.dose_button.y+self.dose_button.h/2-3,self.dose_button.w/2,0,2*pi);
+        ctx.stroke();
+        if(self.dose_button.down)
+        {
+          ctx.fillStyle = "#000000";
+          ctx.fill();
+        }
+      }
+      if(init.allow_reset)
+      {
+        ctx.font = "20px Open Sans";
+        ctx.fillStyle = "#000000";
+        ctx.textAlign = "right";
+        ctx.fillText("reset",self.reset_button.x+self.reset_button.w,self.reset_button.y+self.reset_button.h-2);
+        ctx.strokeStyle = "#000000";
+        ctx.textAlign = "left";
+      }
+      if(init.ave_display_width > 0)
+      {
+        self.ave_disp.draw(dc);
+      }
+      if(init.split_display_width > 0)
+      {
+        self.split_disp.draw(dc);
+      }
+      if(init.tricolor_display_width > 0)
+      {
+        self.tricolor_disp.draw(dc);
+      }
+      if(init.hsl_display_width > 0)
+      {
+        self.hsl_disp.draw(dc);
+      }
+
+      if(init.allow_contaminate)
+      {
+        self.sneeze_button.draw(dc);
+        self.catch_button.draw(dc);
+      }
+
+      if(init.allow_dose_slider && self.dosing_prog)
+      {
+        ctx.strokeStyle = "#00FF00";
+        ctx.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
+      }
+
+      if(init.colorblind)
+      {
+        self.colorblind_button.draw(dc);
+      }
+
+      if(init.display_pause && self.ticks_playing == 0)
+      {
+        ctx.fillStyle = "rgba(255,255,255,0.5)";
+        ctx.fillRect(self.x,self.y,self.w,self.h);
+
+        var w = self.w;
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = DARK_COLOR;
+        ctx.fillRect(w-28,10,8,20);
+        ctx.strokeRect(w-28,10,8,20);
+        ctx.fillRect(w-18,10,8,20);
+        ctx.strokeRect(w-18,10,8,20);
+      }
+      else
+      {
+        if(init.display_pause && self.ticks_playing < 30)
+        {
+          var w = self.w;
+          ctx.fillStyle = "white";
+          ctx.strokeStyle = DARK_COLOR;
+          ctx.beginPath();
+          ctx.moveTo(w-10, 20);
+          ctx.lineTo(w-25, 30);
+          ctx.lineTo(w-25, 10);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+
+        if(init.prompt_prerequisite_unmet && self.ticks_initialized == 0)
+        {
+          ctx.fillStyle = DARK_COLOR;
+          ctx.font = "12px Helvetica Neue";
+          ctx.fillText("Waiting for population to grow...",round(self.w/2-100),round(dc.height-50));
+        }
+        else if(init.prompt_prerequisite_unmet && self.ticks_initialized < 30)
+        {
+          ctx.fillStyle = DARK_COLOR;
+          ctx.font = "12px Helvetica Neue";
+          ctx.fillText("Begin!",round(self.w/2-100),round(dc.height-50));
+        }
+      }
+
+      if(init.prompt_reset_on_empty && (self.n_badb + self.n_good + self.n_body) == 0)
+      {
+        ctx.fillStyle = DARK_COLOR;
+        ctx.font = "12px Helvetica Neue";
+        ctx.fillText("Reset to add bacteria "+String.fromCharCode(8595),round(self.w/2-60),round(dc.height-50));
+      }
+
+      /*
+      //for more visible debugging overlay
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0,0,dc.width,dc.height/2);
+      */
+    }
 
     self.hovering = false;
     self.hovering_node = undefined;
@@ -1514,6 +1497,7 @@ var GamePlayScene = function(game, stage)
       self.dragging = false;
       self.dragging_node = undefined;
     }
+
   };
 
   self.ready = function()
@@ -1534,7 +1518,8 @@ var GamePlayScene = function(game, stage)
     presser.flush();
     dragger.flush();
 
-    grid.tick();
+    for(var i = 0; i < 1; i++)
+      grid.tick();
   }
   self.draw = function()
   {
