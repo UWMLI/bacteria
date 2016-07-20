@@ -571,23 +571,23 @@ var GamePlayScene = function(game, stage)
       prompt_reset_on_empty:false,
       allow_contaminate:false,
       default_badb_resist:0.1,
-      init_badb:true,
-      reinit_badb:true,
+      init_badb:false,
+      reinit_badb:false,
       default_good_resist:0.1,
-      allow_good:true,
-      init_good:true,
-      reinit_good:true,
-      allow_body:true,
-      init_body:true,
-      reinit_body:true,
+      allow_good:false,
+      init_good:false,
+      reinit_good:false,
+      allow_body:false,
+      init_body:false,
+      reinit_body:false,
       swab_size:1,
-      click_function:CLICK_FUNC_NONE,
+      click_function:CLICK_FUNC_BADB,
       hover_function:CLICK_FUNC_NONE,
       show_hover:false,
       mutate_random_assign:false,
       mutate_rate:0.1,
       mutate_distance:0.1,
-      bias_mutate:true,
+      bias_mutate:false,
       reproduce:true,
       age:true,
       ave_display_width:0,
@@ -923,52 +923,50 @@ var GamePlayScene = function(game, stage)
                 var rc = token_node.r;
                 var gc = token_node.g;
                 var bc = token_node.b;
+                var rnd = rand();
                 if(init.mutate_rate)
                 {
                   if(init.mutate_random_assign && rand() < init.mutate_rate)
                   {
-                    if(rand < init.mutate_random_assign)
+                    biot_resist = rand();
+                    if(init.colored_rgb)
                     {
-                      biot_resist = rand();
-                      if(init.colored_rgb)
-                      {
-                        rc = rand();
-                        gc = rand();
-                        bc = rand();
-                      }
-                      if(init.colored_hsl)
-                      {
-                        hc = rand()*360;
-                      }
+                      rc = rand();
+                      gc = rand();
+                      bc = rand();
+                    }
+                    if(init.colored_hsl)
+                    {
+                      hc = rand()*360;
                     }
                   }
                   else if(init.mutate_distance)
                   {
                     if(init.colored_rgb)
                     {
-                           if(rand < init.mutate_rate*0.5)   rc -= rand()*init.mutate_distance;
-                      else if(rand > 1-init.mutate_rate*0.5) rc += rand()*init.mutate_distance;
-                           if(rand < init.mutate_rate*0.5)   gc -= rand()*init.mutate_distance;
-                      else if(rand > 1-init.mutate_rate*0.5) gc += rand()*init.mutate_distance;
-                           if(rand < init.mutate_rate*0.5)   bc -= rand()*init.mutate_distance;
-                      else if(rand > 1-init.mutate_rate*0.5) bc += rand()*init.mutate_distance;
+                           if(rnd <   init.mutate_rate*0.5) rc -= rand()*init.mutate_distance;
+                      else if(rnd > 1-init.mutate_rate*0.5) rc += rand()*init.mutate_distance;
+                           if(rnd <   init.mutate_rate*0.5) gc -= rand()*init.mutate_distance;
+                      else if(rnd > 1-init.mutate_rate*0.5) gc += rand()*init.mutate_distance;
+                           if(rnd <   init.mutate_rate*0.5) bc -= rand()*init.mutate_distance;
+                      else if(rnd > 1-init.mutate_rate*0.5) bc += rand()*init.mutate_distance;
                     }
                     else if(init.colored_hsl)
                     {
-                           if(rand < init.mutate_rate*0.5)   hc -= rand()*init.mutate_distance*180;
-                      else if(rand > 1-init.mutate_rate*0.5) hc += rand()*init.mutate_distance*180;
+                           if(rnd <   init.mutate_rate*0.5) hc -= rand()*init.mutate_distance*180;
+                      else if(rnd > 1-init.mutate_rate*0.5) hc += rand()*init.mutate_distance*180;
                     }
                     else
                     {
                       if(init.bias_mutate)
                       {
-                             if(rand < init.mutate_rate*0.4)   biot_resist -= rand()*init.mutate_distance;
-                        else if(rand > 1-init.mutate_rate*0.6) biot_resist += rand()*init.mutate_distance;
+                             if(rnd <   init.mutate_rate*0.4) biot_resist -= rand()*init.mutate_distance;
+                        else if(rnd > 1-init.mutate_rate*0.6) biot_resist += rand()*init.mutate_distance;
                       }
                       else
                       {
-                             if(rand < init.mutate_rate*0.5)   biot_resist -= rand()*init.mutate_distance;
-                        else if(rand > 1-init.mutate_rate*0.5) biot_resist += rand()*init.mutate_distance;
+                             if(rnd <   init.mutate_rate*0.5) biot_resist -= rand()*init.mutate_distance;
+                        else if(rnd > 1-init.mutate_rate*0.5) biot_resist += rand()*init.mutate_distance;
                       }
                     }
                   }
@@ -987,10 +985,10 @@ var GamePlayScene = function(game, stage)
                   new_nodes[i].h = hc;
                   HSL2RGB(new_nodes[i],new_nodes[i]);
                 }
-                if(biot_resist < 0) biot_resist = 0;
+                     if(biot_resist < 0) biot_resist = 0;
                 else if(biot_resist > 1) biot_resist = 1;
                 new_nodes[i].biot_resist = biot_resist;
-                new_nodes[i].health = biot_resist;
+                new_nodes[i].health      = biot_resist;
               }
 
               break;
