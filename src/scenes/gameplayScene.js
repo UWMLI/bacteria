@@ -1556,7 +1556,7 @@ var GamePlayScene = function(game, stage)
     mode = MODE_PLAY;
 
     blurb_x = 200;
-    blurb_h = 200;
+    blurb_h = 100;
     blurb_y = dc.height-blurb_h-20;
     blurb_w = dc.width-blurb_x-20;
     blurb_font = "20px Open Sans";
@@ -1651,8 +1651,9 @@ var GamePlayScene = function(game, stage)
     lvl_draw[cur_lvl]();
 
     ctx.drawImage(blue_img,0,dc.height-blurb_t*100,dc.width,100);
+    var p = 0.6;
     for(var i = 0; i < char_imgs.length; i++)
-      ctx.drawImage(char_imgs[i],20,dc.height-char_ts[i]*300,200,400);
+      ctx.drawImage(char_imgs[i],-10,dc.height-char_ts[i]*200,396*p,636*p);
     if(blurb_line < blurb_lines.length)
     {
       ctx.textAlign = "left";
