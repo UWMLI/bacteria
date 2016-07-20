@@ -10,7 +10,7 @@ var Canv = function(init)
     strokeStyle:"#000000",
     lineWidth:2,
     font:"12px vg_font",
-    smoothing:true
+    smoothing:false
   }
 
   var self = this;
@@ -33,7 +33,7 @@ var Canv = function(init)
   self.context.lineWidth   = init.lineWidth;
   self.context.font        = init.font;
 
-  self.context.imageSmoothingEnabled = init.smoothing;
+  self.context.imageSmoothingEnabled = true;
 };
 Canv.prototype.clear = function()
 {
@@ -49,6 +49,7 @@ Canv.prototype.blitTo = function(canv)
 Canv.prototype.drawLine = function(ax,ay,bx,by)
 {
   var self = this;
+  var ca = self.canvas;
   var cx = self.context;
 
   cx.beginPath();
@@ -59,6 +60,7 @@ Canv.prototype.drawLine = function(ax,ay,bx,by)
 Canv.prototype.drawGrid = function(center_x, center_y, unit_x, unit_y)
 {
   var self = this;
+  var ca = self.canvas;
   var cx = self.context;
 
   var t;
@@ -66,37 +68,37 @@ Canv.prototype.drawGrid = function(center_x, center_y, unit_x, unit_y)
   var y;
 
   t = center_x;
-  x = lerp(0,self.width,t);
+  x = lerp(0,ca.width,t);
   while(t < 1)
   {
-    self.drawLine(x,0,x,self.height);
+    self.drawLine(x,0,x,ca.height);
     x += unit_x;
-    t = invlerp(0,self.width,x);
+    t = invlerp(0,ca.width,x);
   }
   t = center_x;
-  x = lerp(0,self.width,t);
+  x = lerp(0,ca.width,t);
   while(t > 0)
   {
-    self.drawLine(x,0,x,self.height);
+    self.drawLine(x,0,x,ca.height);
     x -= unit_x;
-    t = invlerp(0,self.width,x);
+    t = invlerp(0,ca.width,x);
   }
 
   t = center_y;
-  y = lerp(0,self.height,t);
+  y = lerp(0,ca.height,t);
   while(t < 1)
   {
-    self.drawLine(0,y,self.width,y);
+    self.drawLine(0,y,ca.width,y);
     y += unit_y;
-    t = invlerp(0,self.height,y);
+    t = invlerp(0,ca.height,y);
   }
   t = center_y;
-  y = lerp(0,self.height,t);
+  y = lerp(0,ca.height,t);
   while(t > 0)
   {
-    self.drawLine(0,y,self.width,y);
+    self.drawLine(0,y,ca.width,y);
     y -= unit_y;
-    t = invlerp(0,self.height,y);
+    t = invlerp(0,ca.height,y);
   }
 }
 Canv.prototype.outlineText = function(text,x,y,color_in,color_out,max_w)
@@ -124,71 +126,5 @@ Canv.prototype.outlineText = function(text,x,y,color_in,color_out,max_w)
     self.context.fillStyle = color_in;
     self.context.fillText(text,x  ,y  );
   }
-}
-Canv.prototype.strokeRoundRect = function(x,y,w,h,r)
-{
-  var self = this;
-  self.context.beginPath();
-  self.context.moveTo(x+r,y);
-  self.context.lineTo(x+w-r,y);
-  self.context.quadraticCurveTo(x+w,y,x+w,y+r);
-  self.context.lineTo(x+w,y+h-r);
-  self.context.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  self.context.lineTo(x+r,y+h);
-  self.context.quadraticCurveTo(x,y+h,x,y+h-r);
-  self.context.lineTo(x,y+r);
-  self.context.quadraticCurveTo(x,y,x+r,y);
-  self.context.closePath();
-  self.context.stroke();
-}
-Canv.prototype.fillRoundRect = function(x,y,w,h,r)
-{
-  var self = this;
-  self.context.beginPath();
-  self.context.moveTo(x+r,y);
-  self.context.lineTo(x+w-r,y);
-  self.context.quadraticCurveTo(x+w,y,x+w,y+r);
-  self.context.lineTo(x+w,y+h-r);
-  self.context.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  self.context.lineTo(x+r,y+h);
-  self.context.quadraticCurveTo(x,y+h,x,y+h-r);
-  self.context.lineTo(x,y+r);
-  self.context.quadraticCurveTo(x,y,x+r,y);
-  self.context.closePath();
-  self.context.fill();
-}
-Canv.prototype.roundRectOptions = function(x,y,w,h,r,tl,tr,bl,br,stroke,fill)
-{
-  var self = this;
-  self.context.beginPath();
-  if(tl) self.context.moveTo(x+r,y);
-  else   self.context.moveTo(x,y);
-  if(tr)
-  {
-    self.context.lineTo(x+w-r,y);
-    self.context.quadraticCurveTo(x+w,y,x+w,y+r);
-  }
-  else self.context.lineTo(x+w,y);
-  if(br)
-  {
-    self.context.lineTo(x+w,y+h-r);
-    self.context.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  }
-  else self.context.lineTo(x+w,y+h);
-  if(bl)
-  {
-    self.context.lineTo(x+r,y+h);
-    self.context.quadraticCurveTo(x,y+h,x,y+h-r);
-  }
-  else self.context.lineTo(x,y+h);
-  if(tl)
-  {
-    self.context.lineTo(x,y+r);
-    self.context.quadraticCurveTo(x,y,x+r,y);
-  }
-  else self.context.lineTo(x,y);
-  self.context.closePath();
-  if(stroke) self.context.stroke();
-  if(fill)   self.context.fill();
 }
 

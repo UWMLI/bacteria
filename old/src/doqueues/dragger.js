@@ -12,9 +12,6 @@ var Dragger = function(init)
   var dragging = [];
   var callbackQueue = [];
   var evtQueue = [];
-  var queues = {};
-  queues.callbackQueue = callbackQueue;
-  queues.evtQueue = evtQueue;
   self.register = function(draggable) { draggables.push(draggable); }
   self.unregister = function(draggable) { var i = draggables.indexOf(draggable); if(i != -1) draggables.splice(i,1); }
   self.ignore = function() { dragging = []; callbackQueue = []; evtQueue = []; }
@@ -57,13 +54,9 @@ var Dragger = function(init)
   function begin(evt)
   {
     doSetPosOnEvent(evt);
-    self.injectDragStart(evt);
-  }
-  self.injectDragStart = function(evt)
-  {
     for(var i = 0; i < draggables.length; i++)
     {
-      if(ptWithinObj(draggables[i], evt.doX, evt.doY))
+      if(ptWithinObj(evt.doX, evt.doY, draggables[i]))
       {
         var already_dragging = false;
         for(var j = 0; j < dragging.length; j++)
@@ -81,10 +74,7 @@ var Dragger = function(init)
   function drag(evt)
   {
     doSetPosOnEvent(evt);
-    self.injectDrag(evt);
-  }
-  self.injectDrag = function(evt)
-  {
+
     var r = self.source.getBoundingClientRect();
     if(evt.clientX < r.left || evt.clientY < r.top || evt.clientX > r.right || evt.clientY > r.bottom)
     {
@@ -101,10 +91,6 @@ var Dragger = function(init)
   function end(evt)
   {
     doSetPosOnEvent(evt);
-    self.injectDragFinish(evt);
-  }
-  self.injectDragFinish = function(evt)
-  {
     for(var i = 0; i < dragging.length; i++)
     {
       callbackQueue.push(dragging[i].dragFinish);
@@ -116,17 +102,6 @@ var Dragger = function(init)
   {
     for(var i = 0; i < callbackQueue.length; i++)
       callbackQueue[i](evtQueue[i]);
-    callbackQueue = [];
-    evtQueue = [];
-  }
-  self.requestManualFlush = function()
-  {
-    queues.callbackQueue = callbackQueue;
-    queues.evtQueue = evtQueue;
-    return queues;
-  }
-  self.manualFlush = function()
-  {
     callbackQueue = [];
     evtQueue = [];
   }

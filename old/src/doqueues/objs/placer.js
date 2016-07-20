@@ -1,4 +1,4 @@
-var Placer = function(asset, x,y,w,h, canv)
+var Placer = function(asset, x,y,w,h)
 {
   var self = this;
 
@@ -10,7 +10,6 @@ var Placer = function(asset, x,y,w,h, canv)
   self.y = y;
   self.w = w;
   self.h = h;
-  self.canv = canv;
   self.offX = 0;
   self.offY = 0;
   self.deltaX = 0;
@@ -76,9 +75,7 @@ var Placer = function(asset, x,y,w,h, canv)
 
   self.click = function(evt)
   {
-    //console.log(self.x+","+self.y+","+self.w+","+self.h);
-    console.log("p("+invp(self.x,self.canv.width)+"),p("+invp(self.y,self.canv.height)+"),p("+invp(self.w,self.canv.width)+"),p("+invp(self.h,self.canv.height)+")");
-
+    console.log(self.x+","+self.y+","+self.w+","+self.h);
     self.stroke = !self.stroke;
   }
 }

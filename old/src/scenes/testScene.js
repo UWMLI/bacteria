@@ -1,11 +1,6 @@
 var TestScene = function(game, stage)
 {
   var self = this;
-
-  var canv = stage.drawCanv;
-  var canvas = canv.canvas;
-  var ctx = canv.context;
-
   var assetter;
   var dbugger; //'debugger' is a keyword... (why.)
   var drawer;
@@ -18,7 +13,6 @@ var TestScene = function(game, stage)
   var presser;
   var keyer;
   var particler;
-  var placer;
 
   var spacer = new (function()
   {
@@ -130,8 +124,6 @@ var TestScene = function(game, stage)
 
   var sliderboxtest = new SliderBox(0,10,100,20,0,100,50,function(n){});
   spacer.space_v(sliderboxtest);
-  sliderboxtest.slit_x = Math.round(sliderboxtest.x + sliderboxtest.w/20);
-  sliderboxtest.slit_w = Math.round(sliderboxtest.w - sliderboxtest.w/10);
 
   var particle = function()
   {
@@ -220,11 +212,6 @@ var TestScene = function(game, stage)
     drawer.register(particler);
     ticker.register(particler);
     setTimeout(function(){ ticker.unregister(particler); }, 10000);
-
-    placer = new Placer({}, 100,100,100,100, stage.drawCanv);
-    drawer.register(placer);
-    dragger.register(placer);
-    clicker.register(placer);
   };
 
   self.tick = function()

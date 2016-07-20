@@ -11,9 +11,14 @@ var Game = function(init)
   doMapInitDefaults(init,init,default_init);
 
   var stage = new Stage({width:init.width,height:init.height,container:init.container});
-  var popup_div = document.getElementById(init.popup);
-  var scenes = [new NullScene(self, stage), new LoadingScene(self, stage), /*new TestScene(self, stage),*/ new GamePlayScene(self, stage, init.config, popup_div)];
-  var currentScene = 0;
+  var scenes = [
+    new NullScene(self, stage),
+    new LoadingScene(self, stage),
+    new TestScene(self, stage),
+    new GamePlayScene(self, stage),
+  ];
+  var cur_scene = 0;
+  var old_cur_scene = -1;
 
   self.begin = function()
   {
@@ -21,33 +26,29 @@ var Game = function(init)
     tick();
   };
 
-  self.reset = function()
-  {
-    scenes[currentScene].reset();
-  }
-
-  var req_clear = true;
-  var new_req_clear = true;
-  var drawn = 0;
   var tick = function()
   {
     requestAnimFrame(tick,stage.dispCanv.canvas);
-    if(req_clear || drawn < 100) stage.clear();
-    new_req_clear = scenes[currentScene].tick();
-    if(req_clear || drawn < 100)
+    stage.clear();
+    scenes[cur_scene].tick();
+    if(old_cur_scene == cur_scene) //still in same scene- draw
     {
-      scenes[currentScene].draw();
+      scenes[cur_scene].draw();
       stage.draw(); //blits from offscreen canvas to on screen one
-      if(currentScene == 2) drawn++;
     }
-    req_clear = new_req_clear;
+    old_cur_scene = cur_scene;
   };
 
   self.nextScene = function()
   {
-    scenes[currentScene].cleanup();
-    currentScene++;
-    scenes[currentScene].ready();
+    self.setScene(cur_scene+1);
   };
+
+  self.setScene = function(i)
+  {
+    scenes[cur_scene].cleanup();
+    cur_scene = i;
+    scenes[cur_scene].ready();
+  }
 };
 

@@ -7,72 +7,12 @@
 *
 */
 
-//maps attributes found in defaults from init onto obj, falling back to defaults value if not present in init
-var doMapInitDefaults = function(obj, init, defaults)
-{
-  var attribs = Object.keys(defaults);
-  for(var i = 0; i < attribs.length; i++)
-  {
-    var k = attribs[i];
-    obj[k] = init.hasOwnProperty(k) ? init[k] : defaults[k];
-  }
-}
-
-//sets doX and doY as x/y offset into the object listening for the event
-function doSetPosOnEvent(evt)
-{
-  if(evt.offsetX != undefined)
-  {
-    evt.doX = evt.offsetX;
-    evt.doY = evt.offsetY;
-  }
-  else if(evt.touches != undefined && evt.touches[0] != undefined)
-  {
-    var t = evt.touches[0].target;
-
-    var box = t.getBoundingClientRect();
-    var body = document.body;
-    var docEl = document.documentElement;
-
-    var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
-    var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
-
-    var clientTop = docEl.clientTop || body.clientTop || 0;
-    var clientLeft = docEl.clientLeft || body.clientLeft || 0;
-
-    var top  = box.top +  scrollTop - clientTop;
-    var left = box.left + scrollLeft - clientLeft;
-
-    evt.doX = evt.touches[0].pageX-left;
-    evt.doY = evt.touches[0].pageY-top;
-  }
-  else if(evt.layerX != undefined && evt.originalTarget != undefined)
-  {
-    evt.doX = evt.layerX-evt.originalTarget.offsetLeft;
-    evt.doY = evt.layerY-evt.originalTarget.offsetTop;
-  }
-  else //give up because javascript is terrible
-  {
-    evt.doX = 0;
-    evt.doY = 0;
-  }
-}
-
-function feq(f1,f2,e)
-{
-  return (f1 < f2+e && f1 > f2-e);
-}
-
-function lerp(s,e,t)
-{
-  return s+((e-s)*t);
-}
-
-function invlerp(s,e,v)
-{
-  return (v-s)/(e-s);
-}
-
+//math (raw)
+function mapVal(from_min, from_max, to_min, to_max, v) { return ((v-from_min)/(from_max-from_min))*(to_max-to_min)+to_min; }
+function clamp(a,b,v) { if(v < a) return a; if(v > b) return b; return v; }
+function eq(a,b,e) { return (a < b+e && a > b-e); }
+function lerp(s,e,t) { return s+((e-s)*t); }
+function invlerp(s,e,v) { return (v-s)/(e-s); }
 function clerp(s,e,t)
 {
   while(s < 0) s += Math.PI*2;
@@ -83,7 +23,6 @@ function clerp(s,e,t)
 
   return lerp(s,e,t)%(Math.PI*2);
 }
-
 function cdist(a,b)
 {
   while(a < 0) a += Math.PI*2;
@@ -93,10 +32,46 @@ function cdist(a,b)
 
   return dist;
 }
-
-function mapVal(from_min, from_max, to_min, to_max, v)
+function distsqr(ax,ay,bx,by)
 {
-  return ((v-from_min)/(from_max-from_min))*(to_max-to_min)+to_min;
+  var x = bx-ax;
+  var y = by-ay;
+  return x*x+y*y;
+}
+function dist(ax,ay,bx,by)
+{
+  var x = bx-ax;
+  var y = by-ay;
+  return Math.sqrt(x*x+y*y);
+}
+function randIntBelow(n) { return Math.floor(Math.random()*n); }
+function randBool() { return randIntBelow(2); }
+function rand0() { return (Math.random()*2)-1; }
+var randR = function(s,e) { return lerp(s,e,Math.random()); }
+//because the Math namespace is probably unnecessary for our purposes
+var rand = Math.random;
+var round = Math.round;
+var floor = Math.floor;
+var ceil = Math.ceil;
+var abs = Math.abs;
+var min = Math.min;
+var max = Math.max;
+var pow = Math.pow;
+var sqrt = Math.sqrt;
+var sin = Math.sin;
+var cos = Math.cos;
+var psin = function(t) { return (Math.sin(t)+1)/2; }
+var pcos = function(t) { return (Math.cos(t)+1)/2; }
+var atan2 = Math.atan2;
+var pi = Math.PI;
+var twopi = 2*pi;
+var halfpi = pi/2;
+
+var fdisp = function(f,n) //formats float for display (from 8.124512 to 8.12)
+{
+  if(n == undefined) n = 2;
+  n = Math.pow(10,n);
+  return Math.round(f*n)/n;
 }
 
 function mapPt(from,to,pt)
@@ -114,25 +89,46 @@ function mapRect(from,to,rect)
   return rect;
 }
 
-var ptWithin = function(ptx, pty, x, y, w, h)
+//collide (raw)
+var ptWithin = function(x,y,w,h,ptx,pty) { return (ptx >= x && ptx <= x+w && pty >= y && pty <= y+h); }
+var ptNear = function(x,y,r,ptx,pty) { var dx = ptx-x; var dy = pty-y; return (dx*dx+dy*dy) < r*r; }
+var rectCollide = function(ax,ay,aw,wh,bx,by,bw,bh) { return ax < bx+bw && bx < ax+aw && ay < by+bh && by < ay+ah; }
+
+var ptWithinObj = function(obj,ptx,pty)
 {
-  return (ptx >= x && ptx <= x+w && pty >= y && pty <= y+h);
-}
-var ptWithinObj = function(ptx, pty, obj)
-{
-  return ptWithin(ptx, pty, obj.x, obj.y, obj.w, obj.h);
+  return (ptx >= obj.x && ptx <= obj.x+obj.w && pty >= obj.y && pty <= obj.y+obj.h);
 }
 var objWithinObj = function(obja, objb)
 {
   console.log("not done!");
   return false;
 }
-var ptNear = function(ptx, pty, x, y, r)
+var worldPtWithin = function(ptx, pty, wx, wy, ww, wh)
 {
-  var w2 = (ptx-x)*(ptx-x);
-  var h2 = (pty-y)*(pty-y);
-  var d2 = r*r;
-  return w2+h2 < d2;
+  return (ptx >= wx-(ww/2) && ptx <= wx+(ww/2) && pty >= wy-(wh/2) && pty <= wy+(wh/2));
+}
+var worldPtWithinObj = function(ptx, pty, obj)
+{
+  return (ptx >= obj.wx-(obj.ww/2) && ptx <= obj.wx+(obj.ww/2) && pty >= obj.wy-(obj.wh/2) && pty <= obj.wy+(obj.wh/2));
+}
+
+//conversions
+var decToHex = function(dec, dig)
+{
+  var r = "";
+  dig--;
+  var mod = Math.pow(16,dig);
+
+  var index = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+  for(; dig >= 0; dig--)
+  {
+    var v = Math.floor(dec/mod);
+    r += index[v];
+    dec -= Math.pow(16,dig)*v;
+    mod /= 16;
+  }
+
+  return r;
 }
 
 var RGB2HSL = function(rgb, hsl)
@@ -185,10 +181,88 @@ var RGB2Hex = function(rgb)
 {
   return "#"+dec2Hex(Math.floor(rgb.r*255))+dec2Hex(Math.floor(rgb.g*255))+dec2Hex(Math.floor(rgb.b*255));
 }
-
 var dec2Hex = function(n)
 {
   return n.toString(16);
+}
+
+var cartToPolar = function(cart,polar)
+{
+  polar.len = Math.sqrt((cart.x*cart.x)+(cart.y*cart.y));
+  polar.dir = Math.atan2(cart.y,cart.x);
+}
+var polarToCart = function(polar,cart)
+{
+  cart.x = Math.cos(polar.dir)*polar.len;
+  cart.y = Math.sin(polar.dir)*polar.len;
+}
+
+//short name- will be used often to place elements by percent, while guaranteeing integer results
+var p    = function(percent, of) { return Math.floor(percent * of); }
+var invp = function(      n, of) { return n/of; }
+var setBox = function(obj, x,y,w,h)
+{
+  obj.x = x;
+  obj.y = y;
+  obj.w = w;
+  obj.h = h;
+}
+
+//camera
+var screenSpace = function(cam, canv, obj)
+{
+  //assumng xywh counterparts in world space (wx,wy,ww,wh,etc...)
+  //where wx,wy is *center* of obj and cam
+  //so cam.wx = 0; cam.ww = 1; would be a cam centered at the origin with visible range from -0.5 to 0.5
+  //output xywh assume x,y is top left (ready to be 'blit' via canvas api)
+  obj.w = (obj.ww/cam.ww)*canv.width;
+  obj.h = (obj.wh/cam.wh)*canv.height;
+  obj.x = (((( obj.wx-obj.ww/2)-cam.wx)+(cam.ww/2))/cam.ww)*canv.width;
+  obj.y = ((((-obj.wy-obj.wh/2)+cam.wy)+(cam.wh/2))/cam.wh)*canv.height;
+}
+var worldSpace = function(cam, canv, obj) //opposite of screenspace
+{
+  obj.wx = ((obj.x/canv.width) -0.5)*cam.ww + cam.wx;
+  obj.wy = -((obj.y/canv.height)-0.5)*cam.wh + cam.wy;
+  obj.ww = (obj.w/canv.width)*cam.ww;
+  obj.wh = (obj.h/canv.height)*cam.wh;
+}
+
+function tldistsqr(a,b)
+{
+  var x = b.x-a.x;
+  var y = b.y-a.y;
+  return x*x+y*y;
+}
+function tldist(a,b)
+{
+  var x = b.x-a.x;
+  var y = b.y-a.y;
+  return Math.sqrt(x*x+y*y);
+}
+function distsqr(a,b)
+{
+  var x = (b.x+b.w/2)-(a.x+a.w/2);
+  var y = (b.y+b.h/2)-(a.y+a.h/2);
+  return x*x+y*y;
+}
+function dist(a,b)
+{
+  var x = (b.x+b.w/2)-(a.x+a.w/2);
+  var y = (b.y+b.h/2)-(a.y+a.h/2);
+  return Math.sqrt(x*x+y*y);
+}
+function wdistsqr(a,b)
+{
+  var x = b.wx-a.wx;
+  var y = b.wy-a.wy;
+  return x*x+y*y;
+}
+function wdist(a,b)
+{
+  var x = b.wx-a.wx;
+  var y = b.wy-a.wy;
+  return Math.sqrt(x*x+y*y);
 }
 
 var GenIcon = function(w,h)
@@ -202,5 +276,89 @@ var GenIcon = function(w,h)
   icon.context.textAlign = "center";
 
   return icon;
+}
+
+
+var SeededRand = function(s)
+{
+  var self = this;
+  self.seed = s;
+  self.next = function()
+  {
+  var x = Math.sin(self.seed++) * 10000;
+  return x - Math.floor(x);
+  }
+}
+
+function noop(){}
+function ffunc(){return false;}
+function tfunc(){return true;}
+
+function drawArrow(canv,sx,sy,ex,ey,w)
+{
+  var dx = ex-sx;
+  var dy = ey-sy;
+  var dd = Math.sqrt(dx*dx+dy*dy);
+  var ox = -dy;
+  var oy = dx;
+  var od = Math.sqrt(ox*ox+oy*oy);
+  var ox = (ox/od)*w;
+  var oy = (oy/od)*w;
+  canv.context.beginPath();
+  canv.context.moveTo(sx,sy);
+  canv.context.lineTo(ex,ey);
+  canv.context.moveTo(sx+(dx/dd*(dd-w))+ox,sy+(dy/dd*(dd-w))+oy);
+  canv.context.lineTo(ex,ey);
+  canv.context.lineTo(sx+(dx/dd*(dd-w))-ox,sy+(dy/dd*(dd-w))-oy);
+  canv.context.stroke();
+}
+
+function drawAroundDecimal(canv,x,y,val,prepend,append)
+{
+  var macro = floor(val);
+  var vstring = val+"";
+  var micro = vstring.substring(vstring.indexOf(".")+1);
+  canv.context.textAlign = "right";
+  canv.context.fillText(prepend+macro+".",x,y);
+  canv.context.textAlign = "left";
+  canv.context.fillText(micro+append,x,y);
+}
+
+var space = function(minv,maxv,obv,nobs,obi)
+{
+  var w = maxv-minv;
+  var pad = (w-(nobs*obv))/(nobs+1);
+  return minv+pad+(obv+pad)*obi;
+}
+
+var textToLines = function(canv, font, width, text)
+{
+  var lines = [];
+  var found = 0;
+  var searched = 0;
+  var tentative_search = 0;
+
+  canv.context.save();
+  canv.context.font = font;
+
+  while(found < text.length)
+  {
+    searched = text.indexOf(" ",found);
+    if(searched == -1) searched = text.length;
+    tentative_search = text.indexOf(" ",searched+1);
+    if(tentative_search == -1) tentative_search = text.length;
+    while(canv.context.measureText(text.substring(found,tentative_search)).width < width && searched != text.length)
+    {
+      searched = tentative_search;
+      tentative_search = text.indexOf(" ",searched+1);
+      if(tentative_search == -1) tentative_search = text.length;
+    }
+    if(text.substring(searched, searched+1) == " ") searched++;
+    lines.push(text.substring(found,searched));
+    found = searched;
+  }
+
+  canv.context.restore();
+  return lines;
 }
 

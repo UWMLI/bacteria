@@ -51,7 +51,7 @@ var Blurer = function(init)
 
 var blured = function(blurable, evt)
 {
-  return !ptWithinObj(blurable, evt.doX, evt.doY);
+  return !ptWithinObj(evt.doX, evt.doY, blurable);
 }
 
 //example blurable- just needs x,y,w,h and blur callback

@@ -11,9 +11,6 @@ var Clicker = function(init)
   var clickables = [];
   var callbackQueue = [];
   var evtQueue = [];
-  var queues = {};
-  queues.callbackQueue = callbackQueue;
-  queues.evtQueue = evtQueue;
   self.register = function(clickable) { clickables.push(clickable); }
   self.unregister = function(clickable) { var i = clickables.indexOf(clickable); if(i != -1) clickables.splice(i,1); }
   self.ignore = function() { callbackQueue = []; evtQueue = []; }
@@ -32,10 +29,6 @@ var Clicker = function(init)
   function click(evt)
   {
     doSetPosOnEvent(evt);
-    self.injectClick(evt);
-  }
-  self.injectClick = function(evt)
-  {
     for(var i = 0; i < clickables.length; i++)
     {
       if(clicked(clickables[i], evt))
@@ -52,24 +45,13 @@ var Clicker = function(init)
     callbackQueue = [];
     evtQueue = [];
   }
-  self.requestManualFlush = function()
-  {
-    queues.callbackQueue = callbackQueue;
-    queues.evtQueue = evtQueue;
-    return queues;
-  }
-  self.manualFlush = function()
-  {
-    callbackQueue = [];
-    evtQueue = [];
-  }
 
   self.attach();
 }
 
 var clicked = function(clickable, evt)
 {
-  return ptWithinObj(clickable, evt.doX, evt.doY);
+  return ptWithinObj(evt.doX, evt.doY, clickable);
 }
 
 //example clickable- just needs x,y,w,h and click callback

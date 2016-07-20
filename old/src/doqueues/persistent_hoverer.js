@@ -1,4 +1,4 @@
-var Hoverer = function(init)
+var PersistentHoverer = function(init)
 {
   var default_init =
   {
@@ -15,11 +15,6 @@ var Hoverer = function(init)
   var hoverEvtQueue = [];
   var nothoverCallbackQueue = [];
   var nothoverEvtQueue = [];
-  var queues = {};
-  queues.hoverCallbackQueue = hoverCallbackQueue;
-  queues.hoverEvtQueue = hoverEvtQueue;
-  queues.nothoverCallbackQueue = nothoverCallbackQueue;
-  queues.nothoverEvtQueue = nothoverEvtQueue;
   self.register = function(hoverable) { hoverables.push(hoverable); nothovering.push(hoverable); }
   self.unregister = function(hoverable) 
   {
@@ -27,7 +22,6 @@ var Hoverer = function(init)
     var i =    hovering.indexOf(hoverable); if(i != -1)    hovering.splice(i,1);
     var i = nothovering.indexOf(hoverable); if(i != -1) nothovering.splice(i,1);
   }
-  self.ignore = function() { hoverCallbackQueue = []; hoverEvtQueue = []; nothoverCallbackQueue = []; nothoverEvtQueue = []; }
   self.clear = function() { hoverables = []; hovering = []; nothovering = []; }
   self.attach = function() //will get auto-called on creation
   {
@@ -50,14 +44,12 @@ var Hoverer = function(init)
       ; //no hover on mobile, dummy
   }
 
+
   function hover(evt)
   {
     doSetPosOnEvent(evt);
-    self.injectHover(evt);
-  }
-  self.injectHover = function(evt)
-  {
     var r = self.source.getBoundingClientRect();
+
     if(evt.clientX < r.left || evt.clientY < r.top || evt.clientX > r.right || evt.clientY > r.bottom)
     {
       for(var i = 0; i < hovering.length; i++)
@@ -87,6 +79,19 @@ var Hoverer = function(init)
         nothovering.splice(i--,1);
       }
     }
+    for(var i = 0; i < hovering.length; i++)
+    {
+      if(
+        evt.doX >= hovering[i].x &&
+        evt.doX <= hovering[i].x+hovering[i].w &&
+        evt.doY >= hovering[i].y &&
+        evt.doY <= hovering[i].y+hovering[i].h
+      )
+      {
+        hoverCallbackQueue.push(hovering[i].hover);
+        hoverEvtQueue.push(evt);
+      }
+    }
 
     for(var i = 0; i < hovering.length; i++)
     {
@@ -114,21 +119,6 @@ var Hoverer = function(init)
 
     for(var i = 0; i < nothoverCallbackQueue.length; i++)
       nothoverCallbackQueue[i](nothoverEvtQueue[i]);
-    nothoverCallbackQueue = [];
-    nothoverEvtQueue = [];
-  }
-  self.requestManualFlush = function()
-  {
-    queues.hoverCallbackQueue = hoverCallbackQueue;
-    queues.hoverEvtQueue = hoverEvtQueue;
-    queues.nothoverCallbackQueue = nothoverCallbackQueue;
-    queues.nothoverEvtQueue = nothoverEvtQueue;
-    return queues;
-  }
-  self.manualFlush = function()
-  {
-    hoverCallbackQueue = [];
-    hoverEvtQueue = [];
     nothoverCallbackQueue = [];
     nothoverEvtQueue = [];
   }
