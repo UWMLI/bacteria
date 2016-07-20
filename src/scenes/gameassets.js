@@ -1,3 +1,5 @@
+var blue_img;
+var char_imgs;
 var bact_back_img;
 var bact_front_img;
 var bact_face_imgs;
@@ -7,6 +9,24 @@ var plus_img;
 var bake = function()
 {
   var s;
+
+  s = 300;
+  blue_img = GenIcon(10,s);
+  var grad = blue_img.context.createLinearGradient(
+    0,s,
+    0,0
+  );
+  grad.addColorStop(0,"rgba(99,228,248,1)");
+  grad.addColorStop(1,"rgba(99,228,248,0)");
+  blue_img.context.fillStyle=grad;
+  blue_img.context.fillRect(0,0,10,s);
+
+  char_imgs = [];
+  for(var i = 0; i < 7; i++)
+  {
+    char_imgs[i] = new Image();
+    char_imgs[i].src = "assets/chars/face/char_"+i+".png";
+  }
 
   bact_back_img = new Image();
   bact_back_img.src = "assets/bact_bottom.png";
