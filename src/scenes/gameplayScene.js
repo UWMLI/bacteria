@@ -30,6 +30,13 @@ var GamePlayScene = function(game, stage)
 
   var grid;
 
+  var n_lvls;
+  var cur_lvl;
+  var lvl_start;
+  var lvl_tick;
+  var lvl_draw;
+  var lvl_test;
+
   var AveDisplay = function(x,y,w,h,grid)
   {
     var self = this;
@@ -1515,6 +1522,21 @@ var GamePlayScene = function(game, stage)
     grid.reset();
     hoverer.register(grid);
     dragger.register(grid);
+
+    n_lvls = 0;
+    cur_lvl = 0;
+    lvl_start = [];
+    lvl_tick = [];
+    lvl_draw = [];
+    lvl_test = [];
+
+    lvl_start[n_lvls] = noop;
+    lvl_tick[n_lvls] = noop;
+    lvl_draw[n_lvls] = noop;
+    lvl_test[n_lvls] = ffunc;
+    n_lvls++;
+
+    lvl_start[cur_lvl]();
   };
 
   self.tick = function()
@@ -1525,10 +1547,19 @@ var GamePlayScene = function(game, stage)
 
     for(var i = 0; i < 1; i++)
       grid.tick();
+
+    lvl_tick[cur_lvl]();
+    if(lvl_test[cur_lvl]())
+    {
+      cur_lvl++;
+      if(cur_lvl == n_lvls) /* do something? */ cur_lvl = 0;
+      lvl_start[cur_lvl]();
+    }
   }
   self.draw = function()
   {
     grid.draw();
+    lvl_draw[cur_lvl]();
   }
 
   self.cleanup = function()
