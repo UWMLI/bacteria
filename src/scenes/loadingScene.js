@@ -73,6 +73,10 @@ var LoadingScene = function(game, stage)
     }
     loadingImageLoaded(); //call once to prevent 0/0 != 100% bug
 
+    img_srcs.push("assets/bact_bottom.png");
+    img_srcs.push("assets/bact_top.png");
+    for(var i = 0; i < 8; i++)
+      img_srcs.push("assets/face_"+i+".png");
     for(var i = 0; i < 7; i++)
       img_srcs.push("assets/chars/char_"+i+".png");
     for(var i = 0; i < 0; i++)
@@ -95,10 +99,10 @@ var LoadingScene = function(game, stage)
     if(chase_percent_loaded <= percent_loaded) chase_percent_loaded += 0.01;
     lerp_percent_loaded = lerp(lerp_percent_loaded,percent_loaded,0.1);
     lerp_chase_percent_loaded = lerp(lerp_chase_percent_loaded,chase_percent_loaded,0.1);
-    if(percent_loaded >= 1.0) ticks_since_ready++;
-    if(ticks_since_ready >= post_load_countdown)
+    if(percent_loaded >= 1.0) //ticks_since_ready++;
+    //if(ticks_since_ready >= post_load_countdown)
     {
-      //bake();
+      bake();
       game.nextScene();
     }
   };
