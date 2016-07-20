@@ -16,7 +16,7 @@ var bake = function()
     bact_face_imgs[i].src = "assets/face_"+i+".png";
   }
 
-  var s = 20;
+  var s = 80;
   var tmp = GenIcon(s,s);
   var i = 0;
   bact_imgs = [];

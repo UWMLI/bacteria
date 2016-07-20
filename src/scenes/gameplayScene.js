@@ -545,8 +545,8 @@ var GamePlayScene = function(game, stage)
     {
       x:0,
       y:0,
-      w:500,
-      h:500,
+      w:100,
+      h:100,
       cols:50,
       rows:25,
       colored_rgb:false,
@@ -623,9 +623,9 @@ var GamePlayScene = function(game, stage)
     self.external_biot_resist = 0.1;
     if(init.allow_contaminate)
     {
-      self.sneeze_button = new ButtonBox(dc.width-30,10,20,20,function(){ self.external_biot_resist = self.ave_badb_biot_resist; })
+      self.sneeze_button = new ButtonBox(self.w-30,10,20,20,function(){ self.external_biot_resist = self.ave_badb_biot_resist; })
       presser.register(self.sneeze_button);
-      self.catch_button = new ButtonBox(dc.width-30,40,20,20,function(){
+      self.catch_button = new ButtonBox(self.w-30,40,20,20,function(){
         self.nodeAt(9,10).setType(NODE_TYPE_BADB);
         self.nodeAt(9,10).biot_resist = self.external_biot_resist;
       })
@@ -634,24 +634,24 @@ var GamePlayScene = function(game, stage)
 
     if(init.allow_sim_speed_slider)
     {
-      self.simspeed_slider = new SmoothSliderBox(10,dc.height-30,100,20,init.sim_speed_min,init.sim_speed_max,init.sim_speed,function(v){ init.sim_speed = v; });
+      self.simspeed_slider = new SmoothSliderBox(10,self.h-30,100,20,init.sim_speed_min,init.sim_speed_max,init.sim_speed,function(v){ init.sim_speed = v; });
       dragger.register(self.simspeed_slider);
     }
 
     if(init.allow_dose_slider)
     {
-      self.dose_button = new ButtonBox(10,dc.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
+      self.dose_button = new ButtonBox(10,self.h-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
       presser.register(self.dose_button);
 
       self.dose_amt = 0.;
       self.dosing_prog = 0;
       self.dosing_prog_rate = 0.01;
-      self.dose_slider = new SmoothSliderBox(40,dc.height-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
+      self.dose_slider = new SmoothSliderBox(40,self.h-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
       dragger.register(self.dose_slider);
     }
     else if(init.allow_dose_button)
     {
-      self.dose_button = new ButtonBox(10,dc.height-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
+      self.dose_button = new ButtonBox(10,self.h-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
       presser.register(self.dose_button);
 
       self.dose_amt = 0;
@@ -661,34 +661,34 @@ var GamePlayScene = function(game, stage)
 
     if(init.allow_reset)
     {
-      self.reset_button = new ButtonBox(self.x+self.w-100,dc.height-30,90,20,function(){ self.reset(); })
+      self.reset_button = new ButtonBox(self.x+self.w-100,self.h-30,90,20,function(){ self.reset(); })
       presser.register(self.reset_button);
     }
 
     if(init.ave_display_width > 0)
     {
-      self.ave_disp = new AveDisplay(self.w,0,init.ave_display_width,dc.height,self);
+      self.ave_disp = new AveDisplay(self.w,0,init.ave_display_width,self.h,self);
     }
 
     if(init.split_display_width > 0)
     {
-      self.split_disp = new SplitDisplay(self.w,0,init.split_display_width,dc.height,self);
+      self.split_disp = new SplitDisplay(self.w,0,init.split_display_width,self.h,self);
     }
 
     if(init.tricolor_display_width > 0)
     {
-      self.tricolor_disp = new TricolorDisplay(self.w,0,init.tricolor_display_width,dc.height,self);
+      self.tricolor_disp = new TricolorDisplay(self.w,0,init.tricolor_display_width,self.h,self);
     }
 
     if(init.hsl_display_width > 0)
     {
-      self.hsl_disp = new HSLDisplay(self.w,0,init.hsl_display_width,dc.height,self);
+      self.hsl_disp = new HSLDisplay(self.w,0,init.hsl_display_width,self.h,self);
     }
 
     self.colorblind_mode = false;
     if(init.colorblind)
     {
-      self.colorblind_button = new ButtonBox(dc.width-30,dc.height-30,20,20,function(){ self.colorblind_mode = !self.colorblind_mode; })
+      self.colorblind_button = new ButtonBox(self.w-30,self.h-30,20,20,function(){ self.colorblind_mode = !self.colorblind_mode; })
       presser.register(self.colorblind_button);
     }
 
@@ -1506,7 +1506,14 @@ var GamePlayScene = function(game, stage)
     hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     dragger = new Dragger({source:stage.dispCanv.canvas});
 
-    grid = new Grid({},self);
+    grid = new Grid(
+      {
+        w:dc.width,
+        h:dc.height,
+        cols:22,
+        rows:16,
+      }
+    ,self);
     grid.reset();
     hoverer.register(grid);
     dragger.register(grid);
