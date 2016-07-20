@@ -30,14 +30,21 @@ var GamePlayScene = function(game, stage)
   var CHAR_BOY   = ENUM; ENUM++;
   var CHAR_DAD   = ENUM; ENUM++;
 
+  ENUM = 0;
+  var MODE_BLURB = ENUM; ENUM++;
+  var MODE_PLAY  = ENUM; ENUM++;
+
   var DARK_COLOR = "#333333";
   var LIGHT_COLOR = "#DDDDDD";
 
+  var clicker;
   var presser;
   var hoverer;
   var dragger;
 
   var grid;
+
+  var mode;
 
   var n_lvls;
   var cur_lvl;
@@ -46,6 +53,13 @@ var GamePlayScene = function(game, stage)
   var lvl_draw;
   var lvl_test;
 
+  var blurb_x;
+  var blurb_h;
+  var blurb_y;
+  var blurb_w;
+  var blurb_font;
+
+  var blurb_hit;
   var blurb_t;
   var char_ts;
   var blurb_lines;
@@ -1522,6 +1536,7 @@ var GamePlayScene = function(game, stage)
 
   self.ready = function()
   {
+    clicker = new Clicker({source:stage.dispCanv.canvas});
     presser = new Presser({source:stage.dispCanv.canvas});
     hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     dragger = new Dragger({source:stage.dispCanv.canvas});
@@ -1538,12 +1553,22 @@ var GamePlayScene = function(game, stage)
     hoverer.register(grid);
     dragger.register(grid);
 
+    mode = MODE_PLAY;
+
+    blurb_x = 200;
+    blurb_h = 200;
+    blurb_y = dc.height-blurb_h-20;
+    blurb_w = dc.width-blurb_x-20;
+    blurb_font = "20px Open Sans";
+
+    blurb_hit = {x:0,y:0,w:dc.width,h:dc.height,click: function(evt) { blurb_line++; if(blurb_line >= blurb_lines.length) mode = MODE_PLAY; } };
+    clicker.register(blurb_hit);
     blurb_t = 0;
     char_ts = [];
     for(var i = 0; i < char_imgs.length; i++)
       char_ts[i] = 0;
-    blurb_lines = ["blah"];
-    blurb_chars = [CHAR_TALL];
+    blurb_lines = [];
+    blurb_chars = [];
     blurb_line = 0;
 
     n_lvls = 0;
@@ -1553,7 +1578,21 @@ var GamePlayScene = function(game, stage)
     lvl_draw = [];
     lvl_test = [];
 
-    lvl_start[n_lvls] = noop;
+    var processLines = function(lines)
+    {
+      for(var i = 0; i < lines.length; i++)
+        lines[i] = textToLines(dc,blurb_font,blurb_w-20,lines[i])
+      return lines;
+    }
+
+    lvl_start[n_lvls] = 
+    function()
+    {
+      blurb_lines = processLines(["Hi","How ya doin","That's great"]);
+      blurb_chars = [CHAR_TALL,CHAR_AXE,CHAR_AXE];
+      blurb_line = 0;
+      mode = MODE_BLURB;
+    }
     lvl_tick[n_lvls] = noop;
     lvl_draw[n_lvls] = noop;
     lvl_test[n_lvls] = ffunc;
@@ -1564,9 +1603,20 @@ var GamePlayScene = function(game, stage)
 
   self.tick = function()
   {
-    hoverer.flush();
-    presser.flush();
-    dragger.flush();
+    if(mode == MODE_BLURB)
+    {
+      clicker.flush();
+      hoverer.ignore();
+      presser.ignore();
+      dragger.ignore();
+    }
+    else if(mode == MODE_PLAY)
+    {
+      clicker.ignore();
+      hoverer.flush();
+      presser.flush();
+      dragger.flush();
+    }
 
     for(var i = 0; i < 1; i++)
       grid.tick();
@@ -1603,6 +1653,21 @@ var GamePlayScene = function(game, stage)
     ctx.drawImage(blue_img,0,dc.height-blurb_t*100,dc.width,100);
     for(var i = 0; i < char_imgs.length; i++)
       ctx.drawImage(char_imgs[i],20,dc.height-char_ts[i]*300,200,400);
+    if(blurb_line < blurb_lines.length)
+    {
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = blurb_font;
+      dc.fillRoundRect(blurb_x,blurb_y,blurb_w,blurb_h,5);
+      ctx.beginPath();
+      ctx.moveTo(blurb_x   ,blurb_y+10);
+      ctx.lineTo(blurb_x-10,blurb_y+15);
+      ctx.lineTo(blurb_x   ,blurb_y+20);
+      ctx.fill();
+      ctx.fillStyle = "#000000";
+      for(var i = 0; i < blurb_lines[blurb_line].length; i++)
+        ctx.fillText(blurb_lines[blurb_line][i],blurb_x+10,blurb_y+((i+1)*24),blurb_w-20);
+    }
   }
 
   self.cleanup = function()
