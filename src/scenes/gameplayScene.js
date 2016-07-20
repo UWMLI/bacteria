@@ -1330,7 +1330,7 @@ var GamePlayScene = function(game, stage)
       {
         ctx.drawImage(plus_img,self.w/2-20,self.h/2-20-30,40,40);
         ctx.font = "20px Open Sans";
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = "#FFFFFF";
         ctx.textAlign = "center";
         ctx.fillText("CLICK TO ADD BACTERIA",self.w/2,self.h/2+30);
       }

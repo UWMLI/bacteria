@@ -2,9 +2,12 @@ var bact_back_img;
 var bact_front_img;
 var bact_face_imgs;
 var bact_imgs;
+var plus_img;
 
 var bake = function()
 {
+  var s;
+
   bact_back_img = new Image();
   bact_back_img.src = "assets/bact_bottom.png";
   bact_front_img = new Image();
@@ -16,7 +19,7 @@ var bake = function()
     bact_face_imgs[i].src = "assets/face_"+i+".png";
   }
 
-  var s = 80;
+  s = 80;
   var tmp = GenIcon(s,s);
   var i = 0;
   bact_imgs = [];
@@ -29,6 +32,19 @@ var bake = function()
   bact_imgs[i] = genBactImg(tmp,s,"#642531","#B25551",5); i++;
   bact_imgs[i] = genBactImg(tmp,s,"#7A1017","#BE3C31",6); i++;
   bact_imgs[i] = genBactImg(tmp,s,"#870309","#C52C20",7); i++;
+
+  s = 100;
+  var w = 10;
+  var p = 10;
+  plus_img = GenIcon(s,s);
+  plus_img.context.fillStyle = "#FFFFFF";
+  plus_img.context.strokeStyle = "#FFFFFF";
+  plus_img.context.fillRect(s/2-w/2,p,w,s-p*2);
+  plus_img.context.fillRect(p,s/2-w/2,s-p*2,w);
+  plus_img.context.lineWidth = 2;
+  plus_img.context.beginPath();
+  plus_img.context.arc(s/2,s/2,s/2-3,0,twopi);
+  plus_img.context.stroke();
 }
 
 function genBactImg(tmp,s,fg,bg,face)
