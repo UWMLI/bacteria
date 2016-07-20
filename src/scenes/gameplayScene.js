@@ -1588,8 +1588,91 @@ var GamePlayScene = function(game, stage)
     lvl_start[n_lvls] = 
     function()
     {
-      blurb_lines = processLines(["Hi","How ya doin","That's great"]);
-      blurb_chars = [CHAR_TALL,CHAR_AXE,CHAR_AXE];
+      blurb_lines = processLines(
+        [
+          "Bacteria are just itty bitty organisms that live and die.",
+          "So if they die, how come I'm still covered in bacteria?",
+          "Well, they also reproduce.",
+          "Reproduce?? You mean there are BABY bacteria? Aww...",
+          "Bacteria replicate by splitting themselves into two identical cells- each with the same DNA!",
+          "This means the children inherit the parent's attributes, like shape, size, and behavior. And the children replicate too, which means-",
+          "Lots of bacteria babies!",
+          "Well, calling them \"babies\" is a bit odd... but sure. Lots of bacteria.",
+        ]
+      );
+      blurb_chars =
+      [
+        CHAR_TALL,
+        CHAR_ANNOY,
+        CHAR_TALL,
+        CHAR_ANNOY,
+        CHAR_TALL,
+        CHAR_TALL,
+        CHAR_ANNOY,
+        CHAR_TALL,
+      ];
+      blurb_line = 0;
+      mode = MODE_BLURB;
+    }
+    lvl_tick[n_lvls] = noop;
+    lvl_draw[n_lvls] = noop;
+    lvl_test[n_lvls] = function() { return grid.n_nodes > 100; };
+    n_lvls++;
+
+    lvl_start[n_lvls] =
+    function()
+    {
+      grid.reset();
+      blurb_lines = processLines(
+        [
+          "To make it even more complicated, sometimes replication doesn't go perfectly. The bacteria sometimes mutate and change.",
+          "Ooh, Mutant bacteria! Can they fly and shoot laser beams?",
+          "Well, not exactly. But their mutations can result in them being slightly weaker or stronger.",
+          "And when the mutated bacteria replicate, they pass on their new attributes to their children, like this.",
+        ]
+      );
+      blurb_chars =
+      [
+        CHAR_GIRL,
+        CHAR_AXE,
+        CHAR_GIRL,
+        CHAR_GIRL,
+      ];
+      blurb_line = 0;
+      mode = MODE_BLURB;
+    }
+    lvl_tick[n_lvls] = noop;
+    lvl_draw[n_lvls] = noop;
+    lvl_test[n_lvls] = function() { return grid.n_nodes > 100; };
+    n_lvls++;
+
+    lvl_start[n_lvls] =
+    function()
+    {
+      grid.reset();
+      blurb_lines = processLines(
+        [
+          "But antibiotics can kill the bad bacteria, right?",
+          "Well, most of the time. But sometimes the mutated bacteria pass on antibiotic resistance, which means they're harder to kill.",
+          "Uh oh...",
+          "That's why doctors are trained to give specific antibiotics to fight different bacteria- and why you should finish taking your antibiotics even if you feel better.",
+          "Anitibiotics kill the weaker bacteria really fast but the stronger ones can survive longer and keep reproducing.",
+          "Yikes, supervillain bacteria!",
+          "Actually, yes! Doctors call them super bugs. To get rid of super bacteria, you would need to give mega strong antibiotics that could make you really sick.",
+          "Check this out and see what happens when you start dosing with antibiotics.",
+        ]
+      );
+      blurb_chars =
+      [
+        CHAR_ANNOY,
+        CHAR_TALL,
+        CHAR_ANNOY,
+        CHAR_TALL,
+        CHAR_TALL,
+        CHAR_AXE,
+        CHAR_TALL,
+        CHAR_TALL,
+      ];
       blurb_line = 0;
       mode = MODE_BLURB;
     }
