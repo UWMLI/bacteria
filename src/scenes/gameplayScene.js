@@ -30,75 +30,6 @@ var GamePlayScene = function(game, stage)
 
   var grid;
 
-  var Smiley = function(x,y,w,h)
-  {
-    var self = this;
-
-    self.x = x;
-    self.y = y;
-    self.w = w;
-    self.h = h;
-
-    self.center_x = self.x+self.w/2;
-    self.center_y = self.y+self.w/2;
-    self.r = self.w/2;
-
-    self.happiness = 0.5;
-
-    self.draw = function(canv)
-    {
-      canv.context.beginPath();
-      canv.context.arc(self.center_x,self.center_y,self.r,0,pi*2,true);
-      canv.context.stroke();
-
-      var smile_r = 1/(self.happiness-0.5);
-      if(!isFinite(smile_r)) smile_r = 999;
-           if(smile_r > 0) smile_r += 5;
-      else if(smile_r < 0) smile_r -= 5;
-      var theta = abs(atan((self.w/4)/smile_r));
-
-      canv.context.beginPath();
-      if(smile_r > 0) canv.context.arc(self.center_x,self.center_y+self.h/6-smile_r,abs(smile_r),pi/2-theta,pi/2+theta,false);
-      else canv.context.arc(self.center_x,self.center_y+self.h/6-smile_r,abs(smile_r),pi*(3/2)-theta,pi*(3/2)+theta,false);
-      canv.context.stroke();
-
-      canv.context.strokeRect(self.center_x-self.w/6-1,self.center_y-self.h/6,2,2);
-      canv.context.strokeRect(self.center_x+self.w/6-1,self.center_y-self.h/6,2,2);
-      /*
-
-      // graph
-
-      var w = canv.width;
-      var h = canv.height;
-      canv.context.beginPath();
-      canv.context.moveTo(0,h/2);
-      for(var i = 0; i < w; i++)
-      {
-        var eqnx = (-0.5+i/w)*10; //-5 to 5
-        var eqny = tan(eqnx);
-        var eqny = 1/eqnx;
-        if(isNaN(eqny)) eqny = 0;
-        var x = i;
-        var y = h/2-(eqny*10);
-        canv.context.lineTo(x,y);
-      }
-      canv.context.stroke();
-
-      canv.context.beginPath();
-      canv.context.moveTo(0,h/2);
-      canv.context.lineTo(w,h/2);
-      canv.context.stroke();
-
-      canv.context.beginPath();
-      canv.context.moveTo(w/2,0);
-      canv.context.lineTo(w/2,h);
-      canv.context.stroke();
-
-      */
-
-    }
-  }
-
   var AveDisplay = function(x,y,w,h,grid)
   {
     var self = this;
@@ -584,7 +515,6 @@ var GamePlayScene = function(game, stage)
     var self = this;
 
     self.prerequisite_met;
-    self.smiley;
     self.ave_disp;
     self.split_disp;
     self.tricolo_disp;
@@ -601,7 +531,7 @@ var GamePlayScene = function(game, stage)
     self.reset_button;
 
     self.ticks_outside;
-    self.ticks_unpaused;
+    self.ticks_playing;
     self.ticks_initialized;
 
     self.external_biot_resist;
@@ -615,8 +545,8 @@ var GamePlayScene = function(game, stage)
     {
       x:0,
       y:0,
-      w:-1,
-      h:-1,
+      w:500,
+      h:500,
       cols:50,
       rows:25,
       colored_rgb:false,
@@ -633,15 +563,13 @@ var GamePlayScene = function(game, stage)
       allow_sim_speed_slider:false,
       sim_speed_min:1,
       sim_speed_max:2,
-      hover_to_play:true,
       display_pause:true,
       allow_dose_slider:false,
       allow_dose_button:false,
       dose_chip_damage:false,
-      allow_smile:true,
       allow_reset:true,
       prompt_reset_on_empty:false,
-      allow_contaminate:true,
+      allow_contaminate:false,
       default_badb_resist:0.1,
       init_badb:true,
       reinit_badb:true,
@@ -736,11 +664,6 @@ var GamePlayScene = function(game, stage)
       presser.register(self.reset_button);
     }
 
-    if(init.allow_smile)
-    {
-      self.smiley = new Smiley(40+100+10,dc.height-30,20,20);
-    }
-
     if(init.ave_display_width > 0)
     {
       self.ave_disp = new AveDisplay(self.w,0,init.ave_display_width,dc.height,self);
@@ -769,9 +692,8 @@ var GamePlayScene = function(game, stage)
     }
 
     self.ticks_outside = 100000; //"it's been outside forever"
-    self.ticks_unpaused = 0;
+    self.ticks_playing = 0;
     self.ticks_initialized = 0;
-
 
     self.ifor = function(col,row) { col = (col+self.cols)%self.cols; row = (row+self.rows)%self.rows; return row*self.cols+col; };
 
@@ -946,10 +868,6 @@ var GamePlayScene = function(game, stage)
         ctx.lineTo(self.x+self.w,self.y+self.h);
       ctx.stroke();
 
-
-
-
-
       var n_nodes = self.n_badb + self.n_good + self.n_body ;
       if(n_nodes == 0)
       {
@@ -1002,11 +920,6 @@ var GamePlayScene = function(game, stage)
         ctx.strokeStyle = "#000000";
         ctx.textAlign = "left";
       }
-      if(init.allow_smile)
-      {
-        ctx.strokeStyle = "#00FF00";
-        self.smiley.draw(dc);
-      }
       if(init.ave_display_width > 0)
       {
         self.ave_disp.draw(dc);
@@ -1041,7 +954,7 @@ var GamePlayScene = function(game, stage)
         self.colorblind_button.draw(dc);
       }
 
-      if(init.display_pause && self.ticks_unpaused == 0)
+      if(init.display_pause && self.ticks_playing == 0)
       {
         ctx.fillStyle = "rgba(255,255,255,0.5)";
         ctx.fillRect(self.x,self.y,self.w,self.h);
@@ -1056,7 +969,7 @@ var GamePlayScene = function(game, stage)
       }
       else
       {
-        if(init.display_pause && self.ticks_unpaused < 30)
+        if(init.display_pause && self.ticks_playing < 30)
         {
           var w = self.w;
           ctx.fillStyle = "white";
@@ -1100,6 +1013,25 @@ var GamePlayScene = function(game, stage)
 
     self.tick = function()
     {
+      //gauge whether appropriate to continue
+      if(platform == "PC")
+      {
+        // Disable the game when mouse is not hovering over it
+        if(self.hovering) self.ticks_outside = 0;
+        else              self.ticks_outside++;
+      }
+      else if(platform == "MOBILE")
+      {
+        // Instead of mouse hover, disable the game when off screen
+        var rect = hoverer.source.getBoundingClientRect();
+        var onScreen = rect.top < window.innerHeight && 0 < rect.top + rect.height;
+        if(onScreen) self.ticks_outside = 0;
+        else         self.ticks_outside++;
+      }
+
+      if(init.display_pause && self.ticks_outside > 10) { self.ticks_playing = 0; return; }
+      else                                              { self.ticks_playing++;           }
+
       var old_nodes = self.node_buffs[self.node_buff];
       self.node_buff = (self.node_buff+1)%2;
       var new_nodes = self.node_buffs[self.node_buff];
@@ -1111,11 +1043,36 @@ var GamePlayScene = function(game, stage)
         new_nodes[i].tick();
       }
 
+      //tick nodes
+      self.n_badb = 0; self.ave_badb_biot_resist = 0;
+      self.n_good = 0; self.ave_badb_biot_resist = 0;
+      self.n_body = 0; self.ave_badb_biot_resist = 0;
+      self.n_r = 0;
+      self.n_g = 0;
+      self.n_b = 0;
+      for(var i = 0; i < new_nodes.length; i++)
+      {
+        var n = new_nodes[i];
+             if(n.type == NODE_TYPE_BADB) { if(init.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_badb++; self.ave_badb_biot_resist += n.biot_resist; }
+        else if(n.type == NODE_TYPE_GOOD) { if(init.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_good++; self.ave_good_biot_resist += n.biot_resist; }
+        else if(n.type == NODE_TYPE_BODY) { self.n_body++; self.ave_body_biot_resist += n.biot_resist; }
+      }
+      if(self.n_badb > 0) self.ave_badb_biot_resist /= self.n_badb;
+      if(self.n_good > 0) self.ave_good_biot_resist /= self.n_good;
+      if(self.n_body > 0) self.ave_body_biot_resist /= self.n_body;
+
+      var n_nodes = self.n_badb + self.n_good + self.n_body ;
+      if(init.prerequisite_fill_for_interaction == 0 || n_nodes == 0 || n_nodes >= init.prerequisite_fill_for_interaction*self.rows*self.cols)
+        self.prerequisite_met = true;
+
+      if(!self.prerequisite_met) self.ticks_initialized = 0;
+      else                       self.ticks_initialized++;
+
       //point to correct node in new buff
       if(self.hovering_node) self.hovering_node = self.nodeAt(self.hovering_node.col,self.hovering_node.row);
       if(self.dragging_node) self.dragging_node = self.nodeAt(self.dragging_node.col,self.dragging_node.row);
 
-      if(self.hovering_node && scene.prerequisite_met)
+      if(self.hovering_node && self.prerequisite_met)
       {
         var n;
         switch(init.hover_function)
@@ -1220,7 +1177,7 @@ var GamePlayScene = function(game, stage)
         }
       }
 
-      if(self.dragging_node && scene.prerequisite_met)
+      if(self.dragging_node && self.prerequisite_met)
       {
         switch(init.click_function)
         {
@@ -1385,12 +1342,10 @@ var GamePlayScene = function(game, stage)
                 var rc = token_node.r;
                 var gc = token_node.g;
                 var bc = token_node.b;
-                var rand;
                 if(init.mutate_rate)
                 {
                   if(init.mutate_random_assign && rand() < init.mutate_rate)
                   {
-                    rand = rand();
                     if(rand < init.mutate_random_assign)
                     {
                       biot_resist = rand();
@@ -1410,19 +1365,15 @@ var GamePlayScene = function(game, stage)
                   {
                     if(init.colored_rgb)
                     {
-                      rand = rand();
                            if(rand < init.mutate_rate*0.5)   rc -= rand()*init.mutate_distance;
                       else if(rand > 1-init.mutate_rate*0.5) rc += rand()*init.mutate_distance;
-                      rand = rand();
                            if(rand < init.mutate_rate*0.5)   gc -= rand()*init.mutate_distance;
                       else if(rand > 1-init.mutate_rate*0.5) gc += rand()*init.mutate_distance;
-                      rand = rand();
                            if(rand < init.mutate_rate*0.5)   bc -= rand()*init.mutate_distance;
                       else if(rand > 1-init.mutate_rate*0.5) bc += rand()*init.mutate_distance;
                     }
                     else if(init.colored_hsl)
                     {
-                      rand = rand();
                            if(rand < init.mutate_rate*0.5)   hc -= rand()*init.mutate_distance*180;
                       else if(rand > 1-init.mutate_rate*0.5) hc += rand()*init.mutate_distance*180;
                     }
@@ -1430,13 +1381,11 @@ var GamePlayScene = function(game, stage)
                     {
                       if(init.bias_mutate)
                       {
-                        rand = rand();
                              if(rand < init.mutate_rate*0.4)   biot_resist -= rand()*init.mutate_distance;
                         else if(rand > 1-init.mutate_rate*0.6) biot_resist += rand()*init.mutate_distance;
                       }
                       else
                       {
-                        rand = rand();
                              if(rand < init.mutate_rate*0.5)   biot_resist -= rand()*init.mutate_distance;
                         else if(rand > 1-init.mutate_rate*0.5) biot_resist += rand()*init.mutate_distance;
                       }
@@ -1501,64 +1450,11 @@ var GamePlayScene = function(game, stage)
         }
       }
 
-      //tick nodes
-      self.n_badb = 0; self.ave_badb_biot_resist = 0;
-      self.n_good = 0; self.ave_badb_biot_resist = 0;
-      self.n_body = 0; self.ave_badb_biot_resist = 0;
-      self.n_r = 0;
-      self.n_g = 0;
-      self.n_b = 0;
-      for(var i = 0; i < new_nodes.length; i++)
+      if(self.ticks_playing > 0)
       {
-        var n = new_nodes[i];
-        n.tick();
-             if(n.type == NODE_TYPE_BADB) { if(init.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_badb++; self.ave_badb_biot_resist += n.biot_resist; }
-        else if(n.type == NODE_TYPE_GOOD) { if(init.colored_rgb) { if(n.r > n.g && n.r > n.b) self.n_r++; else if(n.g > n.r && n.g > n.b) self.n_g++; else if(n.b > n.r && n.b > n.g) self.n_b++; } self.n_good++; self.ave_good_biot_resist += n.biot_resist; }
-        else if(n.type == NODE_TYPE_BODY) { self.n_body++; self.ave_body_biot_resist += n.biot_resist; }
-      }
-      if(self.n_badb > 0) self.ave_badb_biot_resist /= self.n_badb;
-      if(self.n_good > 0) self.ave_good_biot_resist /= self.n_good;
-      if(self.n_body > 0) self.ave_body_biot_resist /= self.n_body;
-
-
-      hoverer.flush();
-
-      if(platform == "PC") {
-        // Disable the game when mouse is not hovering over it
-        if(self.hovering) self.ticks_outside = 0;
-        else              self.ticks_outside++;
-      }
-      else if(platform == "MOBILE") {
-        // Instead of mouse hover, disable the game when off screen
-        var rect = hoverer.source.getBoundingClientRect();
-        var onScreen = rect.top < window.innerHeight && 0 < rect.top + rect.height;
-        if(onScreen) self.ticks_outside = 0;
-        else         self.ticks_outside++;
-      }
-
-      if((init.hover_to_play) && self.ticks_outside > 10) self.ticks_unpaused = 0;
-      else                                                  self.ticks_unpaused++;
-
-      var n_nodes = self.n_badb + self.n_good + self.n_body ;
-      if(init.prerequisite_fill_for_interaction == 0 || n_nodes == 0 || n_nodes >= init.prerequisite_fill_for_interaction*self.rows*self.cols)
-        self.prerequisite_met = true;
-
-      if(!self.prerequisite_met) self.ticks_initialized = 0;
-      else                       self.ticks_initialized++;
-
-      presser.flush();
-      if(self.ticks_outside > 10) return false;
-      if(self.ticks_unpaused > 0)
-      {
-        dragger.flush();
-
         if(init.allow_dose_slider && self.dosing_prog)
         {
           self.dose(self.dosing_prog);
-          if(init.allow_smile)
-          {
-            self.smiley.happiness -= 0.01;
-          }
           self.dosing_prog += self.dosing_prog_rate;
           if(self.dosing_prog > self.dose_amt)
             self.dosing_prog = 0;
@@ -1567,13 +1463,6 @@ var GamePlayScene = function(game, stage)
         {
           self.dose(self.dosing_prog);
           self.dosing_prog = 0;
-        }
-        if(init.allow_smile)
-        {
-          self.smiley.happiness += 0.001;
-
-          if(self.smiley.happiness < 0) self.smiley.happiness = 0;
-          if(self.smiley.happiness > 1) self.smiley.happiness = 1;
         }
 
         if(init.allow_sim_speed_slider) self.simspeed_slider.tick();
@@ -1629,69 +1518,11 @@ var GamePlayScene = function(game, stage)
 
   self.ready = function()
   {
-
-    var default_init =
-    {
-      x:0,
-      y:0,
-      w:-1,
-      h:-1,
-      cols:50,
-      rows:25,
-      colored_rgb:false,
-      default_r:0.5,
-      default_g:0.5,
-      default_b:0.5,
-      colored_hsl:false,
-      default_h:150,
-      default_s:1,
-      default_l:0.7,
-      colorblind:false,
-      sim_speed:1,
-      badb_sim_speed:1,
-      allow_sim_speed_slider:false,
-      sim_speed_min:1,
-      sim_speed_max:2,
-      hover_to_play:true,
-      display_pause:true,
-      allow_dose_slider:false,
-      allow_dose_button:false,
-      dose_chip_damage:false,
-      allow_smile:true,
-      allow_reset:true,
-      prompt_reset_on_empty:false,
-      allow_contaminate:true,
-      default_badb_resist:0.1,
-      init_badb:true,
-      reinit_badb:true,
-      default_good_resist:0.1,
-      allow_good:true,
-      init_good:true,
-      reinit_good:true,
-      allow_body:true,
-      init_body:true,
-      reinit_body:true,
-      swab_size:1,
-      click_function:CLICK_FUNC_NONE,
-      hover_function:CLICK_FUNC_NONE,
-      show_hover:false,
-      mutate_random_assign:false,
-      mutate_rate:0.1,
-      mutate_distance:0.1,
-      bias_mutate:true,
-      reproduce:true,
-      age:true,
-      ave_display_width:0,
-      split_display_width:0,
-      tricolor_display_width:0,
-      hsl_display_width:0,
-    };
-
     presser = new Presser({source:stage.dispCanv.canvas});
     hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     dragger = new Dragger({source:stage.dispCanv.canvas});
 
-    grid = new Grid(default_init,self);
+    grid = new Grid({},self);
     grid.reset();
     hoverer.register(grid);
     dragger.register(grid);
@@ -1699,17 +1530,16 @@ var GamePlayScene = function(game, stage)
 
   self.tick = function()
   {
+    hoverer.flush();
+    presser.flush();
+    dragger.flush();
+
     grid.tick();
   }
   self.draw = function()
   {
     grid.draw();
   }
-
-  self.tick = function()
-  {
-  };
-
 
   self.cleanup = function()
   {
