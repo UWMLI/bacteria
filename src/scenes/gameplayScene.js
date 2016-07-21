@@ -554,24 +554,26 @@ var GamePlayScene = function(game, stage)
 
     self.speed_slider;
 
+    self.dose_origin_x;
+    self.dose_origin_y;
     self.dose_amt;
-    self.dosing_prog;
-    self.dosing_prog_rate;
+    self.dose_prog;
+    self.dose_prog_rate;
     self.dose_slider;
-    self.dose_button;
+    self.dose_btn;
 
-    self.reset_button;
+    self.reset_btn;
 
     self.ticks_outside;
     self.ticks_playing;
     self.ticks_initialized;
 
     self.external_biot_resist;
-    self.sneeze_button;
-    self.catch_button;
+    self.sneeze_btn;
+    self.catch_btn;
 
     self.colorblind_mode;
-    self.colorblind_button;
+    self.colorblind_btn;
 
     var default_init =
     {
@@ -597,7 +599,7 @@ var GamePlayScene = function(game, stage)
       sim_speed_max:2,
       display_pause:false,
       allow_dose_slider:false,
-      allow_dose_button:false,
+      allow_dose_btn:false,
       dose_chip_damage:false,
       allow_reset:false,
       prompt_reset_on_empty:false,
@@ -656,10 +658,10 @@ var GamePlayScene = function(game, stage)
     self.external_biot_resist = 0.1;
     if(init.allow_contaminate)
     {
-      self.sneeze_button = new ButtonBox(self.w-30,10,20,20,function(){ hit_ui = true; self.external_biot_resist = self.ave_badb_biot_resist; })
-      grid_presser.register(self.sneeze_button);
-      self.catch_button = new ButtonBox(self.w-30,40,20,20,function(){ hit_ui = true; self.nodeAt(9,10).setType(NODE_TYPE_BADB); self.nodeAt(9,10).biot_resist = self.external_biot_resist; })
-      grid_presser.register(self.catch_button);
+      self.sneeze_btn = new ButtonBox(self.w-30,10,20,20,function(){ hit_ui = true; self.external_biot_resist = self.ave_badb_biot_resist; })
+      grid_presser.register(self.sneeze_btn);
+      self.catch_btn = new ButtonBox(self.w-30,40,20,20,function(){ hit_ui = true; self.nodeAt(9,10).setType(NODE_TYPE_BADB); self.nodeAt(9,10).biot_resist = self.external_biot_resist; })
+      grid_presser.register(self.catch_btn);
     }
 
     if(init.allow_sim_speed_slider)
@@ -668,31 +670,27 @@ var GamePlayScene = function(game, stage)
       grid_dragger.register(self.simspeed_slider);
     }
 
-    if(init.allow_dose_slider)
+    if(init.allow_dose_btn || init.allow_dose_slider)
     {
-      self.dose_button = new ButtonBox(10,self.h-30,20,20,function(){ hit_ui = true; if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
-      grid_presser.register(self.dose_button);
+      self.dose_btn = new ButtonBox(10,self.h-30,20,20,function(){ if(self.dose_prog) return; hit_ui = true; if(self.prerequisite_met) self.dose_prog = self.dose_prog_rate; })
+      grid_presser.register(self.dose_btn);
 
-      self.dose_amt = 0.;
-      self.dosing_prog = 0;
-      self.dosing_prog_rate = 0.01;
-      self.dose_slider = new SmoothSliderBox(40,self.h-30,100,20,0.0,1.0,0.0,function(v){ hit_ui = true; self.dose_amt = v; });
-      grid_dragger.register(self.dose_slider);
-    }
-    else if(init.allow_dose_button)
-    {
-      self.dose_button = new ButtonBox(10,self.h-30,20,20,function(){ hit_ui = true; if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
-      grid_presser.register(self.dose_button);
-
-      self.dose_amt = 0;
-      self.dosing_prog = 0;
-      self.dosing_prog_rate = 1;
+      self.dose_origin_x = 0;
+      self.dose_origin_y = self.rows-1;
+      self.dose_amt = 0.8;
+      self.dose_prog = 0;
+      self.dose_prog_rate = 0.01;
+      if(init.allow_dose_slider)
+      {
+        self.dose_slider = new SmoothSliderBox(40,self.h-30,100,20,0.0,1.0,0.0,function(v){ hit_ui = true; self.dose_amt = v; });
+        grid_dragger.register(self.dose_slider);
+      }
     }
 
     if(init.allow_reset)
     {
-      self.reset_button = new ButtonBox(self.x+self.w-100,self.h-30,90,20,function(){ hit_ui = true; self.reset(); })
-      grid_presser.register(self.reset_button);
+      self.reset_btn = new ButtonBox(self.x+self.w-100,self.h-30,90,20,function(){ hit_ui = true; self.reset(); })
+      grid_presser.register(self.reset_btn);
     }
 
     if(init.ave_display_width      > 0) self.ave_disp      = new AveDisplay(     self.w-init.ave_display_width,     0,init.ave_display_width,     self.h,self);
@@ -703,8 +701,8 @@ var GamePlayScene = function(game, stage)
     self.colorblind_mode = false;
     if(init.colorblind)
     {
-      self.colorblind_button = new ButtonBox(self.w-30,self.h-30,20,20,function(){ hit_ui = true; self.colorblind_mode = !self.colorblind_mode; })
-      grid_presser.register(self.colorblind_button);
+      self.colorblind_btn = new ButtonBox(self.w-30,self.h-30,20,20,function(){ hit_ui = true; self.colorblind_mode = !self.colorblind_mode; })
+      grid_presser.register(self.colorblind_btn);
     }
 
     //listen to self last (any buttons or other interactions get hit first)
@@ -822,21 +820,34 @@ var GamePlayScene = function(game, stage)
         nodes[i].setType(NODE_TYPE_NONE);
     }
 
-    self.dose = function(amt)
+    self.dose = function()
     {
       var nodes = self.node_buffs[self.node_buff];
+      var n;
+      var amt;
+      var distx;
+      var disty;
+      var dist;
       for(var i = 0; i < nodes.length; i++)
       {
-        var n = nodes[i];
-        if(init.dose_chip_damage)
+        n = nodes[i];
+
+        distx = (n.col-self.dose_origin_x)/self.cols;
+        disty = (n.row-self.dose_origin_y)/self.rows;
+        dist = distx*distx + disty*disty;
+        amt = self.dose_prog-dist;
+        if(amt > 0 && amt < self.dose_amt)
         {
-          if(rand() * amt > n.biot_resist)
-            n.setType(NODE_TYPE_NONE);
-        }
-        else
-        {
-          if(amt > n.biot_resist)
-            n.setType(NODE_TYPE_NONE);
+          if(init.dose_chip_damage)
+          {
+            if(rand() * amt > n.biot_resist)
+              n.setType(NODE_TYPE_NONE);
+          }
+          else
+          {
+            if(amt > n.biot_resist)
+              n.setType(NODE_TYPE_NONE);
+          }
         }
       }
     }
@@ -1047,17 +1058,12 @@ var GamePlayScene = function(game, stage)
       }
 
       //tick aux stuff
-      if(init.allow_dose_slider && self.dosing_prog)
+      if((init.allow_dose_btn || init.allow_dose_slider) && self.dose_prog)
       {
-        self.dose(self.dosing_prog);
-        self.dosing_prog += self.dosing_prog_rate;
-        if(self.dosing_prog > self.dose_amt)
-          self.dosing_prog = 0;
-      }
-      else if(init.allow_dose_button && self.dosing_prog)
-      {
-        self.dose(self.dosing_prog);
-        self.dosing_prog = 0;
+        self.dose();
+        self.dose_prog += self.dose_prog_rate;
+        if(self.dose_prog > self.dose_amt+1)
+          self.dose_prog = 0;
       }
       if(init.allow_sim_speed_slider) self.simspeed_slider.tick();
       if(init.allow_dose_slider)      self.dose_slider.tick();
@@ -1358,33 +1364,35 @@ var GamePlayScene = function(game, stage)
       {
         self.simspeed_slider.draw(dc);
       }
-      if(init.allow_dose_slider)
-      {
-        ctx.strokeStyle = "#00FF00";
-        self.dose_button.draw(dc);
-        ctx.strokeStyle = "#00FF00";
-        self.dose_slider.draw(dc);
-
-        //fill slider with color exterminating
-        var r = floor((1-self.dose_amt)*255);
-        ctx.fillStyle = "rgba("+r+","+r+","+r+",1)";
-        var switch_x = self.dose_slider.slit_x+(((self.dose_slider.val-self.dose_slider.min_val)/(self.dose_slider.max_val-self.dose_slider.min_val))*self.dose_slider.slit_w);
-        ctx.fillRect(switch_x-(self.dose_slider.w/20)+0.5,self.dose_slider.y+0.5,(self.dose_slider.w/10),self.dose_slider.h);
-      }
-      else if(init.allow_dose_button)
+      if(init.allow_dose_btn || init.allow_dose_slider)
       {
         ctx.font = "20px Open Sans";
         ctx.fillStyle = "#000000";
         ctx.textAlign = "left";
-        ctx.fillText("dose antibiotic",self.dose_button.x+self.dose_button.w+5,self.dose_button.y+self.dose_button.h-2);
+        if(self.dose_prog)
+          ctx.fillText("dosing...",self.dose_btn.x+self.dose_btn.w+5,self.dose_btn.y+self.dose_btn.h-2);
+        else
+          ctx.fillText("dose antibiotic",self.dose_btn.x+self.dose_btn.w+5,self.dose_btn.y+self.dose_btn.h-2);
         ctx.strokeStyle = "#000000";
         ctx.beginPath();
-        ctx.arc(self.dose_button.x+self.dose_button.w/2,self.dose_button.y+self.dose_button.h/2-3,self.dose_button.w/2,0,2*pi);
+        ctx.arc(self.dose_btn.x+self.dose_btn.w/2,self.dose_btn.y+self.dose_btn.h/2-3,self.dose_btn.w/2,0,2*pi);
         ctx.stroke();
-        if(self.dose_button.down)
+        if(self.dose_btn.down || self.dose_prog)
         {
           ctx.fillStyle = "#000000";
           ctx.fill();
+        }
+
+        if(init.allow_dose_slider)
+        {
+          ctx.strokeStyle = "#00FF00";
+          self.dose_slider.draw(dc);
+
+          //fill slider with color exterminating
+          var r = floor((1-self.dose_amt)*255);
+          ctx.fillStyle = "rgba("+r+","+r+","+r+",1)";
+          var switch_x = self.dose_slider.slit_x+(((self.dose_slider.val-self.dose_slider.min_val)/(self.dose_slider.max_val-self.dose_slider.min_val))*self.dose_slider.slit_w);
+          ctx.fillRect(switch_x-(self.dose_slider.w/20)+0.5,self.dose_slider.y+0.5,(self.dose_slider.w/10),self.dose_slider.h);
         }
       }
       if(init.allow_reset)
@@ -1392,7 +1400,7 @@ var GamePlayScene = function(game, stage)
         ctx.font = "20px Open Sans";
         ctx.fillStyle = "#000000";
         ctx.textAlign = "right";
-        ctx.fillText("reset",self.reset_button.x+self.reset_button.w,self.reset_button.y+self.reset_button.h-2);
+        ctx.fillText("reset",self.reset_btn.x+self.reset_btn.w,self.reset_btn.y+self.reset_btn.h-2);
         ctx.strokeStyle = "#000000";
         ctx.textAlign = "left";
       }
@@ -1403,19 +1411,19 @@ var GamePlayScene = function(game, stage)
 
       if(init.allow_contaminate)
       {
-        self.sneeze_button.draw(dc);
-        self.catch_button.draw(dc);
+        self.sneeze_btn.draw(dc);
+        self.catch_btn.draw(dc);
       }
 
-      if(init.allow_dose_slider && self.dosing_prog)
+      if(init.allow_dose_slider && self.dose_prog)
       {
         ctx.strokeStyle = "#00FF00";
-        ctx.strokeRect(self.dose_slider.x+(self.dosing_prog*self.dose_slider.w),self.dose_slider.y,2,20);
+        ctx.strokeRect(self.dose_slider.x+(self.dose_prog*self.dose_slider.w),self.dose_slider.y,2,20);
       }
 
       if(init.colorblind)
       {
-        self.colorblind_button.draw(dc);
+        self.colorblind_btn.draw(dc);
       }
 
       if(init.display_pause && self.ticks_playing == 0)
@@ -1648,7 +1656,7 @@ var GamePlayScene = function(game, stage)
           rows:16,
           mutate_rate:1,
           mutate_distance:0.2,
-          allow_dose_button:true,
+          allow_dose_btn:true,
           ave_display_width:20,
         }
       ,self);
