@@ -672,7 +672,7 @@ var GamePlayScene = function(game, stage)
 
     if(init.allow_dose_btn || init.allow_dose_slider)
     {
-      self.dose_btn = new ButtonBox(10,self.h-30,20,20,function(){ if(self.dose_prog) return; hit_ui = true; if(self.prerequisite_met) self.dose_prog = self.dose_prog_rate; })
+      self.dose_btn = new ButtonBox(10,self.h-40,180,30,function(){ if(self.dose_prog) return; hit_ui = true; if(self.prerequisite_met) self.dose_prog = self.dose_prog_rate; })
       grid_presser.register(self.dose_btn);
 
       self.dose_origin_x = 0;
@@ -1366,22 +1366,20 @@ var GamePlayScene = function(game, stage)
       }
       if(init.allow_dose_btn || init.allow_dose_slider)
       {
-        ctx.font = "20px Open Sans";
-        ctx.fillStyle = "#000000";
-        ctx.textAlign = "left";
-        if(self.dose_prog)
-          ctx.fillText("dosing...",self.dose_btn.x+self.dose_btn.w+5,self.dose_btn.y+self.dose_btn.h-2);
-        else
-          ctx.fillText("dose antibiotic",self.dose_btn.x+self.dose_btn.w+5,self.dose_btn.y+self.dose_btn.h-2);
+        ctx.fillStyle = "#FFFFFF"
+        dc.fillRoundRect(self.dose_btn.x,self.dose_btn.y,self.dose_btn.w,self.dose_btn.h,17);
         ctx.strokeStyle = "#000000";
-        ctx.beginPath();
-        ctx.arc(self.dose_btn.x+self.dose_btn.w/2,self.dose_btn.y+self.dose_btn.h/2-3,self.dose_btn.w/2,0,2*pi);
-        ctx.stroke();
-        if(self.dose_btn.down || self.dose_prog)
-        {
-          ctx.fillStyle = "#000000";
-          ctx.fill();
-        }
+        ctx.fillStyle = "#000000";
+
+        var r = self.dose_btn.h/2-5;
+
+        ctx.font = "20px Open Sans";
+        ctx.textAlign = "left";
+        if(self.dose_prog) ctx.fillText("dosing...",      self.dose_btn.x+5+2*r+5,self.dose_btn.y+self.dose_btn.h-8);
+        else               ctx.fillText("dose antibiotic",self.dose_btn.x+5+2*r+5,self.dose_btn.y+self.dose_btn.h-8);
+
+        ctx.beginPath(); ctx.arc(self.dose_btn.x+self.dose_btn.h/2,self.dose_btn.y+self.dose_btn.h/2,r,0,2*pi); ctx.stroke();
+        if(self.dose_btn.down || self.dose_prog) ctx.fill();
 
         if(init.allow_dose_slider)
         {
