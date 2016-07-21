@@ -79,7 +79,7 @@ var LoadingScene = function(game, stage)
       img_srcs.push("assets/face_"+i+".png");
     for(var i = 0; i < 7; i++)
       img_srcs.push("assets/chars/face/char_"+i+".png");
-    for(var i = 0; i < 0; i++)
+    for(var i = 0; i < 6; i++)
       img_srcs.push("assets/comic/comic_"+i+".png");
     for(var i = 0; i < img_srcs.length; i++)
     {
