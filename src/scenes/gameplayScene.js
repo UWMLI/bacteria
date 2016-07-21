@@ -404,7 +404,7 @@ var GamePlayScene = function(game, stage)
       self.health = n.health;
     }
 
-    self.draw = function(canv, colorblind, stroke)
+    self.draw = function(canv, colorblind)
     {
       var x = self.x;
       var y = self.y;
@@ -472,59 +472,38 @@ var GamePlayScene = function(game, stage)
           break;
         case NODE_TYPE_BADB:
           canv.context.fillStyle = "#AA4499";
-          if(stroke)
+          if(init.colored_hsl || init.colored_rgb)
           {
-            //canv.context.strokeRect(x,y,w,h);
+            canv.context.fillStyle = "rgba("+floor(r_drawn*255)+","+floor(g_drawn*255)+","+floor(b_drawn*255)+",1)";
+            canv.context.fillRect(x,y,w,h);
+            if(colorblind)
+            {
+              canv.context.fillStyle = "white";
+              canv.context.fillRect(x+w/4,y+h/4,w/2,h/2);
+            }
           }
           else
           {
-            if(init.colored_hsl || init.colored_rgb)
-            {
-              canv.context.fillStyle = "rgba("+floor(r_drawn*255)+","+floor(g_drawn*255)+","+floor(b_drawn*255)+",1)";
-              canv.context.fillRect(x,y,w,h);
-              if(colorblind)
-              {
-                canv.context.fillStyle = "white";
-                canv.context.fillRect(x+w/4,y+h/4,w/2,h/2);
-              }
-            }
-            else
-            {
-              canv.context.drawImage(bact_imgs[floor(resist_drawn*(bact_imgs.length-1))],x,y,w,h);
-            }
+            canv.context.drawImage(bact_imgs[floor(resist_drawn*(bact_imgs.length-1))],x,y,w,h);
           }
           break;
         case NODE_TYPE_GOOD:
           canv.context.fillStyle = "#AAFF99";
-          if(stroke)
+          if(init.colored_hsl || init.colored_rgb)
           {
-            canv.context.strokeRect(x,y,w,h);
+            canv.context.fillStyle = "rgba("+(r_drawn*255)+","+(g_drawn*255)+","+(b_drawn*255)+",1)";
+            canv.context.fillRect(x,y,w,h);
           }
           else
           {
-            if(init.colored_hsl || init.colored_rgb)
-            {
-              canv.context.fillStyle = "rgba("+(r_drawn*255)+","+(g_drawn*255)+","+(b_drawn*255)+",1)";
-              canv.context.fillRect(x,y,w,h);
-            }
-            else
-            {
-              var r = floor((1-resist_drawn)*128);
-              canv.context.fillStyle = "rgba("+r+","+(128+r)+","+r+",1)";
-              canv.context.fillRect(x,y,w,h);
-            }
+            var r = floor((1-resist_drawn)*128);
+            canv.context.fillStyle = "rgba("+r+","+(128+r)+","+r+",1)";
+            canv.context.fillRect(x,y,w,h);
           }
           break;
         case NODE_TYPE_BODY:
           canv.context.fillStyle = "#882222";
-          if(stroke)
-          {
-            canv.context.strokeRect(x,y,w,h);
-          }
-          else
-          {
-            canv.context.fillRect(x,y,w,h);
-          }
+          canv.context.fillRect(x,y,w,h);
           break;
       }
     }
@@ -672,14 +651,14 @@ var GamePlayScene = function(game, stage)
 
     if(init.allow_dose_btn || init.allow_dose_slider)
     {
-      self.dose_btn = new ButtonBox(10,self.h-40,180,30,function(){ if(self.dose_prog) return; hit_ui = true; if(self.prerequisite_met) self.dose_prog = self.dose_prog_rate; })
+      self.dose_btn = new ButtonBox(10,self.h-40,180,30,function(){ hit_ui = true; if(self.dose_prog) return; if(self.prerequisite_met) self.dose_prog = self.dose_prog_rate; })
       grid_presser.register(self.dose_btn);
 
       self.dose_origin_x = 0;
       self.dose_origin_y = self.rows-1;
       self.dose_amt = 0.8;
       self.dose_prog = 0;
-      self.dose_prog_rate = 0.01;
+      self.dose_prog_rate = 0.05;
       if(init.allow_dose_slider)
       {
         self.dose_slider = new SmoothSliderBox(40,self.h-30,100,20,0.0,1.0,0.0,function(v){ hit_ui = true; self.dose_amt = v; });
@@ -1315,30 +1294,30 @@ var GamePlayScene = function(game, stage)
     self.draw = function()
     {
       var nodes = self.node_buffs[self.node_buff];
-      ctx.lineWidth = nodes[0].w/8;
-      for(var i = 0; i < nodes.length; i++)
-        nodes[i].draw(dc,false,true);
-      ctx.lineWidth = 2;
-      if(!init.colorblind || !scene.colorblind_mode)
+
+      var orig_node = nodes[self.ifor(self.dose_origin_x,self.dose_origin_y)];
+      ctx.beginPath(); ctx.arc(orig_node.x+orig_node.w/2,orig_node.y+orig_node.height/2,self.dose_prog*self.w,0,2*pi); ctx.stroke();
+
+      if(!init.colorblind || !self.colorblind_mode)
       {
         for(var i = 0; i < nodes.length; i++)
-          nodes[i].draw(dc,false,false);
+          nodes[i].draw(dc,false);
       }
       else
       {
         for(var i = 0; i < nodes.length; i++)
         {
           if(init.colored_hsl && nodes[i].h > 90 && nodes[i].h < 150)
-            nodes[i].draw(dc,true,false);
+            nodes[i].draw(dc,true);
           else if(init.colored_rgb && nodes[i].g > nodes[i].r && nodes[i].g > nodes[i].b)
-            nodes[i].draw(dc,true,false);
+            nodes[i].draw(dc,true);
           else
-            nodes[i].draw(dc,false,false);
+            nodes[i].draw(dc,fals);
         }
       }
 
       ctx.strokeStyle = "#0000FF";
-      if(init.show_hover && self.hovering_node && scene.prerequisite_met)
+      if(init.show_hover && self.hovering_node && self.prerequisite_met)
       {
         if(init.swab_size == 1)
         {
