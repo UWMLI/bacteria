@@ -42,6 +42,7 @@ var GamePlayScene = function(game, stage)
   var grid_presser;
   var grid_hoverer;
   var grid_dragger;
+  var hit_ui;
 
   var grid;
 
@@ -620,6 +621,7 @@ var GamePlayScene = function(game, stage)
       init_body:false,
       reinit_body:false,
       swab_size:1,
+      prerequisite_fill_for_interaction:0,
       click_function:CLICK_FUNC_BADB,
       hover_function:CLICK_FUNC_NONE,
       show_hover:false,
@@ -659,41 +661,35 @@ var GamePlayScene = function(game, stage)
     self.n_g = 0;
     self.n_b = 0;
 
-    grid_hoverer.register(self);
-    grid_dragger.register(self);
-
     self.external_biot_resist = 0.1;
     if(init.allow_contaminate)
     {
-      self.sneeze_button = new ButtonBox(self.w-30,10,20,20,function(){ self.external_biot_resist = self.ave_badb_biot_resist; })
+      self.sneeze_button = new ButtonBox(self.w-30,10,20,20,function(){ hit_ui = true; self.external_biot_resist = self.ave_badb_biot_resist; })
       grid_presser.register(self.sneeze_button);
-      self.catch_button = new ButtonBox(self.w-30,40,20,20,function(){
-        self.nodeAt(9,10).setType(NODE_TYPE_BADB);
-        self.nodeAt(9,10).biot_resist = self.external_biot_resist;
-      })
+      self.catch_button = new ButtonBox(self.w-30,40,20,20,function(){ hit_ui = true; self.nodeAt(9,10).setType(NODE_TYPE_BADB); self.nodeAt(9,10).biot_resist = self.external_biot_resist; })
       grid_presser.register(self.catch_button);
     }
 
     if(init.allow_sim_speed_slider)
     {
-      self.simspeed_slider = new SmoothSliderBox(10,self.h-30,100,20,init.sim_speed_min,init.sim_speed_max,init.sim_speed,function(v){ init.sim_speed = v; });
+      self.simspeed_slider = new SmoothSliderBox(10,self.h-30,100,20,init.sim_speed_min,init.sim_speed_max,init.sim_speed,function(v){ hit_ui = true; init.sim_speed = v; });
       grid_dragger.register(self.simspeed_slider);
     }
 
     if(init.allow_dose_slider)
     {
-      self.dose_button = new ButtonBox(10,self.h-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
+      self.dose_button = new ButtonBox(10,self.h-30,20,20,function(){ hit_ui = true; if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
       grid_presser.register(self.dose_button);
 
       self.dose_amt = 0.;
       self.dosing_prog = 0;
       self.dosing_prog_rate = 0.01;
-      self.dose_slider = new SmoothSliderBox(40,self.h-30,100,20,0.0,1.0,0.0,function(v){ self.dose_amt = v; });
+      self.dose_slider = new SmoothSliderBox(40,self.h-30,100,20,0.0,1.0,0.0,function(v){ hit_ui = true; self.dose_amt = v; });
       grid_dragger.register(self.dose_slider);
     }
     else if(init.allow_dose_button)
     {
-      self.dose_button = new ButtonBox(10,self.h-30,20,20,function(){ if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
+      self.dose_button = new ButtonBox(10,self.h-30,20,20,function(){ hit_ui = true; if(self.prerequisite_met) self.dosing_prog = self.dosing_prog_rate; })
       grid_presser.register(self.dose_button);
 
       self.dose_amt = 0;
@@ -703,7 +699,7 @@ var GamePlayScene = function(game, stage)
 
     if(init.allow_reset)
     {
-      self.reset_button = new ButtonBox(self.x+self.w-100,self.h-30,90,20,function(){ self.reset(); })
+      self.reset_button = new ButtonBox(self.x+self.w-100,self.h-30,90,20,function(){ hit_ui = true; self.reset(); })
       grid_presser.register(self.reset_button);
     }
 
@@ -730,9 +726,13 @@ var GamePlayScene = function(game, stage)
     self.colorblind_mode = false;
     if(init.colorblind)
     {
-      self.colorblind_button = new ButtonBox(self.w-30,self.h-30,20,20,function(){ self.colorblind_mode = !self.colorblind_mode; })
+      self.colorblind_button = new ButtonBox(self.w-30,self.h-30,20,20,function(){ hit_ui = true; self.colorblind_mode = !self.colorblind_mode; })
       grid_presser.register(self.colorblind_button);
     }
+
+    //listen to self last (any buttons or other interactions get hit first)
+    grid_hoverer.register(self);
+    grid_dragger.register(self);
 
     self.ticks_outside = 100000; //"it's been outside forever"
     self.ticks_playing = 0;
@@ -1525,11 +1525,13 @@ var GamePlayScene = function(game, stage)
     self.dragging = false;
     self.dragStart = function(evt)
     {
+      if(hit_ui) return;
       self.dragging = true;
       self.drag(evt);
     }
     self.drag = function(evt)
     {
+      if(hit_ui) return;
       self.dragging_node = self.nodeAtCanv(evt.doX,evt.doY);
     }
     self.dragFinish = function()
@@ -1547,6 +1549,7 @@ var GamePlayScene = function(game, stage)
     grid_presser = new Presser({source:stage.dispCanv.canvas});
     grid_hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     grid_dragger = new Dragger({source:stage.dispCanv.canvas});
+    hit_hi = false;
 
     next_btn = new ButtonBox(dc.width-100,dc.height-50,90,40,function(evt){next_btn.clicked = true;});
     next_clicker.register(next_btn);
@@ -1632,7 +1635,7 @@ var GamePlayScene = function(game, stage)
     lvl_start[n_lvls] =
     function()
     {
-      grid.clear();
+      if(grid) grid.clean();
       grid = new Grid(
         {
           w:dc.width,
@@ -1671,13 +1674,17 @@ var GamePlayScene = function(game, stage)
     lvl_start[n_lvls] =
     function()
     {
-      grid.clear();
+      if(grid) grid.clean();
       grid = new Grid(
         {
           w:dc.width,
           h:dc.height,
           cols:22,
           rows:16,
+          mutate_rate:1,
+          mutate_distance:0.2,
+          allow_dose_button:true,
+          ave_display_width:20,
         }
       ,self);
       grid.reset();
@@ -1765,6 +1772,8 @@ var GamePlayScene = function(game, stage)
       for(var i = 0; i < char_ts.length; i++)
         char_ts[i] = lerp(char_ts[i],0,0.1);
     }
+
+    hit_ui = false;
   }
   self.draw = function()
   {

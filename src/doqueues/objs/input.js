@@ -162,6 +162,7 @@ function ButtonBox(x,y,w,h,callback)
   {
     evt.hit_ui = true;
     self.down = true;
+    self.hit();
   }
   self.unpress = function(evt)
   {
