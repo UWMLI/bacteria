@@ -79,37 +79,27 @@ var GamePlayScene = function(game, stage)
     self.w = w;
     self.h = h;
 
-    self.gradient;
-
-    self.draw = function(canv)
+    self.draw = function()
     {
-      if(!self.gradient)
-      {
-        self.gradient = canv.context.createLinearGradient(0, self.y+self.h, 0, self.y);
-        self.gradient.addColorStop(0, "#FF8888");
-        self.gradient.addColorStop(1, "#880000");
-      }
-
-      canv.context.fillStyle = self.gradient;
-      canv.context.fillRect(self.x,self.y,self.w,self.h);
+      ctx.drawImage(strength_img,self.x,self.y,self.w,self.h);
 
       var y = (1-grid.ave_badb_biot_resist)*self.h+self.y;
 
-      canv.context.fillStyle = "white";
-      canv.context.strokeStyle = DARK_COLOR;
-      canv.context.beginPath();
-      canv.context.moveTo(self.x+self.w+2, y);
-      canv.context.lineTo(self.x+self.w+8, y-4);
-      canv.context.lineTo(self.x+self.w+8, y+4);
-      canv.context.closePath();
-      canv.context.stroke();
-      canv.context.fill();
+      ctx.fillStyle = "#FFFFFF";
+      ctx.beginPath();
+      ctx.moveTo(self.x-5 , y);
+      ctx.lineTo(self.x-11, y-4);
+      ctx.lineTo(self.x-11, y+4);
+      ctx.closePath();
+      ctx.fill();
 
       if(y < self.y+self.h-2) //don't display text if really low
       {
-        canv.context.fillStyle = DARK_COLOR;
-        canv.context.font = "12px Helvetica Neue";
-        canv.context.fillText("Avg. Resist",self.x+self.w+12,y+4);
+        ctx.fillStyle = "#FFFFFF";
+        dc.fillRoundRect(self.x-80,y-10,70,20,5)
+        ctx.fillStyle = DARK_COLOR;
+        ctx.font = "12px Helvetica Neue";
+        ctx.fillText("Avg. Resist",self.x-75,y+4);
       }
     }
   }
@@ -703,25 +693,10 @@ var GamePlayScene = function(game, stage)
       grid_presser.register(self.reset_button);
     }
 
-    if(init.ave_display_width > 0)
-    {
-      self.ave_disp = new AveDisplay(self.w,0,init.ave_display_width,self.h,self);
-    }
-
-    if(init.split_display_width > 0)
-    {
-      self.split_disp = new SplitDisplay(self.w,0,init.split_display_width,self.h,self);
-    }
-
-    if(init.tricolor_display_width > 0)
-    {
-      self.tricolor_disp = new TricolorDisplay(self.w,0,init.tricolor_display_width,self.h,self);
-    }
-
-    if(init.hsl_display_width > 0)
-    {
-      self.hsl_disp = new HSLDisplay(self.w,0,init.hsl_display_width,self.h,self);
-    }
+    if(init.ave_display_width      > 0) self.ave_disp      = new AveDisplay(     self.w-init.ave_display_width,     0,init.ave_display_width,     self.h,self);
+    if(init.split_display_width    > 0) self.split_disp    = new SplitDisplay(   self.w-init.split_display_width,   0,init.split_display_width,   self.h,self);
+    if(init.tricolor_display_width > 0) self.tricolor_disp = new TricolorDisplay(self.w-init.tricolor_display_width,0,init.tricolor_display_width,self.h,self);
+    if(init.hsl_display_width      > 0) self.hsl_disp      = new HSLDisplay(     self.w-init.hsl_display_width,     0,init.hsl_display_width,     self.h,self);
 
     self.colorblind_mode = false;
     if(init.colorblind)
@@ -1419,22 +1394,10 @@ var GamePlayScene = function(game, stage)
         ctx.strokeStyle = "#000000";
         ctx.textAlign = "left";
       }
-      if(init.ave_display_width > 0)
-      {
-        self.ave_disp.draw(dc);
-      }
-      if(init.split_display_width > 0)
-      {
-        self.split_disp.draw(dc);
-      }
-      if(init.tricolor_display_width > 0)
-      {
-        self.tricolor_disp.draw(dc);
-      }
-      if(init.hsl_display_width > 0)
-      {
-        self.hsl_disp.draw(dc);
-      }
+      if(init.ave_display_width      > 0) self.ave_disp.draw(dc);
+      if(init.split_display_width    > 0) self.split_disp.draw(dc);
+      if(init.tricolor_display_width > 0) self.tricolor_disp.draw(dc);
+      if(init.hsl_display_width      > 0) self.hsl_disp.draw(dc);
 
       if(init.allow_contaminate)
       {
@@ -1573,7 +1536,7 @@ var GamePlayScene = function(game, stage)
     blurb_line = 0;
 
     n_lvls = 0;
-    cur_lvl = 0;
+    cur_lvl = 2;
     lvl_start = [];
     lvl_tick = [];
     lvl_draw = [];

@@ -1,4 +1,5 @@
 var blue_img;
+var strength_img;
 var char_imgs;
 var bact_back_img;
 var bact_front_img;
@@ -52,6 +53,28 @@ var bake = function()
   bact_imgs[i] = genBactImg(tmp,s,"#642531","#B25551",5); i++;
   bact_imgs[i] = genBactImg(tmp,s,"#7A1017","#BE3C31",6); i++;
   bact_imgs[i] = genBactImg(tmp,s,"#870309","#C52C20",7); i++;
+
+  s = 660;
+  strength_img = GenIcon(10,s);
+  var i = 0;
+  var n = 8;
+  var grad = strength_img.context.createLinearGradient(
+    0,s,
+    0,0
+  );
+  grad.addColorStop(i/n,"#84CBEC"); i++;
+  grad.addColorStop(i/n,"#88BFDC"); i++;
+  grad.addColorStop(i/n,"#959EB1"); i++;
+  grad.addColorStop(i/n,"#A0828B"); i++;
+  grad.addColorStop(i/n,"#A77378"); i++;
+  grad.addColorStop(i/n,"#AD605F"); i++;
+  grad.addColorStop(i/n,"#B25551"); i++;
+  grad.addColorStop(i/n,"#BE3C31"); i++;
+  grad.addColorStop(i/n,"#C52C20"); i++;
+  grad.addColorStop(0,"rgba(99,228,248,1)");
+  grad.addColorStop(1,"rgba(99,228,248,0)");
+  strength_img.context.fillStyle=grad;
+  strength_img.context.fillRect(0,0,10,s);
 
   s = 100;
   var w = 10;
