@@ -124,20 +124,20 @@ var GamePlayScene = function(game, stage)
 
       y = y*self.h+self.y;
 
-      canv.context.fillStyle = DARK_COLOR;
-      canv.context.fillRect(self.x,self.y,self.w,y-self.y);
-      canv.context.fillStyle = "green";
-      canv.context.fillRect(self.x,y,self.w,self.h-(y-self.y));
+      ctx.fillStyle = DARK_COLOR;
+      ctx.fillRect(self.x,self.y,self.w,y-self.y);
+      ctx.fillStyle = "#00FF00";
+      ctx.fillRect(self.x,y,self.w,self.h-(y-self.y));
 
-      canv.context.fillStyle = "white";
-      canv.context.strokeStyle = DARK_COLOR;
-      canv.context.beginPath();
-      canv.context.moveTo(self.x-2, y);
-      canv.context.lineTo(self.x-8, y-4);
-      canv.context.lineTo(self.x-8, y+4);
-      canv.context.closePath();
-      canv.context.stroke();
-      canv.context.fill();
+      ctx.fillStyle = "#FFFFFF";
+      ctx.strokeStyle = DARK_COLOR;
+      ctx.beginPath();
+      ctx.moveTo(self.x-2, y);
+      ctx.lineTo(self.x-8, y-4);
+      ctx.lineTo(self.x-8, y+4);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
     }
   }
 
@@ -154,8 +154,8 @@ var GamePlayScene = function(game, stage)
     {
       if(grid.n_r + grid.n_g + grid.n_b == 0)
       {
-        canv.context.fillStyle = DARK_COLOR;
-        canv.context.fillRect(self.x,self.y,self.w,self.h);
+        ctx.fillStyle = DARK_COLOR;
+        ctx.fillRect(self.x,self.y,self.w,self.h);
       }
 
       var nt = grid.n_r+grid.n_g+grid.n_b;
@@ -163,59 +163,59 @@ var GamePlayScene = function(game, stage)
       var gh = (grid.n_g/nt)*self.h;
       var bh = (grid.n_b/nt)*self.h;
 
-      canv.context.fillStyle = "red";
-      canv.context.fillRect(self.x,self.y,self.w,rh);
-      canv.context.fillStyle = "green";
-      canv.context.fillRect(self.x,self.y+rh,self.w,gh);
-      canv.context.fillStyle = "blue";
-      canv.context.fillRect(self.x,self.y+rh+gh,self.w,bh);
+      ctx.fillStyle = "red";
+      ctx.fillRect(self.x,self.y,self.w,rh);
+      ctx.fillStyle = "#00FF00";
+      ctx.fillRect(self.x,self.y+rh,self.w,gh);
+      ctx.fillStyle = "blue";
+      ctx.fillRect(self.x,self.y+rh+gh,self.w,bh);
 
-      canv.context.font = "12px Helvetica Neue";
+      ctx.font = "12px Helvetica Neue";
       var y;
       if(grid.n_r)
       {
         y = self.y+rh/2;
-        canv.context.fillStyle = DARK_COLOR;
-        canv.context.fillText("% Red",self.x+self.w+12,y+4);
-        canv.context.fillStyle = "white";
-        canv.context.strokeStyle = DARK_COLOR;
-        canv.context.beginPath();
-        canv.context.moveTo(self.x+self.w+2, y);
-        canv.context.lineTo(self.x+self.w+8, y-4);
-        canv.context.lineTo(self.x+self.w+8, y+4);
-        canv.context.closePath();
-        canv.context.stroke();
-        canv.context.fill();
+        ctx.fillStyle = DARK_COLOR;
+        ctx.fillText("% Red",self.x+self.w+12,y+4);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = DARK_COLOR;
+        ctx.beginPath();
+        ctx.moveTo(self.x+self.w+2, y);
+        ctx.lineTo(self.x+self.w+8, y-4);
+        ctx.lineTo(self.x+self.w+8, y+4);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
       }
       if(grid.n_g)
       {
         y = self.y+rh+gh/2;
-        canv.context.fillStyle = DARK_COLOR;
-        canv.context.fillText("% Green",self.x+self.w+12,y+4);
-        canv.context.fillStyle = "white";
-        canv.context.strokeStyle = DARK_COLOR;
-        canv.context.beginPath();
-        canv.context.moveTo(self.x+self.w+2, y);
-        canv.context.lineTo(self.x+self.w+8, y-4);
-        canv.context.lineTo(self.x+self.w+8, y+4);
-        canv.context.closePath();
-        canv.context.stroke();
-        canv.context.fill();
+        ctx.fillStyle = DARK_COLOR;
+        ctx.fillText("% Green",self.x+self.w+12,y+4);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = DARK_COLOR;
+        ctx.beginPath();
+        ctx.moveTo(self.x+self.w+2, y);
+        ctx.lineTo(self.x+self.w+8, y-4);
+        ctx.lineTo(self.x+self.w+8, y+4);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
       }
       if(grid.n_b)
       {
         y = self.y+rh+gh+bh/2;
-        canv.context.fillStyle = DARK_COLOR;
-        canv.context.fillText("% Blue",self.x+self.w+12,y+4);
-        canv.context.fillStyle = "white";
-        canv.context.strokeStyle = DARK_COLOR;
-        canv.context.beginPath();
-        canv.context.moveTo(self.x+self.w+2, y);
-        canv.context.lineTo(self.x+self.w+8, y-4);
-        canv.context.lineTo(self.x+self.w+8, y+4);
-        canv.context.closePath();
-        canv.context.stroke();
-        canv.context.fill();
+        ctx.fillStyle = DARK_COLOR;
+        ctx.fillText("% Blue",self.x+self.w+12,y+4);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = DARK_COLOR;
+        ctx.beginPath();
+        ctx.moveTo(self.x+self.w+2, y);
+        ctx.lineTo(self.x+self.w+8, y-4);
+        ctx.lineTo(self.x+self.w+8, y+4);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
       }
     }
   }
@@ -263,16 +263,16 @@ var GamePlayScene = function(game, stage)
       self.end_green = 0;
 
       if(n_pts == 0)
-        canv.context.fillStyle = DARK_COLOR;
+        ctx.fillStyle = DARK_COLOR;
       else if(n_pts == 1)
       {
         self.hsl.h = self.pts[0];
         HSL2RGB(self.hsl,self.rgb);
-        canv.context.fillStyle = RGB2Hex(self.rgb);
+        ctx.fillStyle = RGB2Hex(self.rgb);
       }
       else
       {
-        self.gradient = canv.context.createLinearGradient(0, self.y+self.h, 0, self.y);
+        self.gradient = ctx.createLinearGradient(0, self.y+self.h, 0, self.y);
         for(var i = 0; i < n_pts; i++)
         {
           self.hsl.h = self.pts[i];
@@ -281,39 +281,39 @@ var GamePlayScene = function(game, stage)
           HSL2RGB(self.hsl,self.rgb);
           self.gradient.addColorStop(i/(n_pts-1), RGB2Hex(self.rgb));
         }
-        canv.context.fillStyle = self.gradient;
+        ctx.fillStyle = self.gradient;
       }
 
-      canv.context.fillRect(self.x,self.y,self.w,self.h);
+      ctx.fillRect(self.x,self.y,self.w,self.h);
 
       var ys = self.y+(1-self.start_green)*self.h;
-      canv.context.fillStyle = "white";
-      canv.context.strokeStyle = DARK_COLOR;
-      canv.context.beginPath();
-      canv.context.moveTo(self.x+self.w+2, ys);
-      canv.context.lineTo(self.x+self.w+8, ys-4);
-      canv.context.lineTo(self.x+self.w+8, ys+4);
-      canv.context.closePath();
-      canv.context.stroke();
-      canv.context.fill();
+      ctx.fillStyle = "#FFFFFF";
+      ctx.strokeStyle = DARK_COLOR;
+      ctx.beginPath();
+      ctx.moveTo(self.x+self.w+2, ys);
+      ctx.lineTo(self.x+self.w+8, ys-4);
+      ctx.lineTo(self.x+self.w+8, ys+4);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
 
       var ye = self.y+(1-self.end_green)*self.h;
-      canv.context.fillStyle = "white";
-      canv.context.strokeStyle = DARK_COLOR;
-      canv.context.beginPath();
-      canv.context.moveTo(self.x+self.w+2, ye);
-      canv.context.lineTo(self.x+self.w+8, ye-4);
-      canv.context.lineTo(self.x+self.w+8, ye+4);
-      canv.context.closePath();
-      canv.context.stroke();
-      canv.context.fill();
+      ctx.fillStyle = "#FFFFFF";
+      ctx.strokeStyle = DARK_COLOR;
+      ctx.beginPath();
+      ctx.moveTo(self.x+self.w+2, ye);
+      ctx.lineTo(self.x+self.w+8, ye-4);
+      ctx.lineTo(self.x+self.w+8, ye+4);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
 
       if(ys-6 > ye+6)
       {
-        canv.context.beginPath();
-        canv.context.moveTo(self.x+self.w+5, ys-6);
-        canv.context.lineTo(self.x+self.w+5, ye+6);
-        canv.context.stroke();
+        ctx.beginPath();
+        ctx.moveTo(self.x+self.w+5, ys-6);
+        ctx.lineTo(self.x+self.w+5, ye+6);
+        ctx.stroke();
       }
     }
   }
@@ -404,7 +404,7 @@ var GamePlayScene = function(game, stage)
       self.health = n.health;
     }
 
-    self.draw = function(canv, colorblind)
+    self.draw = function(colorblind)
     {
       var x = self.x;
       var y = self.y;
@@ -464,48 +464,52 @@ var GamePlayScene = function(game, stage)
         }
       }
 
-      canv.context.strokeStyle = DARK_COLOR;
+      ctx.strokeStyle = DARK_COLOR;
 
       switch(self.type)
       {
         case NODE_TYPE_NONE:
           break;
         case NODE_TYPE_BADB:
-          canv.context.fillStyle = "#AA4499";
+          ctx.fillStyle = "#AA4499";
           if(init.colored_hsl || init.colored_rgb)
           {
-            canv.context.fillStyle = "rgba("+floor(r_drawn*255)+","+floor(g_drawn*255)+","+floor(b_drawn*255)+",1)";
-            canv.context.fillRect(x,y,w,h);
+            ctx.fillStyle = "rgba("+floor(r_drawn*255)+","+floor(g_drawn*255)+","+floor(b_drawn*255)+",1)";
+            ctx.fillRect(x,y,w,h);
             if(colorblind)
             {
-              canv.context.fillStyle = "white";
-              canv.context.fillRect(x+w/4,y+h/4,w/2,h/2);
+              ctx.fillStyle = "#FFFFFF";
+              ctx.fillRect(x+w/4,y+h/4,w/2,h/2);
             }
           }
           else
           {
-            canv.context.drawImage(bact_imgs[floor(resist_drawn*(bact_imgs.length-1))],x,y,w,h);
+            ctx.drawImage(bact_imgs[floor(resist_drawn*(bact_imgs.length-1))],x,y,w,h);
           }
           break;
         case NODE_TYPE_GOOD:
-          canv.context.fillStyle = "#AAFF99";
+          ctx.fillStyle = "#AAFF99";
           if(init.colored_hsl || init.colored_rgb)
           {
-            canv.context.fillStyle = "rgba("+(r_drawn*255)+","+(g_drawn*255)+","+(b_drawn*255)+",1)";
-            canv.context.fillRect(x,y,w,h);
+            ctx.fillStyle = "rgba("+(r_drawn*255)+","+(g_drawn*255)+","+(b_drawn*255)+",1)";
+            ctx.fillRect(x,y,w,h);
           }
           else
           {
             var r = floor((1-resist_drawn)*128);
-            canv.context.fillStyle = "rgba("+r+","+(128+r)+","+r+",1)";
-            canv.context.fillRect(x,y,w,h);
+            ctx.fillStyle = "rgba("+r+","+(128+r)+","+r+",1)";
+            ctx.fillRect(x,y,w,h);
           }
           break;
         case NODE_TYPE_BODY:
-          canv.context.fillStyle = "#882222";
-          canv.context.fillRect(x,y,w,h);
+          ctx.fillStyle = "#882222";
+          ctx.fillRect(x,y,w,h);
           break;
       }
+
+      //shows health
+      //ctx.fillStyle = "#00FF00";
+      //ctx.fillRect(self.x,self.y+1,10,(self.height-2)*self.health);
     }
 
     self.tick = function()
@@ -579,7 +583,7 @@ var GamePlayScene = function(game, stage)
       display_pause:false,
       allow_dose_slider:false,
       allow_dose_btn:false,
-      dose_chip_damage:false,
+      dose_chip_damage:true,
       allow_reset:false,
       prompt_reset_on_empty:false,
       allow_contaminate:false,
@@ -819,8 +823,10 @@ var GamePlayScene = function(game, stage)
         {
           if(init.dose_chip_damage)
           {
-            if(rand() * amt > n.biot_resist)
+            n.health -= rand()*rand()*rand()*amt;
+            if(n.health <= 0)
               n.setType(NODE_TYPE_NONE);
+            //if(rand() * amt > n.biot_resist)
           }
           else
           {
@@ -1041,7 +1047,7 @@ var GamePlayScene = function(game, stage)
       {
         self.dose();
         self.dose_prog += self.dose_prog_rate;
-        if(self.dose_prog > self.dose_amt+1)
+        if(self.dose_prog > self.dose_amt+2)
           self.dose_prog = 0;
       }
       if(init.allow_sim_speed_slider) self.simspeed_slider.tick();
@@ -1301,18 +1307,18 @@ var GamePlayScene = function(game, stage)
       if(!init.colorblind || !self.colorblind_mode)
       {
         for(var i = 0; i < nodes.length; i++)
-          nodes[i].draw(dc,false);
+          nodes[i].draw(false);
       }
       else
       {
         for(var i = 0; i < nodes.length; i++)
         {
           if(init.colored_hsl && nodes[i].h > 90 && nodes[i].h < 150)
-            nodes[i].draw(dc,true);
+            nodes[i].draw(true);
           else if(init.colored_rgb && nodes[i].g > nodes[i].r && nodes[i].g > nodes[i].b)
-            nodes[i].draw(dc,true);
+            nodes[i].draw(true);
           else
-            nodes[i].draw(dc,fals);
+            nodes[i].draw(fals);
         }
       }
 
@@ -1341,7 +1347,7 @@ var GamePlayScene = function(game, stage)
 
       if(init.allow_sim_speed_slider)
       {
-        self.simspeed_slider.draw(dc);
+        self.simspeed_slider.draw();
       }
       if(init.allow_dose_btn || init.allow_dose_slider)
       {
@@ -1363,7 +1369,7 @@ var GamePlayScene = function(game, stage)
         if(init.allow_dose_slider)
         {
           ctx.strokeStyle = "#00FF00";
-          self.dose_slider.draw(dc);
+          self.dose_slider.draw();
 
           //fill slider with color exterminating
           var r = floor((1-self.dose_amt)*255);
@@ -1381,10 +1387,10 @@ var GamePlayScene = function(game, stage)
         ctx.strokeStyle = "#000000";
         ctx.textAlign = "left";
       }
-      if(init.ave_display_width      > 0) self.ave_disp.draw(dc);
-      if(init.split_display_width    > 0) self.split_disp.draw(dc);
-      if(init.tricolor_display_width > 0) self.tricolor_disp.draw(dc);
-      if(init.hsl_display_width      > 0) self.hsl_disp.draw(dc);
+      if(init.ave_display_width      > 0) self.ave_disp.draw();
+      if(init.split_display_width    > 0) self.split_disp.draw();
+      if(init.tricolor_display_width > 0) self.tricolor_disp.draw();
+      if(init.hsl_display_width      > 0) self.hsl_disp.draw();
 
       if(init.allow_contaminate)
       {
@@ -1409,7 +1415,7 @@ var GamePlayScene = function(game, stage)
         ctx.fillRect(self.x,self.y,self.w,self.h);
 
         var w = self.w;
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "#FFFFFF";
         ctx.strokeStyle = DARK_COLOR;
         ctx.fillRect(w-28,10,8,20);
         ctx.strokeRect(w-28,10,8,20);
@@ -1421,7 +1427,7 @@ var GamePlayScene = function(game, stage)
         if(init.display_pause && self.ticks_playing < 30)
         {
           var w = self.w;
-          ctx.fillStyle = "white";
+          ctx.fillStyle = "#FFFFFF";
           ctx.strokeStyle = DARK_COLOR;
           ctx.beginPath();
           ctx.moveTo(w-10, 20);
