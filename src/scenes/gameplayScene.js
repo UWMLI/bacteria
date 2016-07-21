@@ -575,7 +575,7 @@ var GamePlayScene = function(game, stage)
       default_s:1,
       default_l:0.7,
       colorblind:false,
-      sim_speed:1,
+      sim_speed:0.5,
       badb_sim_speed:1,
       allow_sim_speed_slider:false,
       sim_speed_min:1,
@@ -882,10 +882,10 @@ var GamePlayScene = function(game, stage)
           {
             case NODE_TYPE_BADB:
             case NODE_TYPE_GOOD:
-              if(init.age && on.age > 500) nn.setType(NODE_TYPE_NONE);
+              if(init.age && on.age > 250) nn.setType(NODE_TYPE_NONE);
               break;
             case NODE_TYPE_BODY:
-              if(init.age && on.age > 2000) nn.setType(NODE_TYPE_NONE);
+              if(init.age && on.age > 1000) nn.setType(NODE_TYPE_NONE);
               break;
             case NODE_TYPE_NONE:
               if(!init.reproduce) break;
