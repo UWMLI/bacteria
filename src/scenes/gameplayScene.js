@@ -344,6 +344,7 @@ var GamePlayScene = function(game, stage)
 
     self.type = 0;
     self.mutated = 0;
+    self.dosed = 0;
     self.biot_resist = 0.1;
     self.body_resist = 0.1;
     self.age = 0;
@@ -365,6 +366,7 @@ var GamePlayScene = function(game, stage)
     self.setType = function(t)
     {
       self.type = t;
+      self.dosed = 0;
       self.mutated = 0;
       self.age = 0;
       self.anim_prog = 1;
@@ -398,6 +400,7 @@ var GamePlayScene = function(game, stage)
       self.l = n.l;
 
       self.type = n.type;
+      self.dosed = n.dosed;
       self.mutated = n.mutated;
       self.biot_resist = n.biot_resist;
       self.body_resist = n.body_resist;
@@ -495,7 +498,8 @@ var GamePlayScene = function(game, stage)
           }
           else
           {
-            ctx.drawImage(bact_imgs[floor(resist_drawn*(bact_imgs.length-1))],x,y,w,h);
+            ctx.drawImage(bact_imgs[floor(resist_drawn*(bact_imgs.length-1))],x+rand0()*self.dosed*50,y+rand0()*self.dosed*50,w,h);
+            self.dosed = 0;
           }
           break;
         case NODE_TYPE_GOOD:
@@ -835,7 +839,8 @@ var GamePlayScene = function(game, stage)
         {
           if(init.dose_chip_damage)
           {
-            n.health -= rand()*rand()*rand()*amt;
+            n.dosed = rand()*rand()*rand()*amt;
+            n.health -= n.dosed;
             if(n.health <= 0)
               n.setType(NODE_TYPE_NONE);
             //if(rand() * amt > n.biot_resist)
