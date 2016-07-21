@@ -40,7 +40,7 @@ var bake = function()
     bact_face_imgs[i].src = "assets/face_"+i+".png";
   }
 
-  s = 80;
+  s = 60;
   var tmp = GenIcon(s,s);
   var i = 0;
   bact_imgs = [];

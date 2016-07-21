@@ -343,6 +343,7 @@ var GamePlayScene = function(game, stage)
     if(init.colored_hs) HSL2RGB(self,self); //sets RGB based on HSL
 
     self.type = 0;
+    self.mutated = 0;
     self.biot_resist = 0.1;
     self.body_resist = 0.1;
     self.age = 0;
@@ -396,6 +397,7 @@ var GamePlayScene = function(game, stage)
       self.l = n.l;
 
       self.type = n.type;
+      self.mutated = n.mutated;
       self.biot_resist = n.biot_resist;
       self.body_resist = n.body_resist;
       self.age = n.age;
@@ -471,6 +473,15 @@ var GamePlayScene = function(game, stage)
         case NODE_TYPE_NONE:
           break;
         case NODE_TYPE_BADB:
+          if(self.mutated && self.anim_prog > 0 && self.anim_prog < 0.8)
+          {
+            ctx.strokeStyle = "#00FF00";
+            ctx.globalAlpha = self.anim_prog;
+            ctx.beginPath();
+            ctx.arc(self.x+self.w/2,self.y+self.height/2,(1-self.anim_prog+0.2)*self.w,0,2*pi);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
           ctx.fillStyle = "#AA4499";
           if(init.colored_hsl || init.colored_rgb)
           {
@@ -1003,8 +1014,14 @@ var GamePlayScene = function(game, stage)
                 }
                      if(biot_resist < 0) biot_resist = 0;
                 else if(biot_resist > 1) biot_resist = 1;
+
                 new_nodes[i].biot_resist = biot_resist;
                 new_nodes[i].health      = biot_resist;
+
+                if( floor(new_nodes[i].biot_resist*(bact_imgs.length-1)) != floor(new_nodes[i].parent_node.biot_resist*(bact_imgs.length-1)) )
+                  new_nodes[i].mutated = 1;
+                else
+                  new_nodes[i].mutated = 0;
               }
 
               break;
