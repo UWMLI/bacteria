@@ -100,6 +100,8 @@ var GamePlayScene = function(game, stage)
         ctx.fillStyle = DARK_COLOR;
         ctx.font = "12px Helvetica Neue";
         ctx.fillText("Avg. Resist",self.x-75,y+4);
+        ctx.strokeStyle = "#FFFFFF";
+        dc.strokeRoundRect(self.x,y-5,self.w,10,5)
       }
     }
   }
