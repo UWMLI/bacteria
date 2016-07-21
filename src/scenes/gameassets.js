@@ -1,5 +1,7 @@
 var blue_img;
 var strength_img;
+var green_circ_img;
+var white_circ_img;
 var char_imgs;
 var bact_back_img;
 var bact_front_img;
@@ -75,6 +77,26 @@ var bake = function()
   grad.addColorStop(1,"rgba(99,228,248,0)");
   strength_img.context.fillStyle=grad;
   strength_img.context.fillRect(0,0,10,s);
+
+  s = 200;
+  var w = 10;
+  var p = 10;
+  green_circ_img = GenIcon(s,s);
+  green_circ_img.context.strokeStyle = "#00FF00";
+  green_circ_img.context.lineWidth = 10;
+  green_circ_img.context.beginPath();
+  green_circ_img.context.arc(s/2,s/2,s/2-6,0,twopi);
+  green_circ_img.context.stroke();
+
+  s = 200;
+  var w = 10;
+  var p = 10;
+  white_circ_img = GenIcon(s,s);
+  white_circ_img.context.strokeStyle = "#FFFFFF";
+  white_circ_img.context.lineWidth = 10;
+  white_circ_img.context.beginPath();
+  white_circ_img.context.arc(s/2,s/2,s/2-6,0,twopi);
+  white_circ_img.context.stroke();
 
   s = 100;
   var w = 10;

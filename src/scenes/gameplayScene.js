@@ -365,6 +365,7 @@ var GamePlayScene = function(game, stage)
     self.setType = function(t)
     {
       self.type = t;
+      self.mutated = 0;
       self.age = 0;
       self.anim_prog = 1;
       if     (t == NODE_TYPE_BADB) self.body_resist = 0.3;
@@ -477,9 +478,8 @@ var GamePlayScene = function(game, stage)
           {
             ctx.strokeStyle = "#00FF00";
             ctx.globalAlpha = self.anim_prog;
-            ctx.beginPath();
-            ctx.arc(self.x+self.w/2,self.y+self.height/2,(1-self.anim_prog+0.2)*self.w,0,2*pi);
-            ctx.stroke();
+            var r = (1-self.anim_prog+0.2)*self.w;
+            ctx.drawImage(green_circ_img,self.x+self.w/2-r,self.y+self.height/2-r,2*r,2*r);
             ctx.globalAlpha = 1;
           }
           ctx.fillStyle = "#AA4499";
