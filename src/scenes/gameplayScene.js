@@ -37,12 +37,15 @@ var GamePlayScene = function(game, stage)
   var DARK_COLOR = "#333333";
   var LIGHT_COLOR = "#DDDDDD";
 
-  var clicker;
+  var blurb_clicker;
+  var next_clicker;
   var grid_presser;
   var grid_hoverer;
   var grid_dragger;
 
   var grid;
+
+  var next_btn;
 
   var mode;
 
@@ -1539,10 +1542,14 @@ var GamePlayScene = function(game, stage)
 
   self.ready = function()
   {
-    clicker = new Clicker({source:stage.dispCanv.canvas});
+    blurb_clicker = new Clicker({source:stage.dispCanv.canvas});
+    next_clicker = new Clicker({source:stage.dispCanv.canvas});
     grid_presser = new Presser({source:stage.dispCanv.canvas});
     grid_hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
     grid_dragger = new Dragger({source:stage.dispCanv.canvas});
+
+    next_btn = new ButtonBox(dc.width-100,dc.height-50,90,40,function(evt){next_btn.clicked = true;});
+    next_clicker.register(next_btn);
 
     mode = MODE_PLAY;
 
@@ -1553,7 +1560,7 @@ var GamePlayScene = function(game, stage)
     blurb_font = "20px Open Sans";
 
     blurb_hit = {x:0,y:0,w:dc.width,h:dc.height,click: function(evt) { blurb_line++; if(blurb_line >= blurb_lines.length) mode = MODE_PLAY; } };
-    clicker.register(blurb_hit);
+    blurb_clicker.register(blurb_hit);
     blurb_t = 0;
     char_ts = [];
     for(var i = 0; i < char_imgs.length; i++)
@@ -1585,6 +1592,8 @@ var GamePlayScene = function(game, stage)
           h:dc.height,
           cols:22,
           rows:16,
+          mutate_rate:0,
+          mutate_distance:0,
         }
       ,self);
       grid.reset();
@@ -1630,6 +1639,8 @@ var GamePlayScene = function(game, stage)
           h:dc.height,
           cols:22,
           rows:16,
+          mutate_rate:1,
+          mutate_distance:0.1,
         }
       ,self);
       grid.reset();
@@ -1709,14 +1720,14 @@ var GamePlayScene = function(game, stage)
   {
     if(mode == MODE_BLURB)
     {
-      clicker.flush();
+      blurb_clicker.flush();
       grid_hoverer.ignore();
       grid_presser.ignore();
       grid_dragger.ignore();
     }
     else if(mode == MODE_PLAY)
     {
-      clicker.ignore();
+      blurb_clicker.ignore();
       grid_hoverer.flush();
       grid_presser.flush();
       grid_dragger.flush();
@@ -1728,10 +1739,16 @@ var GamePlayScene = function(game, stage)
     lvl_tick[cur_lvl]();
     if(lvl_test[cur_lvl]())
     {
-      cur_lvl++;
-      if(cur_lvl == n_lvls) /* do something? */ cur_lvl = 0;
-      lvl_start[cur_lvl]();
+      next_clicker.flush();
+      if(next_btn.clicked)
+      {
+        cur_lvl++;
+        if(cur_lvl == n_lvls) /* do something? */ cur_lvl = 0;
+        lvl_start[cur_lvl]();
+      }
     }
+    else next_clicker.ignore();
+    next_btn.clicked = false;
 
     if(blurb_line < blurb_lines.length)
     {
@@ -1753,6 +1770,14 @@ var GamePlayScene = function(game, stage)
   {
     grid.draw();
     lvl_draw[cur_lvl]();
+
+    if(lvl_test[cur_lvl]())
+    {
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(next_btn.x,next_btn.y,next_btn.w,next_btn.h);
+      ctx.fillStyle = "#000000";
+      ctx.fillText("Next",next_btn.x+next_btn.w/2,next_btn.y+next_btn.h-5);
+    }
 
     ctx.drawImage(blue_img,0,dc.height-blurb_t*100,dc.width,100);
     var p = 0.6;
