@@ -115,7 +115,7 @@ var GamePlayScene = function(game, stage)
     self.w = w;
     self.h = h;
 
-    self.draw = function(canv)
+    self.draw = function()
     {
       var y = 0;
            if(grid.n_badb < 1) y = 0;
@@ -150,7 +150,7 @@ var GamePlayScene = function(game, stage)
     self.w = w;
     self.h = h;
 
-    self.draw = function(canv)
+    self.draw = function()
     {
       if(grid.n_r + grid.n_g + grid.n_b == 0)
       {
@@ -240,7 +240,7 @@ var GamePlayScene = function(game, stage)
     self.start_green = 0;
     self.end_green = 0;
 
-    self.draw = function(canv)
+    self.draw = function()
     {
       var i = 0;
       var n_pts = 0;
@@ -630,6 +630,9 @@ var GamePlayScene = function(game, stage)
     self.node_buffs = [self.nodes_a,self.nodes_b];
     self.node_buff = 0;
 
+    self.dose_origin_x = 0;
+    self.dose_origin_y = self.rows-1;
+
     self.n_nodes = 0;
     self.n_badb = 0; self.ave_badb_biot_resist = 0;
     self.n_good = 0; self.ave_badb_biot_resist = 0;
@@ -658,8 +661,6 @@ var GamePlayScene = function(game, stage)
       self.dose_btn = new ButtonBox(10,self.h-40,180,30,function(){ hit_ui = true; if(self.dose_prog) return; if(self.prerequisite_met) self.dose_prog = self.dose_prog_rate; })
       grid_presser.register(self.dose_btn);
 
-      self.dose_origin_x = 0;
-      self.dose_origin_y = self.rows-1;
       self.dose_amt = 0.8;
       self.dose_prog = 0;
       self.dose_prog_rate = 0.05;
@@ -1496,6 +1497,12 @@ var GamePlayScene = function(game, stage)
       self.dragging_node = undefined;
     }
 
+    self.clean = function()
+    {
+      grid_presser.clear();
+      grid_hoverer.clear();
+      grid_dragger.clear();
+    };
   };
 
   self.ready = function()
@@ -1507,7 +1514,7 @@ var GamePlayScene = function(game, stage)
     grid_dragger = new Dragger({source:stage.dispCanv.canvas});
     hit_hi = false;
 
-    next_btn = new ButtonBox(dc.width-100,dc.height-50,90,40,function(evt){next_btn.clicked = true;});
+    next_btn = new ButtonBox(dc.width-80,dc.height-35,70,25,function(evt){next_btn.clicked = true;});
     next_clicker.register(next_btn);
 
     mode = MODE_PLAY;
@@ -1529,7 +1536,7 @@ var GamePlayScene = function(game, stage)
     blurb_line = 0;
 
     n_lvls = 0;
-    cur_lvl = 2;
+    cur_lvl = 0;
     lvl_start = [];
     lvl_tick = [];
     lvl_draw = [];
@@ -1599,7 +1606,7 @@ var GamePlayScene = function(game, stage)
           cols:22,
           rows:16,
           mutate_rate:1,
-          mutate_distance:0.1,
+          mutate_distance:0.3,
         }
       ,self);
       grid.reset();
@@ -1739,7 +1746,7 @@ var GamePlayScene = function(game, stage)
     if(lvl_test[cur_lvl]())
     {
       ctx.fillStyle = "#FFFFFF";
-      ctx.fillRect(next_btn.x,next_btn.y,next_btn.w,next_btn.h);
+      dc.fillRoundRect(next_btn.x,next_btn.y,next_btn.w,next_btn.h,10);
       ctx.fillStyle = "#000000";
       ctx.fillText("Next",next_btn.x+next_btn.w/2,next_btn.y+next_btn.h-5);
     }
