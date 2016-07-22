@@ -1558,7 +1558,7 @@ var GamePlayScene = function(game, stage)
     blurb_line = 0;
 
     n_lvls = 0;
-    cur_lvl = 0;
+    cur_lvl = game.start;
     lvl_start = [];
     lvl_tick = [];
     lvl_draw = [];
@@ -1762,6 +1762,7 @@ var GamePlayScene = function(game, stage)
   }
   self.draw = function()
   {
+    ctx.lineWidth = 2;
     grid.draw();
     lvl_draw[cur_lvl]();
 

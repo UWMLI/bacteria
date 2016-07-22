@@ -36,9 +36,9 @@ var ChooseScene = function(game, stage)
     var btn_1_img = GenIcon(100,100);
     var btn_2_img = GenIcon(100,100);
 
-    btn_0 = new ButtonBox(btn_x[1],btn_y,btn_s,btn_s,function(evt){ game.start = 0; game.setScene(4); }); btn_0.img = btn_0_img; clicker.register(btn_0);
-    btn_1 = new ButtonBox(btn_x[2],btn_y,btn_s,btn_s,function(evt){ game.start = 1; game.setScene(4); }); btn_1.img = btn_1_img; clicker.register(btn_1);
-    btn_2 = new ButtonBox(btn_x[3],btn_y,btn_s,btn_s,function(evt){ game.start = 2; game.setScene(4); }); btn_2.img = btn_2_img; clicker.register(btn_2);
+    btn_0 = new ButtonBox(btn_x[1],btn_y,btn_s,btn_s,function(evt){ game.start = 0; game.setScene(4); }); btn_0.img = big_bact_imgs[0]; clicker.register(btn_0);
+    btn_1 = new ButtonBox(btn_x[2],btn_y,btn_s,btn_s,function(evt){ game.start = 1; game.setScene(4); }); btn_1.img = big_bact_imgs[4]; clicker.register(btn_1);
+    btn_2 = new ButtonBox(btn_x[3],btn_y,btn_s,btn_s,function(evt){ game.start = 2; game.setScene(4); }); btn_2.img = big_bact_imgs[8]; clicker.register(btn_2);
   };
 
   self.tick = function()
@@ -67,9 +67,9 @@ var ChooseScene = function(game, stage)
     ctx.textAlign = "center";
     ctx.font = "20px Open Sans";
 
-    rectBtn(btn_0,"0");
-    rectBtn(btn_1,"1");
-    rectBtn(btn_2,"2");
+    rectBtn(btn_0,"");
+    rectBtn(btn_1,"");
+    rectBtn(btn_2,"");
   };
   var rectBtn = function(btn,lbl)
   {

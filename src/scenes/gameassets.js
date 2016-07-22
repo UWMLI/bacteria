@@ -52,6 +52,20 @@ var bake = function()
     bact_face_imgs[i].src = "assets/face_"+i+".png";
   }
 
+  s = 200;
+  var tmp = GenIcon(s,s);
+  var i = 0;
+  big_bact_imgs = [];
+  big_bact_imgs[i] = genBactImg(tmp,s,"#1383B1","#84CBEC",0); i++;
+  big_bact_imgs[i] = genBactImg(tmp,s,"#1878A2","#88BFDC",0); i++;
+  big_bact_imgs[i] = genBactImg(tmp,s,"#2B5D7F","#959EB1",1); i++;
+  big_bact_imgs[i] = genBactImg(tmp,s,"#3F4761","#A0828B",2); i++;
+  big_bact_imgs[i] = genBactImg(tmp,s,"#4A3C52","#A77378",3); i++;
+  big_bact_imgs[i] = genBactImg(tmp,s,"#5B2C3C","#AD605F",4); i++;
+  big_bact_imgs[i] = genBactImg(tmp,s,"#642531","#B25551",5); i++;
+  big_bact_imgs[i] = genBactImg(tmp,s,"#7A1017","#BE3C31",6); i++;
+  big_bact_imgs[i] = genBactImg(tmp,s,"#870309","#C52C20",7); i++;
+
   s = 60;
   var tmp = GenIcon(s,s);
   var i = 0;
