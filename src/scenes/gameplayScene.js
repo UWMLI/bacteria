@@ -38,6 +38,7 @@ var GamePlayScene = function(game, stage)
   var LIGHT_COLOR = "#DDDDDD";
 
   var blurb_clicker;
+  var menu_clicker;
   var next_clicker;
   var grid_presser;
   var grid_hoverer;
@@ -46,6 +47,7 @@ var GamePlayScene = function(game, stage)
 
   var grid;
 
+  var menu_btn;
   var next_btn;
 
   var mode;
@@ -1530,6 +1532,7 @@ var GamePlayScene = function(game, stage)
   self.ready = function()
   {
     blurb_clicker = new Clicker({source:stage.dispCanv.canvas});
+    menu_clicker = new Clicker({source:stage.dispCanv.canvas});
     next_clicker = new Clicker({source:stage.dispCanv.canvas});
     grid_presser = new Presser({source:stage.dispCanv.canvas});
     grid_hoverer = new PersistentHoverer({source:stage.dispCanv.canvas});
@@ -1538,6 +1541,9 @@ var GamePlayScene = function(game, stage)
 
     next_btn = new ButtonBox(dc.width-80,dc.height-35,70,25,function(evt){next_btn.clicked = true;});
     next_clicker.register(next_btn);
+
+    menu_btn = new ButtonBox(10,10,70,25,function(evt){game.setScene(3);});
+    menu_clicker.register(menu_btn);
 
     mode = MODE_PLAY;
 
@@ -1729,6 +1735,8 @@ var GamePlayScene = function(game, stage)
       grid.tick();
 
     lvl_tick[cur_lvl]();
+    menu_clicker.flush();
+    if(!menu_clicker) return; //scene was destroyed
     if(lvl_test[cur_lvl]())
     {
       next_clicker.flush();
@@ -1766,12 +1774,20 @@ var GamePlayScene = function(game, stage)
     grid.draw();
     lvl_draw[cur_lvl]();
 
+    ctx.font = blurb_font;
+    ctx.textAlign = "center";
+
+    ctx.fillStyle = "#FFFFFF";
+    dc.fillRoundRect(menu_btn.x,menu_btn.y,menu_btn.w,menu_btn.h,10);
+    ctx.fillStyle = "#000000";
+    ctx.fillText("MENU",menu_btn.x+menu_btn.w/2,menu_btn.y+menu_btn.h-5);
+
     if(lvl_test[cur_lvl]())
     {
       ctx.fillStyle = "#FFFFFF";
       dc.fillRoundRect(next_btn.x,next_btn.y,next_btn.w,next_btn.h,10);
       ctx.fillStyle = "#000000";
-      ctx.fillText("Next",next_btn.x+next_btn.w/2,next_btn.y+next_btn.h-5);
+      ctx.fillText("NEXT",next_btn.x+next_btn.w/2,next_btn.y+next_btn.h-5);
     }
 
     ctx.drawImage(blue_img,0,dc.height-blurb_t*100,dc.width,100);
@@ -1797,9 +1813,11 @@ var GamePlayScene = function(game, stage)
 
   self.cleanup = function()
   {
-    grid_presser.clear();
-    grid_hoverer.clear();
-    grid_dragger.clear();
+    next_clicker.clear(); next_clicker = undefined;
+    menu_clicker.clear(); menu_clicker = undefined;
+    grid_presser.clear(); grid_presser = undefined;
+    grid_hoverer.clear(); grid_hoverer = undefined;
+    grid_dragger.clear(); grid_dragger = undefined;
   };
 };
 
