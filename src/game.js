@@ -15,6 +15,7 @@ var Game = function(init)
     new NullScene(self, stage),
     new LoadingScene(self, stage),
     new ComicScene(self, stage),
+    new ChooseScene(self, stage),
     new GamePlayScene(self, stage),
   ];
   var cur_scene = 0;
