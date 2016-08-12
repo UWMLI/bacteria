@@ -56,8 +56,8 @@ function begin()
   var h = 660;
   var content          = document.getElementById("BrainPOPsnapArea");
   var stage_container  = document.getElementById("stage_container");
-  content.style.width          = w; content.style.height          = h;
-  stage_container.style.width  = w; stage_container.style.height  = h;
+  content.style.width          = w+"px"; content.style.height          = h+"px";
+  stage_container.style.width  = w+"px"; stage_container.style.height  = h+"px";
 
   g = new Game({width:w,height:h,container:"stage_container"});
   g.begin();
