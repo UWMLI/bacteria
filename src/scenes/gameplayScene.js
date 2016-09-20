@@ -1770,6 +1770,7 @@ var GamePlayScene = function(game, stage)
   }
   self.draw = function()
   {
+    ctx.drawImage(menu_grad_img,0,0,dc.width,dc.height);
     ctx.lineWidth = 2;
     grid.draw();
     lvl_draw[cur_lvl]();

@@ -50,7 +50,6 @@ var ChooseScene = function(game, stage)
   self.draw = function()
   {
     ctx.drawImage(comic_img,0,0,dc.width,dc.height);
-    ctx.drawImage(comic_img,0,0,dc.width,dc.height);
     ctx.drawImage(menu_grad_img,0,0,dc.width,dc.height);
     var w = 324/2;
     var h = 278/2;
@@ -67,11 +66,11 @@ var ChooseScene = function(game, stage)
     ctx.textAlign = "center";
     ctx.font = "20px Open Sans";
 
-    rectBtn(btn_0,"");
-    rectBtn(btn_1,"");
-    rectBtn(btn_2,"");
+    rectBtn(btn_0,"Reproduction","(Start Here!)");
+    rectBtn(btn_1,"Mutation","");
+    rectBtn(btn_2,"Resistance","");
   };
-  var rectBtn = function(btn,lbl)
+  var rectBtn = function(btn,lbl,lbl2)
   {
     ctx.fillStyle = "#FFFFFF";
   /*
@@ -82,6 +81,7 @@ var ChooseScene = function(game, stage)
   */
     ctx.drawImage(btn.img,btn.x,btn.y,btn.w,btn.h);
     ctx.fillText(lbl,btn.x+btn.w/2,btn.y+btn.h+20);
+    ctx.fillText(lbl2,btn.x+btn.w/2,btn.y+btn.h+50);
   }
 
   self.cleanup = function()
