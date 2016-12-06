@@ -1,4 +1,3 @@
-var comic_img;
 var menu_grad_img;
 var menu_logo_img;
 var blue_img;
@@ -16,8 +15,6 @@ var bake = function()
 {
   var s;
 
-  comic_img = new Image();
-//  comic_img.src = "assets/comic.png";
   menu_grad_img = new Image();
   menu_grad_img.src = "assets/menu/menu_gradient.png";
   menu_logo_img = new Image();

@@ -49,7 +49,6 @@ var ChooseScene = function(game, stage)
   var space = String.fromCharCode(8202)+String.fromCharCode(8202);
   self.draw = function()
   {
-    ctx.drawImage(comic_img,0,0,dc.width,dc.height);
     ctx.drawImage(menu_grad_img,0,0,dc.width,dc.height);
     var w = 324/2;
     var h = 278/2;
