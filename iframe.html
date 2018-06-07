@@ -74,8 +74,12 @@ function begin()
   g = new Game({width:w,height:h,container:"stage_container"});
   g.begin();
 }
+function triggerExitLog () {
+  g.logExit();
+}
 window.addEventListener('touchstart', function(e){ e.preventDefault() }); //prevent browser from doing anything funny
 window.addEventListener("load",begin,false);
+window.addEventListener('unload', triggerExitLog);
 </script>
 
 </head>
