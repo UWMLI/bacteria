@@ -72,6 +72,96 @@ var GamePlayScene = function(game, stage)
   var blurb_chars;
   var blurb_line;
 
+  self.totalTime = 0;
+  self.numBacteriaCreated = 0; // self is necessary for external log functions
+  var numBacteriaCreatedVar = 0;  // var is necessary for nested selfs
+  var lastTickTime;
+  var thisTickTime;
+  var thisGridTickTime;
+  var lastGridTickTime;
+  
+  var numBac = 0;
+  var numKilled = 0;
+  var numDosesVar = 0;
+  self.numDoses = 0;
+  self.highestRes = 0;
+  var highestResVar = 0;
+  var lastDoseTime;
+  var thisDoseTime;
+  var beforeRes;
+  var afterRes;
+  var clickStartTime;
+  var timeSpentDragging = 0;
+
+  self.mySlog = new slog("BACTERIA", 1);
+
+  self.log_quit = function (time, numBacteria, numDoses, topRes) {
+    var log_data =
+    {
+      event:"QUIT",
+      event_data_complex:{
+        totalTime:time,
+        numBacteriaCreated:numBacteria,
+        numAntibioticDoses:numDoses,
+        topResistance:topRes
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //self.mySlog.log(log_data);
+    console.log(log_data);
+  }
+
+  self.log_level_begin = function (challenge, time) {
+    var log_data =
+    {
+      event:"BEGIN",
+      event_data_complex:{
+        level:challenge,
+        totalTime:time
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //self.mySlog.log(log_data);
+    console.log(log_data);
+  }
+
+  var log_bacteria_create = function (numCreated, loc, time) {
+    var log_data =
+    {
+      event:"BACTERIA_CREATE",
+      event_data_complex:{
+        numberCreatedTotal:numCreated,
+        location:loc,
+        timeHeld:time
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //self.mySlog.log(log_data);
+    console.log(log_data);
+  }
+
+  var log_dose = function (bacteria, numKilled, time, beforeRes, afterRes, doses) {
+    var log_data =
+    {
+      event:"DOSE",
+      event_data_complex:{
+        bacteriaOnScreen:bacteria,
+        numBacteriaKilled:numKilled,
+        timeSinceLastDose:time,
+        beforeResistance:beforeRes,
+        afterResistance:afterRes,
+        numDoses:doses
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //self.mySlog.log(log_data);
+    console.log(log_data);
+  }
+
   var AveDisplay = function(x,y,w,h,grid)
   {
     var self = this;
@@ -675,7 +765,28 @@ var GamePlayScene = function(game, stage)
 
     if(init.allow_dose_btn || init.allow_dose_slider)
     {
-      self.dose_btn = new ButtonBox(10,self.h-40,180,30,function(){ hit_ui = true; if(self.dose_prog) return; if(self.prerequisite_met) self.dose_prog = self.dose_prog_rate; })
+      self.dose_btn = new ButtonBox(10,self.h-40,180,30,function()
+      { 
+        hit_ui = true;
+        if(self.dose_prog) return;
+        if(self.prerequisite_met) {
+          self.dose_prog = self.dose_prog_rate;
+
+          numBac = 0;
+          numKilled = 0;
+          thisDoseTime = new Date().getTime();
+          if (!lastDoseTime) {
+            lastDoseTime = thisDoseTime;
+          }
+          var nodes = self.node_buffs[self.node_buff];
+          for(var i = 0; i < nodes.length; i++) {
+            if (nodes[i].type != NODE_TYPE_NONE) {
+              numBac++;
+            }
+          }
+          beforeRes = self.ave_badb_biot_resist;
+        }
+      })
       grid_presser.register(self.dose_btn);
 
       self.dose_amt = 0.8;
@@ -843,8 +954,11 @@ var GamePlayScene = function(game, stage)
           {
             n.dosed = rand()*rand()*rand()*amt;
             n.health -= n.dosed;
-            if(n.health <= 0)
+            if(n.health <= 0) {
+              if (n.type != NODE_TYPE_NONE)
+                numKilled++;
               n.setType(NODE_TYPE_NONE);
+            }
             //if(rand() * amt > n.biot_resist)
           }
           else
@@ -854,10 +968,21 @@ var GamePlayScene = function(game, stage)
           }
         }
       }
+      if (self.dose_prog+self.dose_prog_rate >= self.dose_amt+2) {
+        afterRes = self.ave_badb_biot_resist;
+        if (afterRes > highestResVar) highestResVar = afterRes;
+        numDosesVar++;
+        log_dose(numBac, numKilled, (thisDoseTime - lastDoseTime) / 1000, beforeRes, afterRes, numDosesVar);
+        lastDoseTime = thisDoseTime;
+        numKilled = 0;
+        numBac = 0;
+      }
     }
 
     self.tick = function()
     {
+      thisGridTickTime = new Date().getTime();
+      if (!lastGridTickTime) lastGridTickTime = thisGridTickTime;
       //gauge whether appropriate to continue
       if(platform == "PC") //based on hover
       {
@@ -1247,7 +1372,12 @@ var GamePlayScene = function(game, stage)
               self.dragging_node.parent_node = undefined;
             }
             break;
-          case CLICK_FUNC_BADB:
+          case CLICK_FUNC_BADB: 
+            timeSpentDragging += ((thisGridTickTime - lastGridTickTime) / 1000);
+            if (self.dragging_node.type != NODE_TYPE_BADB) {
+              log_bacteria_create(numBacteriaCreatedVar, {col:self.dragging_node.col, row:self.dragging_node.row}, timeSpentDragging);
+              numBacteriaCreatedVar++;
+            }
             self.dragging_node.setType(NODE_TYPE_BADB);
             if(init.colored_hsl)
             {
@@ -1319,7 +1449,10 @@ var GamePlayScene = function(game, stage)
           default:
             break;
         }
+      } else {
+        timeSpentDragging = 0;
       }
+      lastGridTickTime = thisGridTickTime;
     }
 
     self.draw = function()
@@ -1716,6 +1849,16 @@ var GamePlayScene = function(game, stage)
 
   self.tick = function()
   {
+    // Sync up the var variables with the self ones
+    self.highestRes = highestResVar;
+    self.numDoses = numDosesVar;
+    self.numBacteriaCreated = numBacteriaCreatedVar;
+
+    thisTickTime = new Date().getTime();
+    if (!lastTickTime) lastTickTime = thisTickTime;
+    self.totalTime += ((thisTickTime - lastTickTime) / 1000);
+    lastTickTime = thisTickTime;
+ 
     if(mode == MODE_BLURB)
     {
       blurb_clicker.flush();
@@ -1742,6 +1885,7 @@ var GamePlayScene = function(game, stage)
       next_clicker.flush();
       if(next_btn.clicked)
       {
+        self.log_level_begin(cur_lvl+1, self.totalTime);
         cur_lvl++;
         if(cur_lvl == n_lvls) /* do something? */ cur_lvl = 0;
         lvl_start[cur_lvl]();

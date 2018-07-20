@@ -47,9 +47,24 @@ var Game = function(init)
 
   self.setScene = function(i)
   {
+    if (cur_scene == 4 && i == 3) {
+      self.logExit();
+    } else if (i == 4) {
+      var level;
+      if (self.start == 0) level = "REPRODUCTION";
+      else if (self.start == 1) level = "MUTATION";
+      else if (self.start == 2) level = "RESISTANCE";
+      scenes[4].lastTickTime = new Date().getTime();
+      scenes[4].thisTickTime = new Date().getTime();
+      scenes[4].log_level_begin(level, scenes[4].totalTime);
+    }
     scenes[cur_scene].cleanup();
     cur_scene = i;
     scenes[cur_scene].ready();
+  }
+
+  self.logExit = function() {
+    scenes[4].log_quit(scenes[4].totalTime, scenes[4].numBacteriaCreated, scenes[4].numDoses, scenes[4].topResistance);
   }
 };
 
