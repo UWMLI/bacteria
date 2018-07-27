@@ -107,9 +107,9 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //self.mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    self.mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   self.log_level_begin = function (challenge, time) {
@@ -122,9 +122,9 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //self.mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    self.mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   var log_bacteria_create = function (numCreated, loc, time) {
@@ -138,9 +138,9 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //self.mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    self.mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   var log_dose = function (bacteria, numKilled, time, beforeRes, afterRes, doses) {
@@ -157,9 +157,9 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //self.mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    self.mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   var AveDisplay = function(x,y,w,h,grid)
