@@ -98,8 +98,11 @@ var GamePlayScene = function(game, stage)
   self.log_quit = function (time, numBacteria, numDoses, topRes) {
     var log_data =
     {
-      event:"QUIT",
+      level:cur_lvl,
+      event:"CUSTOM",
+      event_custom:1,
       event_data_complex:{
+        event_custom:"QUIT",
         totalTime:time,
         numBacteriaCreated:numBacteria,
         numAntibioticDoses:numDoses,
@@ -115,6 +118,7 @@ var GamePlayScene = function(game, stage)
   self.log_level_begin = function (challenge, time) {
     var log_data =
     {
+      level:cur_lvl,
       event:"BEGIN",
       event_data_complex:{
         level:challenge,
@@ -130,8 +134,11 @@ var GamePlayScene = function(game, stage)
   var log_bacteria_create = function (numCreated, loc, time) {
     var log_data =
     {
-      event:"BACTERIA_CREATE",
+      level:cur_lvl,
+      event:"CUSTOM",
+      event_custom:2,
       event_data_complex:{
+        event_custom:"BACTERIA_CREATE",
         numberCreatedTotal:numCreated,
         location:loc,
         timeHeld:time
@@ -146,8 +153,11 @@ var GamePlayScene = function(game, stage)
   var log_dose = function (bacteria, numKilled, time, beforeRes, afterRes, doses) {
     var log_data =
     {
-      event:"DOSE",
+      level:cur_lvl,
+      event:"CUSTOM",
+      event_custom:3,
       event_data_complex:{
+        event_custom:"DOSE",
         bacteriaOnScreen:bacteria,
         numBacteriaKilled:numKilled,
         timeSinceLastDose:time,

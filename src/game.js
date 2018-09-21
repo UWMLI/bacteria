@@ -51,9 +51,9 @@ var Game = function(init)
       self.logExit();
     } else if (i == 4) {
       var level;
-      if (self.start == 0) level = "REPRODUCTION";
-      else if (self.start == 1) level = "MUTATION";
-      else if (self.start == 2) level = "RESISTANCE";
+      if (self.start == 0) level = 0;//"REPRODUCTION";
+      else if (self.start == 1) level = 1;//"MUTATION";
+      else if (self.start == 2) level = 2;//"RESISTANCE";
       scenes[4].lastTickTime = new Date().getTime();
       scenes[4].thisTickTime = new Date().getTime();
       scenes[4].log_level_begin(level, scenes[4].totalTime);
